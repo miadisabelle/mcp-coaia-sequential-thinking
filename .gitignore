@@ -2,3 +2,6 @@
 __pycache__
 *.pyc
 .coverage
+.env
+.env*
+.mcp.json*

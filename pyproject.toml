@@ -43,7 +43,7 @@ all = [
 ]
 
 [project.urls]
-Source = "https://github.com/arben-adm/mcp-coaia-sequential-thinking"
+Source = "https://github.com/miadisabelle/mcp-coaia-sequential-thinking"
 
 [tool.hatch.build.targets.wheel]
 packages = ["mcp_coaia_sequential_thinking"]
