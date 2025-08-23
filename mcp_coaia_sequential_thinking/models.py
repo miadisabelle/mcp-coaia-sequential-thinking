@@ -6,12 +6,14 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class ThoughtStage(Enum):
-    """Basic thinking stages for structured sequential thinking."""
-    PROBLEM_DEFINITION = "Problem Definition"
-    RESEARCH = "Research"
-    ANALYSIS = "Analysis"
-    SYNTHESIS = "Synthesis"
-    CONCLUSION = "Conclusion"
+    """Creative orientation stages for structural thinking."""
+    DESIRED_OUTCOME = "Desired Outcome"
+    CURRENT_REALITY = "Current Reality"
+    STRUCTURAL_TENSION = "Structural Tension"
+    ACTION_STEP = "Action Step"
+    ADVANCEMENT = "Advancement"
+    BIAS_MITIGATION = "Bias Mitigation"
+    PATTERN_RECOGNITION = "Pattern Recognition"
 
     @classmethod
     def from_string(cls, value: str) -> 'ThoughtStage':

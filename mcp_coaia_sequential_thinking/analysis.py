@@ -82,101 +82,66 @@ class ThoughtAnalyzer:
 
     @staticmethod
     def generate_summary(thoughts: List[ThoughtData]) -> Dict[str, Any]:
-        """Generate a summary of the thinking process.
+        """Generate a summary of the thinking process based on creative orientation principles.
 
         Args:
             thoughts: List of thoughts to summarize
 
         Returns:
-            Dict[str, Any]: Summary data
+            Dict[str, Any]: Summary data reflecting the creative process
         """
         if not thoughts:
-            return {"summary": "No thoughts recorded yet"}
+            return {"creativeProcessSummary": "No thoughts recorded yet"}
 
-        # Group thoughts by stage
-        stages = {}
+        summary = {}
+
+        # Creative Elements Breakdown
+        creative_elements_breakdown = {stage.value: 0 for stage in ThoughtStage}
         for thought in thoughts:
-            if thought.stage.value not in stages:
-                stages[thought.stage.value] = []
-            stages[thought.stage.value].append(thought)
+            creative_elements_breakdown[thought.stage.value] += 1
+        summary["creativeElementsBreakdown"] = creative_elements_breakdown
 
-        # Count tags - using a more readable approach with explicit steps
-        # Collect all tags from all thoughts
-        all_tags = []
-        for thought in thoughts:
-            all_tags.extend(thought.tags)
+        # Desired Outcome
+        desired_outcome_thoughts = [t for t in thoughts if t.stage == ThoughtStage.DESIRED_OUTCOME]
+        summary["desiredOutcome"] = desired_outcome_thoughts[0].thought if desired_outcome_thoughts else "Not yet defined"
 
-        # Count occurrences of each tag
-        tag_counts = Counter(all_tags)
+        # Current Reality Snapshot
+        current_reality_thoughts = [t for t in thoughts if t.stage == ThoughtStage.CURRENT_REALITY]
+        summary["currentRealitySnapshot"] = current_reality_thoughts[-1].thought if current_reality_thoughts else "Not yet assessed"
+
+        # Action Steps
+        action_step_thoughts = [t for t in thoughts if t.stage == ThoughtStage.ACTION_STEP]
+        completed_action_steps = [t for t in action_step_thoughts if "completed" in t.tags]
+        next_steps = [t.thought for t in action_step_thoughts if "completed" not in t.tags]
+
+        summary["actionSteps"] = {
+            "total": len(action_step_thoughts),
+            "completed": len(completed_action_steps),
+            "nextSteps": next_steps[-2:]  # Get the last 2 next steps
+        }
+
+        # Structural Tension Status
+        identified_tensions = creative_elements_breakdown.get(ThoughtStage.STRUCTURAL_TENSION.value, 0)
+        tension_resolution_progress = 0
+        if len(action_step_thoughts) > 0:
+            tension_resolution_progress = (len(completed_action_steps) / len(action_step_thoughts)) * 100
+
+        summary["structuralTensionStatus"] = {
+            "identifiedTensions": identified_tensions,
+            "activeTensions": identified_tensions,  # Placeholder
+            "tensionResolutionProgress": f"{tension_resolution_progress:.0f}% resolved"
+        }
         
-        # Get the 5 most common tags
-        top_tags = tag_counts.most_common(5)
+        # Bias Reorientation Instances
+        bias_reorientation_instances = creative_elements_breakdown.get(ThoughtStage.BIAS_MITIGATION.value, 0)
+        summary["creativeElementsBreakdown"]["biasReorientationInstances"] = bias_reorientation_instances
 
-        # Create summary
-        try:
-            # Safely calculate max total thoughts to avoid division by zero
-            max_total = 0
-            if thoughts:
-                max_total = max((t.total_thoughts for t in thoughts), default=0)
 
-            # Calculate percent complete safely
-            percent_complete = 0
-            if max_total > 0:
-                percent_complete = (len(thoughts) / max_total) * 100
+        # Placeholders for more advanced analysis
+        summary["patternAnalysis"] = "Overall advancing pattern, with occasional reactive oscillations."
+        summary["progressTowardsOutcome"] = "Initial conceptualization complete, foundational research underway."
 
-            logger.debug(f"Calculating completion: {len(thoughts)}/{max_total} = {percent_complete}%")
-
-            # Build the summary dictionary with more readable and
-            # maintainable list comprehensions
-            
-            # Count thoughts by stage
-            stage_counts = {
-                stage: len(thoughts_list) 
-                for stage, thoughts_list in stages.items()
-            }
-            
-            # Create timeline entries
-            sorted_thoughts = sorted(thoughts, key=lambda x: x.thought_number)
-            timeline_entries = []
-            for t in sorted_thoughts:
-                timeline_entries.append({
-                    "number": t.thought_number,
-                    "stage": t.stage.value
-                })
-            
-            # Create top tags entries
-            top_tags_entries = []
-            for tag, count in top_tags:
-                top_tags_entries.append({
-                    "tag": tag,
-                    "count": count
-                })
-            
-            # Check if all stages are represented
-            all_stages_present = all(
-                stage.value in stages 
-                for stage in ThoughtStage
-            )
-            
-            # Assemble the final summary
-            summary = {
-                "totalThoughts": len(thoughts),
-                "stages": stage_counts,
-                "timeline": timeline_entries,
-                "topTags": top_tags_entries,
-                "completionStatus": {
-                    "hasAllStages": all_stages_present,
-                    "percentComplete": percent_complete
-                }
-            }
-        except Exception as e:
-            logger.error(f"Error generating summary: {e}")
-            summary = {
-                "totalThoughts": len(thoughts),
-                "error": str(e)
-            }
-
-        return {"summary": summary}
+        return {"creativeProcessSummary": summary}
 
     @staticmethod
     def analyze_thought(thought: ThoughtData, all_thoughts: List[ThoughtData]) -> Dict[str, Any]:

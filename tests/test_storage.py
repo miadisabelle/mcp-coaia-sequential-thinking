@@ -103,7 +103,7 @@ class TestThoughtStorage(unittest.TestCase):
         self.storage.add_thought(thought2)
         self.storage.add_thought(thought3)
         
-        problem_def_thoughts = self.storage.get_thoughts_by_stage(ThoughtStage.PROBLEM_DEFINITION)
+        problem_def_thoughts = self.storage.get_thoughts_by_stage(ThoughtStage.DESIRED_OUTCOME)
         research_thoughts = self.storage.get_thoughts_by_stage(ThoughtStage.RESEARCH)
         
         self.assertEqual(len(problem_def_thoughts), 2)
