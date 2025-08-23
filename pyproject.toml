@@ -1,11 +1,11 @@
 [project]
-name = "sequential-thinking"
+name = "mcp-coaia-sequential-thinking"
 version = "0.3.0"
 description = "A Sequential Thinking MCP Server for advanced problem solving"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-keywords = ["mcp", "ai", "problem-solving", "sequential-thinking"]
+keywords = ["mcp", "ai", "problem-solving", "coaia", "sequential-thinking"]
 authors = [
    { name = "Arben Ademi", email = "arben.ademi@tuta.io" }
 ]
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mcp-sequential-thinking = "mcp_sequential_thinking.server:main"
+mcp-coaia-sequential-thinking = "mcp_coaia_sequential_thinking.server:main"
 
 [project.optional-dependencies]
 dev = [
@@ -43,10 +43,10 @@ all = [
 ]
 
 [project.urls]
-Source = "https://github.com/arben-adm/sequential-thinking"
+Source = "https://github.com/arben-adm/mcp-coaia-sequential-thinking"
 
 [tool.hatch.build.targets.wheel]
-packages = ["mcp_sequential_thinking"]
+packages = ["mcp_coaia_sequential_thinking"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

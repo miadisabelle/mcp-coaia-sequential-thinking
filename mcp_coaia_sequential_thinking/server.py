@@ -14,10 +14,10 @@ try:
     from .logging_conf import configure_logging
 except ImportError:
     # When run directly
-    from mcp_sequential_thinking.models import ThoughtData, ThoughtStage
-    from mcp_sequential_thinking.storage import ThoughtStorage
-    from mcp_sequential_thinking.analysis import ThoughtAnalyzer
-    from mcp_sequential_thinking.logging_conf import configure_logging
+    from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
+    from mcp_coaia_sequential_thinking.storage import ThoughtStorage
+    from mcp_coaia_sequential_thinking.analysis import ThoughtAnalyzer
+    from mcp_coaia_sequential_thinking.logging_conf import configure_logging
 
 logger = configure_logging("sequential-thinking.server")
 

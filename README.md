@@ -2,26 +2,28 @@
 
 # Sequential Thinking MCP Server
 
-A Model Context Protocol (MCP) server that facilitates structured, progressive thinking through defined stages. This tool helps break down complex problems into sequential thoughts, track the progression of your thinking process, and generate summaries.
+A Model Context Protocol (MCP) server that facilitates structured, creative-oriented thinking through defined stages. This tool helps recognize and overcome the inherent reactive bias in AI systems, guiding the thinking process towards manifesting desired outcomes rather than merely solving problems.
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-<a href="https://glama.ai/mcp/servers/m83dfy8feg"><img width="380" height="200" src="https://glama.ai/mcp/servers/m83dfy8feg/badge" alt="Sequential Thinking Server MCP server" /></a>
+<a href="https://glama.ai/mcp/servers/m83dfy8feg"><img width="380" height="200" src="https://glama.ai/mcp/servers/m83dfy8feg/badge" alt="COAIA Sequential Thinking Server MCP server" /></a>
 
 ## Features
 
-- **Structured Thinking Framework**: Organizes thoughts through standard cognitive stages (Problem Definition, Research, Analysis, Synthesis, Conclusion)
-- **Thought Tracking**: Records and manages sequential thoughts with metadata
-- **Related Thought Analysis**: Identifies connections between similar thoughts
-- **Progress Monitoring**: Tracks your position in the overall thinking sequence
-- **Summary Generation**: Creates concise overviews of the entire thought process
-- **Persistent Storage**: Automatically saves your thinking sessions with thread-safety
-- **Data Import/Export**: Share and reuse thinking sessions
-- **Extensible Architecture**: Easily customize and extend functionality
-- **Robust Error Handling**: Graceful handling of edge cases and corrupted data
-- **Type Safety**: Comprehensive type annotations and validation
+- **Creative Orientation Framework**: Guides thinking towards desired outcomes, not just problem-solving.
+- **Bias Recognition**: Helps identify and mitigate the inherent reactive bias in AI and human thought processes.
+- **Structural Tension Generation**: Facilitates the creation and management of structural tension for manifestation.
+- **Hierarchical Thinking**: Supports the development of multi-level thought structures.
+- **Thought Tracking & Analysis**: Records, manages, and analyzes sequential thoughts with rich metadata.
+- **Progress Monitoring**: Tracks the advancement of creative projects.
+- **Summary Generation**: Provides concise overviews of the creative process.
+- **Persistent Storage**: Automatically saves thinking sessions with thread-safety.
+- **Data Import/Export**: Enables sharing and reuse of creative sessions.
+- **Extensible Architecture**: Designed for easy customization and extension.
+- **Robust Error Handling**: Ensures graceful operation and data integrity.
+- **Type Safety**: Comprehensive type annotations and validation for reliable development.
 
 ## Prerequisites
 

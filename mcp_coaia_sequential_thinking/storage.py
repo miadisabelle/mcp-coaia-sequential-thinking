@@ -27,7 +27,7 @@ class ThoughtStorage:
         if storage_dir is None:
             # Use user's home directory by default
             home_dir = Path.home()
-            self.storage_dir = home_dir / ".mcp_sequential_thinking"
+            self.storage_dir = home_dir / ".mcp_coaia_sequential_thinking"
         else:
             self.storage_dir = Path(storage_dir)
 
