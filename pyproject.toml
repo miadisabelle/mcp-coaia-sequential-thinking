@@ -5,7 +5,7 @@ description = "A Sequential Thinking MCP Server for advanced problem solving"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-keywords = ["mcp", "ai", "problem-solving", "coaia", "sequential-thinking"]
+keywords = ["mcp", "ai", "coaia", "sequential-thinking","creative-orientation"]
 authors = [
    { name = "Arben Ademi", email = "arben.ademi@tuta.io" }
 ]
@@ -13,6 +13,7 @@ dependencies = [
    "mcp[cli]>=1.2.0",
    "rich>=13.7.0",
    "pyyaml>=6.0",
+   "portalocker",
 ]
 
 [project.scripts]
