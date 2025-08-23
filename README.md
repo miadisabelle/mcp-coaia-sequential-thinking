@@ -2,6 +2,12 @@
 
 # MCP Server: Creative Orientation Engine
 
+## STC
+
+* SEE: [STCREFACTORING.md](STCREFACTORING.md)
+
+
+
 ## Overview
 The MCP Server: Creative Orientation Engine is a groundbreaking package designed to facilitate advanced outcome creation through sequential, structural thinking. By fundamentally shifting the orientation from problem-solving to a creative focus, this engine empowers users to envision and manifest desired futures.
 
