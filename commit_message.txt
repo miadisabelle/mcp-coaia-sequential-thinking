@@ -1,0 +1,13 @@
+feat: Refactor to mcp-coaia-sequential-thinking and update vision
+
+Rename internal package to `mcp_coaia_sequential_thinking` and update all
+related references in code and `pyproject.toml`.
+
+Significantly revise `README.md` to align with the new project vision
+of "creative orientation sequential thinking" and addressing the
+"Fundamental Bias Paradox" in AI. This includes:
+- Updating project name, description, features, and quick start guides.
+- Incorporating the "Upgraded 5+ Year Vision" for the project.
+- Correcting repository URLs in `README.md` and `pyproject.toml`.
+
+Add `ROADMAP.md` detailing the implementation plan for this new vision.
