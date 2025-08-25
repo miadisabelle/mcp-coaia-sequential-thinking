@@ -15,7 +15,7 @@ sys.stdout.flush()
 
 # Import and run the server
 from mcp_sequential_thinking.server import main
-from mcp_sequential_thinking.logging_conf import configure_logging
+from mcp_coaia_sequential_thinking.logging_conf import configure_logging
 
 # Configure logging for this script
 logger = configure_logging("sequential-thinking.runner")
