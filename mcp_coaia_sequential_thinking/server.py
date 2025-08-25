@@ -21,7 +21,7 @@ except ImportError:
     from mcp_coaia_sequential_thinking.logging_conf import configure_logging
     from mcp_coaia_sequential_thinking.integration_bridge import integration_bridge
 
-logger = configure_logging("sequential-thinking.server")
+logger = configure_logging("coaia-sequential-thinking.server")
 
 
 mcp = FastMCP("sequential-thinking")
