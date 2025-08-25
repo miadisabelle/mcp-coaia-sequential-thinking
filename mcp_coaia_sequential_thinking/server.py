@@ -299,7 +299,7 @@ def check_integration_status() -> dict:
 
 def main():
     """Entry point for the MCP server."""
-    logger.info("Starting Sequential Thinking MCP server")
+    logger.info("Starting CoAiA Sequential Thinking MCP server")
 
     # Ensure UTF-8 encoding for stdin/stdout
     if hasattr(sys.stdout, 'buffer') and sys.stdout.encoding != 'utf-8':
