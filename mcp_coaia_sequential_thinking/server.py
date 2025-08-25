@@ -12,12 +12,14 @@ try:
     from .storage import ThoughtStorage
     from .analysis import ThoughtAnalyzer
     from .logging_conf import configure_logging
+    from .integration_bridge import integration_bridge
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
     from mcp_coaia_sequential_thinking.storage import ThoughtStorage
     from mcp_coaia_sequential_thinking.analysis import ThoughtAnalyzer
     from mcp_coaia_sequential_thinking.logging_conf import configure_logging
+    from mcp_coaia_sequential_thinking.integration_bridge import integration_bridge
 
 logger = configure_logging("sequential-thinking.server")
 
@@ -104,7 +106,7 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
         }
 
 @mcp.tool()
-def generate_summary() -> dict:
+async def generate_summary() -> dict:
     """Generate a summary of the entire thinking process.
 
     Returns:
@@ -116,8 +118,40 @@ def generate_summary() -> dict:
         # Get all thoughts
         all_thoughts = storage.get_all_thoughts()
 
-        # Generate summary
-        return ThoughtAnalyzer.generate_summary(all_thoughts)
+        # Generate summary with SCCP analysis
+        summary_result = ThoughtAnalyzer.generate_summary(all_thoughts)
+        
+        # Check if session is ready for chart creation
+        chart_readiness = integration_bridge.analyze_chart_readiness(all_thoughts)
+        
+        # Add chart readiness info to summary
+        summary = summary_result.get('summary', {})
+        summary['chartIntegration'] = {
+            "readyForChartCreation": chart_readiness.get('readyForChartCreation', False),
+            "structuralTensionEstablished": chart_readiness.get('structuralTensionEstablished', False),
+            "tensionStrength": chart_readiness.get('tensionStrength', 0.0),
+            "overallPattern": chart_readiness.get('overallPattern', 'insufficient_data')
+        }
+        
+        # Trigger chart creation if ready
+        if chart_readiness.get('readyForChartCreation', False):
+            try:
+                chart_data = chart_readiness.get('chartCreationData')
+                if chart_data:
+                    # Generate session ID for this thinking session
+                    session_id = f"session_{len(all_thoughts)}_{all_thoughts[-1].id if all_thoughts else 'empty'}"
+                    chart_id = await integration_bridge.create_chart_from_session(session_id, chart_data)
+                    
+                    summary['chartIntegration']['chartCreated'] = True
+                    summary['chartIntegration']['chartId'] = chart_id
+                    summary['chartIntegration']['sessionId'] = session_id
+                    
+                    logger.info(f"Auto-created chart {chart_id} from thinking session {session_id}")
+            except Exception as chart_error:
+                logger.error(f"Error creating chart: {chart_error}")
+                summary['chartIntegration']['chartCreationError'] = str(chart_error)
+        
+        return {"summary": summary}
     except json.JSONDecodeError as e:
         logger.error(f"JSON parsing error: {e}")
         return {
@@ -210,6 +244,53 @@ def import_session(file_path: str) -> dict:
         }
     except Exception as e:
         logger.error(f"Error importing session: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def check_integration_status() -> dict:
+    """Check the integration status with COAIA Memory system.
+
+    Returns:
+        dict: Integration status and available records
+    """
+    try:
+        logger.info("Checking integration status")
+        
+        # Get all thoughts to analyze readiness
+        all_thoughts = storage.get_all_thoughts()
+        chart_readiness = integration_bridge.analyze_chart_readiness(all_thoughts)
+        
+        # Get integration records
+        integration_records = {}
+        for session_id, record in integration_bridge.integration_records.items():
+            integration_records[session_id] = {
+                "integrationId": record.integration_id,
+                "chartId": record.chart_id,
+                "status": record.status.value,
+                "patternType": record.pattern_type,
+                "createdAt": record.created_at,
+                "updatedAt": record.updated_at
+            }
+        
+        return {
+            "integrationStatus": {
+                "coaiaMemoryAvailable": integration_bridge.coaia_memory_available,
+                "currentSessionReadiness": {
+                    "readyForChartCreation": chart_readiness.get('readyForChartCreation', False),
+                    "structuralTensionEstablished": chart_readiness.get('structuralTensionEstablished', False),
+                    "tensionStrength": chart_readiness.get('tensionStrength', 0.0),
+                    "overallPattern": chart_readiness.get('overallPattern', 'insufficient_data')
+                },
+                "integrationRecords": integration_records,
+                "totalRecords": len(integration_records)
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error checking integration status: {str(e)}")
         return {
             "error": str(e),
             "status": "failed"

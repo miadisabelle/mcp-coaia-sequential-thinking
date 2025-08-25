@@ -6,12 +6,12 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class ThoughtStage(Enum):
-    """Basic thinking stages for structured sequential thinking."""
-    PROBLEM_DEFINITION = "Problem Definition"
-    RESEARCH = "Research"
-    ANALYSIS = "Analysis"
-    SYNTHESIS = "Synthesis"
-    CONCLUSION = "Conclusion"
+    """SCCP-based creative orientation stages following Robert Fritz methodology."""
+    DESIRED_OUTCOME = "Desired Outcome"
+    CURRENT_REALITY = "Current Reality"
+    ACTION_STEPS = "Action Steps"
+    PATTERN_RECOGNITION = "Pattern Recognition"
+    CONCEPT_DETECTION = "Concept Detection"
 
     @classmethod
     def from_string(cls, value: str) -> 'ThoughtStage':
@@ -37,7 +37,7 @@ class ThoughtStage(Enum):
 
 
 class ThoughtData(BaseModel):
-    """Data structure for a single thought in the sequential thinking process."""
+    """Data structure for a single thought in the sequential thinking process with SCCP elements."""
     thought: str
     thought_number: int
     total_thoughts: int
@@ -46,6 +46,11 @@ class ThoughtData(BaseModel):
     tags: List[str] = Field(default_factory=list)
     axioms_used: List[str] = Field(default_factory=list)
     assumptions_challenged: List[str] = Field(default_factory=list)
+    # SCCP-based fields for pattern recognition
+    pattern_type: Optional[str] = Field(default=None, description="advancing or oscillating pattern")
+    structural_tension_strength: Optional[float] = Field(default=None, description="0.0-1.0 measure of tension clarity")
+    hidden_concepts_detected: List[str] = Field(default_factory=list, description="limiting concepts identified")
+    action_step_strategic: Optional[bool] = Field(default=None, description="whether action is strategic vs reactive")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
     id: UUID = Field(default_factory=uuid4)
 
@@ -79,6 +84,20 @@ class ThoughtData(BaseModel):
         thought_number = values.data.get('thought_number')
         if thought_number is not None and v < thought_number:
             raise ValueError("Total thoughts must be greater or equal to current thought number")
+        return v
+    
+    @field_validator('pattern_type')
+    def pattern_type_valid(cls, v: Optional[str]) -> Optional[str]:
+        """Validate pattern type is either advancing or oscillating."""
+        if v is not None and v not in ["advancing", "oscillating"]:
+            raise ValueError("Pattern type must be either 'advancing' or 'oscillating'")
+        return v
+    
+    @field_validator('structural_tension_strength')
+    def structural_tension_strength_valid(cls, v: Optional[float]) -> Optional[float]:
+        """Validate structural tension strength is between 0.0 and 1.0."""
+        if v is not None and not (0.0 <= v <= 1.0):
+            raise ValueError("Structural tension strength must be between 0.0 and 1.0")
         return v
 
     def validate(self) -> bool:
@@ -137,6 +156,11 @@ class ThoughtData(BaseModel):
         result["tags"] = self.tags
         result["axiomsUsed"] = self.axioms_used
         result["assumptionsChallenged"] = self.assumptions_challenged
+        # SCCP fields with camelCase naming
+        result["patternType"] = self.pattern_type
+        result["structuralTensionStrength"] = self.structural_tension_strength
+        result["hiddenConceptsDetected"] = self.hidden_concepts_detected
+        result["actionStepStrategic"] = self.action_step_strategic
         result["timestamp"] = self.timestamp
         
         return result
@@ -160,7 +184,12 @@ class ThoughtData(BaseModel):
             "totalThoughts": "total_thoughts",
             "nextThoughtNeeded": "next_thought_needed",
             "axiomsUsed": "axioms_used",
-            "assumptionsChallenged": "assumptions_challenged"
+            "assumptionsChallenged": "assumptions_challenged",
+            # SCCP field mappings
+            "patternType": "pattern_type",
+            "structuralTensionStrength": "structural_tension_strength",
+            "hiddenConceptsDetected": "hidden_concepts_detected",
+            "actionStepStrategic": "action_step_strategic"
         }
         
         # Process known direct mappings
@@ -181,6 +210,11 @@ class ThoughtData(BaseModel):
         snake_data.setdefault("tags", [])
         snake_data.setdefault("axioms_used", data.get("axiomsUsed", []))
         snake_data.setdefault("assumptions_challenged", data.get("assumptionsChallenged", []))
+        # SCCP field defaults
+        snake_data.setdefault("pattern_type", data.get("patternType"))
+        snake_data.setdefault("structural_tension_strength", data.get("structuralTensionStrength"))
+        snake_data.setdefault("hidden_concepts_detected", data.get("hiddenConceptsDetected", []))
+        snake_data.setdefault("action_step_strategic", data.get("actionStepStrategic"))
         snake_data.setdefault("timestamp", datetime.now().isoformat())
 
         # Add ID if present, otherwise generate a new one

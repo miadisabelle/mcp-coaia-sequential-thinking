@@ -158,15 +158,42 @@ class ThoughtAnalyzer:
                 for stage in ThoughtStage
             )
             
-            # Assemble the final summary
+            # SCCP-based analysis for summary
+            structural_analysis = ThoughtAnalyzer.analyze_structural_tension(thoughts)
+            overall_pattern = ThoughtAnalyzer.detect_pattern_type(thoughts)
+            
+            # Count hidden concepts across all thoughts
+            all_hidden_concepts = []
+            strategic_action_count = 0
+            for thought in thoughts:
+                all_hidden_concepts.extend(thought.hidden_concepts_detected)
+                all_hidden_concepts.extend(ThoughtAnalyzer.detect_hidden_concepts(thought.thought))
+                if thought.action_step_strategic:
+                    strategic_action_count += 1
+            
+            # Assemble the SCCP-based summary
             summary = {
                 "totalThoughts": len(thoughts),
                 "stages": stage_counts,
                 "timeline": timeline_entries,
                 "topTags": top_tags_entries,
+                # SCCP creative orientation elements
+                "creativeOrientationAnalysis": {
+                    "overallPattern": overall_pattern,
+                    "structuralTensionEstablished": structural_analysis.get("structuralTensionAnalysis", {}).get("tensionEstablished", False),
+                    "tensionStrength": structural_analysis.get("structuralTensionAnalysis", {}).get("tensionStrength", 0.0),
+                    "strategicActionSteps": strategic_action_count,
+                    "hiddenConceptsDetected": len(set(all_hidden_concepts)),  # Unique concepts
+                    "readyForChartCreation": (
+                        len([t for t in thoughts if t.stage.value == "Desired Outcome"]) > 0 and
+                        len([t for t in thoughts if t.stage.value == "Current Reality"]) > 0 and
+                        len([t for t in thoughts if t.stage.value == "Action Steps"]) > 0
+                    )
+                },
                 "completionStatus": {
                     "hasAllStages": all_stages_present,
-                    "percentComplete": percent_complete
+                    "percentComplete": percent_complete,
+                    "advancingPattern": overall_pattern == "advancing"
                 }
             }
         except Exception as e:
@@ -221,8 +248,13 @@ class ThoughtAnalyzer:
 
         # Calculate progress
         progress = (thought.thought_number / thought.total_thoughts) * 100
+        
+        # SCCP-based analysis
+        hidden_concepts = ThoughtAnalyzer.detect_hidden_concepts(thought.thought)
+        pattern_type = ThoughtAnalyzer.detect_pattern_type(all_thoughts)
+        structural_tension_analysis = ThoughtAnalyzer.analyze_structural_tension(all_thoughts)
 
-        # Create analysis
+        # Create analysis with SCCP elements
         return {
             "thoughtAnalysis": {
                 "currentThought": {
@@ -231,7 +263,12 @@ class ThoughtAnalyzer:
                     "nextThoughtNeeded": thought.next_thought_needed,
                     "stage": thought.stage.value,
                     "tags": thought.tags,
-                    "timestamp": thought.timestamp
+                    "timestamp": thought.timestamp,
+                    # SCCP fields
+                    "patternType": thought.pattern_type or pattern_type,
+                    "structuralTensionStrength": thought.structural_tension_strength,
+                    "hiddenConceptsDetected": thought.hidden_concepts_detected + hidden_concepts,
+                    "actionStepStrategic": thought.action_step_strategic
                 },
                 "analysis": {
                     "relatedThoughtsCount": len(related_thoughts),
@@ -243,11 +280,129 @@ class ThoughtAnalyzer:
                         } for t in related_thoughts
                     ],
                     "progress": progress,
-                    "isFirstInStage": is_first_in_stage
+                    "isFirstInStage": is_first_in_stage,
+                    # SCCP analysis results
+                    "detectedPatternType": pattern_type,
+                    "newHiddenConcepts": hidden_concepts
                 },
                 "context": {
                     "thoughtHistoryLength": len(all_thoughts),
                     "currentStage": thought.stage.value
-                }
+                },
+                # Include full structural tension analysis
+                **structural_tension_analysis
             }
         }
+    
+    @staticmethod
+    def analyze_structural_tension(thoughts: List[ThoughtData]) -> Dict[str, Any]:
+        """Analyze the structural tension in a set of thoughts based on SCCP methodology.
+        
+        Args:
+            thoughts: List of thoughts to analyze
+            
+        Returns:
+            Dict[str, Any]: Structural tension analysis results
+        """
+        if not thoughts:
+            return {"structuralTensionAnalysis": "No thoughts to analyze"}
+        
+        # Find desired outcome and current reality thoughts
+        desired_outcomes = [t for t in thoughts if t.stage.value == "Desired Outcome"]
+        current_realities = [t for t in thoughts if t.stage.value == "Current Reality"]
+        action_steps = [t for t in thoughts if t.stage.value == "Action Steps"]
+        
+        # Calculate structural tension strength
+        tension_strength = 0.0
+        if desired_outcomes and current_realities:
+            # Simple heuristic: tension is stronger when both outcome and reality are clearly defined
+            outcome_clarity = len(desired_outcomes[0].thought.split()) / 50.0  # Normalize by expected length
+            reality_clarity = len(current_realities[0].thought.split()) / 50.0
+            tension_strength = min(1.0, (outcome_clarity + reality_clarity) / 2.0)
+        
+        return {
+            "structuralTensionAnalysis": {
+                "tensionStrength": tension_strength,
+                "hasDesiredOutcome": len(desired_outcomes) > 0,
+                "hasCurrentReality": len(current_realities) > 0,
+                "actionStepsCount": len(action_steps),
+                "tensionEstablished": len(desired_outcomes) > 0 and len(current_realities) > 0
+            }
+        }
+    
+    @staticmethod
+    def detect_pattern_type(thoughts: List[ThoughtData]) -> str:
+        """Detect if the thought pattern represents advancing or oscillating dynamics.
+        
+        Based on SCCP methodology:
+        - Advancing patterns show consistent progress toward desired outcomes
+        - Oscillating patterns show success followed by reversal patterns
+        
+        Args:
+            thoughts: List of thoughts to analyze
+            
+        Returns:
+            str: "advancing", "oscillating", or "insufficient_data"
+        """
+        if len(thoughts) < 3:
+            return "insufficient_data"
+        
+        # Look for pattern indicators in the thought content
+        advancement_indicators = ["progress", "moving toward", "getting closer", "building", "creating"]
+        oscillation_indicators = ["went wrong", "reversal", "back to", "lost progress", "undoing"]
+        
+        advancement_count = 0
+        oscillation_count = 0
+        
+        for thought in thoughts:
+            content_lower = thought.thought.lower()
+            
+            for indicator in advancement_indicators:
+                if indicator in content_lower:
+                    advancement_count += 1
+                    
+            for indicator in oscillation_indicators:
+                if indicator in content_lower:
+                    oscillation_count += 1
+        
+        # Determine pattern based on indicators
+        if advancement_count > oscillation_count:
+            return "advancing"
+        elif oscillation_count > advancement_count:
+            return "oscillating"
+        else:
+            return "insufficient_data"
+    
+    @staticmethod
+    def detect_hidden_concepts(thought_content: str) -> List[str]:
+        """Detect potential hidden concepts/limiting beliefs in thought content.
+        
+        Based on SCCP methodology, looks for language patterns that indicate
+        limiting concepts like "I'm not enough", "I can't", etc.
+        
+        Args:
+            thought_content: The content to analyze
+            
+        Returns:
+            List[str]: List of detected hidden concepts
+        """
+        hidden_concepts = []
+        content_lower = thought_content.lower()
+        
+        # Common hidden concept patterns from SCCP
+        concept_patterns = {
+            "I can't": ["can't", "cannot", "unable to", "impossible"],
+            "I'm not enough": ["not good enough", "not smart enough", "not capable"],
+            "I don't deserve": ["don't deserve", "unworthy", "not entitled"],
+            "It's dangerous": ["too risky", "dangerous", "unsafe", "scary"],
+            "I must justify": ["have to prove", "must show", "need to justify"],
+            "I'm not acceptable": ["not acceptable", "rejected", "not wanted"]
+        }
+        
+        for concept, patterns in concept_patterns.items():
+            for pattern in patterns:
+                if pattern in content_lower:
+                    hidden_concepts.append(concept)
+                    break  # Don't double-count the same concept
+        
+        return hidden_concepts
