@@ -112,32 +112,33 @@ class ThoughtAnalyzer:
         # Action Steps
         action_step_thoughts = [t for t in thoughts if t.stage == ThoughtStage.ACTION_STEP]
         completed_action_steps = [t for t in action_step_thoughts if "completed" in t.tags]
-        next_steps = [t.thought for t in action_step_thoughts if "completed" not in t.tags]
+        uncompleted_action_steps = [t for t in action_step_thoughts if "completed" not in t.tags]
+        next_steps = [t.thought for t in uncompleted_action_steps]
 
         summary["actionSteps"] = {
             "total": len(action_step_thoughts),
             "completed": len(completed_action_steps),
-            "nextSteps": next_steps[-2:]  # Get the last 2 next steps
+            "nextSteps": next_steps[:2]  # Get the first 2 next steps
         }
 
         # Structural Tension Status
         identified_tensions = creative_elements_breakdown.get(ThoughtStage.STRUCTURAL_TENSION.value, 0)
+        active_tensions = len(uncompleted_action_steps)
         tension_resolution_progress = 0
         if len(action_step_thoughts) > 0:
             tension_resolution_progress = (len(completed_action_steps) / len(action_step_thoughts)) * 100
 
         summary["structuralTensionStatus"] = {
             "identifiedTensions": identified_tensions,
-            "activeTensions": identified_tensions,  # Placeholder
+            "activeTensions": active_tensions,
             "tensionResolutionProgress": f"{tension_resolution_progress:.0f}% resolved"
         }
-        
+
         # Bias Reorientation Instances
         bias_reorientation_instances = creative_elements_breakdown.get(ThoughtStage.BIAS_MITIGATION.value, 0)
         summary["creativeElementsBreakdown"]["biasReorientationInstances"] = bias_reorientation_instances
 
-
-        # Placeholders for more advanced analysis
+        # TODO: Implement more advanced analysis for patternAnalysis and progressTowardsOutcome
         summary["patternAnalysis"] = "Overall advancing pattern, with occasional reactive oscillations."
         summary["progressTowardsOutcome"] = "Initial conceptualization complete, foundational research underway."
 

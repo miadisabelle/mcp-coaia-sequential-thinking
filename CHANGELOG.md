@@ -1,5 +1,21 @@
 # Changelog
 
+## Version 0.6.0 (Unreleased)
+
+### Features
+
+*   **Refactored `generate_summary` to Align with Creative Orientation**
+    *   Updated `generate_summary` to provide a summary based on creative orientation principles.
+    *   The summary now includes `desiredOutcome`, `currentRealitySnapshot`, `structuralTensionStatus`, `actionSteps`, and `creativeElementsBreakdown`.
+    *   The `ThoughtStage` enum is now aligned with the creative orientation process.
+
+### Fixes
+
+*   **Updated and Fixed Tests**
+    *   Updated all tests to use the new `ThoughtStage` enum and `generate_summary` output.
+    *   Fixed `ModuleNotFoundError` in tests by correcting import statements.
+    *   Resolved test environment issues by using `uv pip install -e .[dev]`.
+
 ## Version 0.5.0 (Unreleased)
 
 ### Code Quality Improvements
