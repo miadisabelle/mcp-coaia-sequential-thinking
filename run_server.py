@@ -22,7 +22,7 @@ logger = configure_logging("coaia-sequential-thinking.runner")
 
 if __name__ == "__main__":
     try:
-        logger.info("Starting Sequential Thinking MCP server from runner script")
+        logger.info("Starting CoAiA Sequential Thinking MCP server from runner script")
         main()
     except Exception as e:
         logger.error(f"Fatal error in MCP server: {e}", exc_info=True)
