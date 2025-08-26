@@ -181,6 +181,14 @@ Equivalent to SCCP structural transformation, applied to LLM training bias modif
 - **Creative output quality** - Freedom within appropriate boundaries
 - **Bias fluency demonstration** - Conscious choice rather than automatic restriction
 
+#### Principle of Non-Intrusive Feedback
+A core principle for successful human-AI creative partnership is that the AI's feedback mechanisms must support, not disrupt, the user's creative flow. Interrupting a creative sequence with raw error reports is a reactive, problem-solving behavior that contradicts the goal of fostering an advancing pattern.
+
+Therefore, the final output of any creative sequence must be the desired result itself. Any analytical data, such as `co-lint` violations or compliance scores, will be provided as supplementary, structured metadata. This ensures:
+- **The creative work remains the primary deliverable.**
+- **Feedback is available for programmatic control**, such as gating a subsequent action (e.g., creating a chart) based on a compliance score.
+- **The user experience is one of partnership**, where the AI provides helpful insights without hijacking the creative process.
+
 ### Core Innovation Framework: Contextual Transposition Intelligence (CTI)
 
 A computational system that applies transformational mathematics from music theory to creative life design, using event-driven architectures to provide real-time contextual adaptation based on structural tension principles.
