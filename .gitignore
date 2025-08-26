@@ -6,3 +6,5 @@ __pycache__
 .env*
 .mcp.json*
 .hch
+uv.lock
+uv.lock
