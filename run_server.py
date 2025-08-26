@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Run script for the Sequential Thinking MCP server.
+Run script for the CoAiA Sequential Thinking MCP server.
 This script makes it easy to run the server directly from the root directory.
 """
 import os
