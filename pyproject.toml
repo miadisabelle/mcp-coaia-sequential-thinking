@@ -5,7 +5,7 @@ description = "A Sequential Thinking MCP Server for advanced problem solving"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-keywords = ["mcp", "ai", "coaia", "sequential-thinking","creative-orientation"]
+keywords = ["mcp", "ai", "coaia", "coaia-sequential-thinking","creative-orientation"]
 authors = [
    { name = "Arben Ademi", email = "arben.ademi@tuta.io" }
 ]
@@ -40,7 +40,7 @@ web = [
 ]
 
 all = [
-    "sequential-thinking[dev,vis,web]",
+    "coaia-sequential-thinking[dev,vis,web]",
 ]
 
 [project.urls]

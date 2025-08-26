@@ -2,7 +2,7 @@ import logging
 import sys
 
 
-def configure_logging(name: str = "sequential-thinking") -> logging.Logger:
+def configure_logging(name: str = "coaia-sequential-thinking") -> logging.Logger:
     """Configure and return a logger with standardized settings.
     
     Args:

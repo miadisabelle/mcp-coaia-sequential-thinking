@@ -676,7 +676,7 @@ import portalocker
 from .models import ThoughtData
 from .logging_conf import configure_logging
 
-logger = configure_logging("sequential-thinking.storage-utils")
+logger = configure_logging("coaia-sequential-thinking.storage-utils")
 
 
 def prepare_thoughts_for_serialization(thoughts: List[ThoughtData]) -> List[Dict[str, Any]]:

@@ -1,4 +1,4 @@
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/arben-adm-mcp-sequential-thinking-badge.png)](https://mseep.ai/app/arben-adm-mcp-sequential-thinking)
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/arben-adm-mcp-coaia-sequential-thinking-badge.png)](https://mseep.ai/app/arben-adm-mcp-coaia-sequential-thinking)
 
 # MCP Server: Creative Orientation Engine
 
@@ -61,7 +61,7 @@ Russell, S. J., & Norvig, P. (2003). Artificial intelligence: A modern approach.
 ## Project Structure
 
 ```
-mcp-sequential-thinking/
+mcp-coaia-sequential-thinking/
 ├── mcp_coaia_sequential_thinking/
 │   ├── server.py       # Main server implementation and MCP tools
 │   ├── models.py       # Data models with Pydantic validation
@@ -108,10 +108,10 @@ mcp-sequential-thinking/
 2. **Run the Server**
    ```bash
    # Run directly
-   uv run -m mcp_sequential_thinking.server
+   uv run -m mcp_coaia_sequential_thinking.server
 
    # Or use the installed script
-   mcp-sequential-thinking
+   mcp-coaia-sequential-thinking
    ```
 
 3. **Run Tests**
@@ -120,7 +120,7 @@ mcp-sequential-thinking/
    pytest
 
    # Run with coverage report
-   pytest --cov=mcp_sequential_thinking
+   pytest --cov=mcp_coaia_sequential_thinking
    ```
 
 ## Claude Desktop Integration
@@ -134,7 +134,7 @@ Add to your Claude Desktop configuration (`%APPDATA%\Claude\claude_desktop_confi
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\path\\to\\your\\mcp-sequential-thinking\\run_server.py",
+        "C:\path\to\your\mcp-coaia-sequential-thinking\run_server.py",
         "run",
         "server.py"
         ]

@@ -12,7 +12,7 @@ from .models import ThoughtData, ThoughtStage
 from .logging_conf import configure_logging
 from .storage_utils import prepare_thoughts_for_serialization, save_thoughts_to_file, load_thoughts_from_file
 
-logger = configure_logging("sequential-thinking.storage")
+logger = configure_logging("coaia-sequential-thinking.storage")
 
 
 class ThoughtStorage:

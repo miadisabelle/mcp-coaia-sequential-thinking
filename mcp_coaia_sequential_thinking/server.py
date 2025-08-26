@@ -19,10 +19,10 @@ except ImportError:
     from mcp_coaia_sequential_thinking.analysis import ThoughtAnalyzer
     from mcp_coaia_sequential_thinking.logging_conf import configure_logging
 
-logger = configure_logging("sequential-thinking.server")
+logger = configure_logging("coaia-sequential-thinking.server")
 
 
-mcp = FastMCP("sequential-thinking")
+mcp = FastMCP("coaia-sequential-thinking")
 
 storage_dir = os.environ.get("MCP_STORAGE_DIR", None)
 storage = ThoughtStorage(storage_dir)
