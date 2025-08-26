@@ -32,9 +32,9 @@ storage = ThoughtStorage(storage_dir)
 @mcp.tool()
 def process_thought(thought: str, thought_number: int, total_thoughts: int,
                     next_thought_needed: bool, stage: str,
-                    tags: Optional[List[str]] = None,
-                    axioms_used: Optional[List[str]] = None,
-                    assumptions_challenged: Optional[List[str]] = None,
+                    tags: List[str] = [],
+                    axioms_used: List[str] = [],
+                    assumptions_challenged: List[str] = [],
                     ctx: Optional[Context] = None) -> dict:
     """Add a sequential thought with its metadata.
 
