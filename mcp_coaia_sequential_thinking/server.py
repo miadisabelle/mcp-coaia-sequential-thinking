@@ -41,7 +41,7 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
         thought_number: The sequence number of this thought
         total_thoughts: The total expected thoughts in the sequence
         next_thought_needed: Whether more thoughts are needed after this one
-        stage: The thinking stage (Desired Outcome, Current Reality, Structural Tension, Action Step, Advancement, Bias Mitigation, Pattern Recognition)
+        stage: The thinking stage (Desired Outcome Clarification, Current Reality Assessment, Structural Tension Identification, Action Step Generation, Advancement Tracking, Bias Detection/Mitigation, Pattern Recognition)
         tags: Optional keywords or categories for the thought
         axioms_used: Optional list of principles or axioms used in this thought
         assumptions_challenged: Optional list of assumptions challenged by this thought
