@@ -14,6 +14,7 @@ try:
     from .logging_conf import configure_logging
     from .integration_bridge import integration_bridge
     from .co_lint_integration import validate_thought, ValidationSeverity
+    from .creative_orientation_engine import analyze_creative_orientation
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -26,7 +27,7 @@ except ImportError:
 logger = configure_logging("coaia-sequential-thinking.server")
 
 
-mcp = FastMCP("sequential-thinking")
+mcp = FastMCP("coaia-sequential-thinking")
 
 storage_dir = os.environ.get("MCP_STORAGE_DIR", None)
 storage = ThoughtStorage(storage_dir)
@@ -45,7 +46,7 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
         thought_number: The sequence number of this thought
         total_thoughts: The total expected thoughts in the sequence
         next_thought_needed: Whether more thoughts are needed after this one
-        stage: The thinking stage (Problem Definition, Research, Analysis, Synthesis, Conclusion)
+        stage: The thinking stage (Definition of where we are (sometime thought as problem and is current-reality), Research, Analysis, Synthesis, Conclusion)
         tags: Optional keywords or categories for the thought
         axioms_used: Optional list of principles or axioms used in this thought
         assumptions_challenged: Optional list of assumptions challenged by this thought
