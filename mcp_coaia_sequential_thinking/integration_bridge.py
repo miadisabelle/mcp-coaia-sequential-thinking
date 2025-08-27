@@ -48,6 +48,9 @@ class ChartCreationData:
     hidden_concepts: List[str]
     due_date: str
     session_id: str
+    validation_metrics: Optional[Dict[str, Any]] = None
+    creative_orientation_score: float = 0.0
+    advancing_pattern_detected: bool = False
 
 
 @dataclass

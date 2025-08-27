@@ -13,6 +13,7 @@ try:
     from .analysis import ThoughtAnalyzer
     from .logging_conf import configure_logging
     from .integration_bridge import integration_bridge
+    from .co_lint_integration import validate_thought, ValidationSeverity
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -20,6 +21,7 @@ except ImportError:
     from mcp_coaia_sequential_thinking.analysis import ThoughtAnalyzer
     from mcp_coaia_sequential_thinking.logging_conf import configure_logging
     from mcp_coaia_sequential_thinking.integration_bridge import integration_bridge
+    from mcp_coaia_sequential_thinking.co_lint_integration import validate_thought, ValidationSeverity
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
@@ -77,6 +79,12 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
 
         # Validate and store
         thought_data.validate()
+        
+        # Run SCCP-enhanced CO-Lint validation
+        validation_summary = validate_thought(thought, thought_data)
+        logger.info(f"Validation completed: tension_strength={validation_summary.tension_strength.value}, "
+                   f"creative_orientation_score={validation_summary.creative_orientation_score:.2f}")
+        
         storage.add_thought(thought_data)
 
         # Get all thoughts for analysis
@@ -84,6 +92,29 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
 
         # Analyze the thought
         analysis = ThoughtAnalyzer.analyze_thought(thought_data, all_thoughts)
+        
+        # Add validation results to analysis
+        analysis['validation'] = {
+            'structural_tension_established': validation_summary.structural_tension_established,
+            'tension_strength': validation_summary.tension_strength.value,
+            'creative_orientation_score': validation_summary.creative_orientation_score,
+            'advancing_pattern_detected': validation_summary.advancing_pattern_detected,
+            'has_desired_outcome': validation_summary.has_desired_outcome,
+            'has_current_reality': validation_summary.has_current_reality,
+            'has_natural_progression': validation_summary.has_natural_progression,
+            'validation_results': [
+                {
+                    'rule_id': result.rule_id,
+                    'severity': result.severity.value,
+                    'message': result.message,
+                    'line_number': result.line_number,
+                    'suggestion': result.suggestion,
+                    'structural_insight': result.structural_insight,
+                    'tension_impact': result.tension_impact.value if result.tension_impact else None
+                }
+                for result in validation_summary.validation_results
+            ]
+        }
 
         # Log success
         logger.info(f"Successfully processed thought #{thought_number}")
@@ -295,6 +326,105 @@ def check_integration_status() -> dict:
             "error": str(e),
             "status": "failed"
         }
+
+
+@mcp.tool()
+def validate_thought_content(content: str, stage: Optional[str] = None) -> dict:
+    """Validate thought content using SCCP-enhanced CO-Lint filtering.
+
+    Args:
+        content: The thought content to validate
+        stage: Optional thinking stage for context-aware validation
+
+    Returns:
+        dict: Comprehensive validation results with SCCP insights
+    """
+    try:
+        logger.info("Validating thought content with SCCP-enhanced CO-Lint")
+        
+        # Create minimal thought data if stage provided
+        thought_data = None
+        if stage:
+            try:
+                thought_stage = ThoughtStage.from_string(stage)
+                thought_data = ThoughtData(
+                    thought=content,
+                    thought_number=1,
+                    total_thoughts=1,
+                    next_thought_needed=False,
+                    stage=thought_stage
+                )
+            except Exception as e:
+                logger.warning(f"Could not create ThoughtData from stage '{stage}': {e}")
+        
+        # Run validation
+        validation_summary = validate_thought(content, thought_data)
+        
+        # Format response
+        return {
+            "validation_summary": {
+                "structural_tension_established": validation_summary.structural_tension_established,
+                "tension_strength": validation_summary.tension_strength.value,
+                "creative_orientation_score": validation_summary.creative_orientation_score,
+                "advancing_pattern_detected": validation_summary.advancing_pattern_detected,
+                "oscillating_patterns_count": validation_summary.oscillating_patterns_count,
+                "components": {
+                    "has_desired_outcome": validation_summary.has_desired_outcome,
+                    "has_current_reality": validation_summary.has_current_reality,
+                    "has_natural_progression": validation_summary.has_natural_progression
+                }
+            },
+            "validation_results": [
+                {
+                    "rule_id": result.rule_id,
+                    "severity": result.severity.value,
+                    "message": result.message,
+                    "line_number": result.line_number,
+                    "suggestion": result.suggestion,
+                    "structural_insight": result.structural_insight,
+                    "tension_impact": result.tension_impact.value if result.tension_impact else None
+                }
+                for result in validation_summary.validation_results
+            ],
+            "guidance": {
+                "next_steps": _generate_validation_guidance(validation_summary),
+                "structural_tension_advice": _generate_tension_advice(validation_summary)
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Error validating thought content: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+def _generate_validation_guidance(validation_summary) -> str:
+    """Generate next steps guidance based on validation results."""
+    if validation_summary.structural_tension_established:
+        if validation_summary.tension_strength.value == 'advancing':
+            return "Excellent! Your structural tension is strong and advancing. Continue with this momentum."
+        else:
+            return "Good structural tension foundation. Consider clarifying your Natural Progression to strengthen advancement."
+    elif validation_summary.has_desired_outcome and not validation_summary.has_current_reality:
+        return "You have a desired outcome. Consider stating your current reality to establish structural tension."
+    elif validation_summary.has_current_reality and not validation_summary.has_desired_outcome:
+        return "You've described current reality. Consider clarifying what you want to create to establish structural tension."
+    else:
+        return "Consider establishing structural tension by stating both your desired outcome and current reality."
+
+
+def _generate_tension_advice(validation_summary) -> str:
+    """Generate structural tension specific advice."""
+    if validation_summary.creative_orientation_score < 0.3:
+        return "Consider shifting from problem-solving language to creative orientation - focus on what you want to create."
+    elif validation_summary.oscillating_patterns_count > 0:
+        return "Oscillating patterns detected. Strengthen structural tension to create consistent advancing movement."
+    elif validation_summary.tension_strength.value in ['moderate', 'strong', 'advancing']:
+        return "Your structural tension is supporting creative advancement. Trust this natural pull toward your desired outcome."
+    else:
+        return "Establish clearer structural tension between where you are and where you want to be."
 
 
 def main():
