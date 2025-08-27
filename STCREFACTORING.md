@@ -2,7 +2,7 @@
 
 ## 1. Current State of `generate_summary`
 
-The current `generate_summary` tool provides an overview of the thinking process primarily focused on the progression through predefined problem-solving stages.
+The current `generate_summary` tool provides an overview of the thinking process primarily focused on the progression through predefined problem-solving-orientation stages. It does not support at all the creative-orientation.
 
 **Current Functionality:**
 - Counts total thoughts.
@@ -36,7 +36,7 @@ The current `generate_summary` tool provides an overview of the thinking process
 
 ## 2. Problem with Current Orientation
 
-The current `generate_summary` output, while useful for tracking linear problem-solving, is misaligned with the core principles of the "Creative Orientation Engine." Its focus on "Problem Definition" and "Conclusion" reinforces a reactive, problem-elimination mindset rather than a proactive, outcome-creation one.
+The current `generate_summary` output, while useful for tracking linear problem-solving, is misaligned with the core principles of the "Creative Orientation Engine." Its focus on "Problem Definition" and "Conclusion" reinforces a reactive, problem-elimination mindset rather than an outcome-driven orientation with end-user's goal driven focus.
 
 **Key Misalignments:**
 - **Reactive Bias**: The stage names themselves (e.g., "Problem Definition") inherently frame the process around problems, perpetuating the very bias we aim to overcome.
@@ -60,7 +60,8 @@ The `ThoughtStage` enum and its usage throughout the system (including the summa
 -   **Action Step Generation**: Thoughts detailing concrete steps to resolve structural tension and move towards the desired outcome.
 -   **Advancement/Progress Tracking**: Thoughts reflecting the execution of action steps and the resulting shift in current reality.
 -   **Bias Detection/Mitigation**: Thoughts where reactive biases are identified, acknowledged, and consciously reoriented towards creative advancement.
--   **Pattern Recognition**: Insights into whether the thinking is generating "advancing patterns" or "oscillating patterns."
+-   **Pattern Recognition**: Insights into whether the thinking is generating "advancing patterns" or "oscillating patterns". It would self-correct.
+-   **Extra-wording cleanup**: It would recognize the useless adding on of words that dont add any values to the end-user when communicating (making it too great kind of patterns.)
 
 ### b. Focus on Structural Tension
 

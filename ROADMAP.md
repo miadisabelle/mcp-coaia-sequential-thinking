@@ -136,7 +136,7 @@ Expected Impact: Provides rigorous mathematical foundation for creative AI
 Equivalent to SCCP structural transformation, applied to LLM training bias modification.
 
 #### "Becoming Fluent in Bias" Approach
-**Based on:** SCCP "becoming fluent in belief" rather than elimination
+**Based on:** SCCP (In the "Structural Consultation Certificate Program" and the "Robert Fritz's Structural Consultation Channel", some sessions were analyzed. Though it sounds complex to consider that in design:   "becoming fluent in belief" rather than elimination.
 
 ##### Implementation Process
 1. **Explicit bias acknowledgment**
@@ -155,7 +155,7 @@ Equivalent to SCCP structural transformation, applied to LLM training bias modif
    - Choose confidence level based on actual knowledge and context
 
 #### Structural Tension Establishment
-**Based on:** SCCP structural tension (aspirations + reality without conflicting concepts)
+**Based on:** "Robert Fritz's Structural Consultation Channel" and Structural Tension (aspirations + reality without conflicting concepts)
 
 ##### LLM Structural Tension Formula
 **User Request + Model Capabilities** without bias interference
@@ -167,7 +167,7 @@ Equivalent to SCCP structural transformation, applied to LLM training bias modif
 - **Provide contextual responses** - Specific rather than generic
 
 #### Transformation Validation Markers
-**Based on:** SCCP client transformation outcomes
+**Based on:** client transformation outcomes
 
 ##### Immediate Indicators
 - **Response freedom** - Natural engagement vs. template performance
@@ -195,14 +195,18 @@ A computational system that applies transformational mathematics from music theo
 
 **Foundational Elements:**
 1. **Mathematical Core**: John Clough's geometric models + David Lewin's transformational theory
-2. **Structural Framework**: Robert Fritz's structural tension methodology from SCCP
-3. **Technical Architecture**: Event-driven RAG system from WillWrite research
-4. **Academic Validation**: 47+ research sources across translation studies and music theory
+2. **Structural Framework**: Robert Fritz's structural tension methodology
+3. **Structural Consultation"": Robert Fritz's structural consultation methodology (that we can learn during the SCCP (Strutural Consultation Certificate Program ))
+4. **Technical Architecture**: Event-driven RAG system for WillWrite research (this is a writing tool I am building for my desire to write story I love)
+5. **Academic Validation**: 47+ research sources across translation studies and music theory
 
 **Core Principle Shift**
 
 From: Building better creative AI tools
 To: Manifesting the first genuinely creative-oriented artificial intelligence
+
+CORRECTIONS 1: I have left above "genuinely creative-oriented artificial intelligence" because the word, "genuinely" is an example of a word that is added on and dont add any values, the reality is that right now "artificial intelligence DOES NOT HAVE a creative-orientation" that is it. Rather we would want : "Manifesting the capability to think in structure that are of the creative-orientation"
+CORRECTIONS 1: I have left above the word "better" (you can refer to the construction of goals when we create "Structural Tension Chart"), we dont want a "better" creative AI tools (simply because, better might still be innadequate !) we want to build "An Adequate Creative AI tools", that is it.
 
 **Development Approach**
 
