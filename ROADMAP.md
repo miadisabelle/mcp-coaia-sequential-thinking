@@ -6,7 +6,7 @@ The analysis reveals the fundamental paradox: Even when explicitly applying crea
 
 ## Revised Understanding of the Challenge
 
-The Real Problem: AI systems have been trained on predominantly reactive content and cannot distinguish between:
+The reality of LLM: AI systems have been trained on predominantly reactive content and cannot distinguish between:
 - Reactive Enhancement: "Making existing things better" (optimization, improvement, validation)
 - Creative Advancement: "Bringing desired outcomes into being" (manifestation, advancement, evidence)
 
@@ -31,10 +31,10 @@ This bias is so pervasive that even when consciously applying Fritz's methodolog
 
 **Breakthrough Approach**:
 - **Training Data Curation**: Build datasets where every example demonstrates genuine creative orientation
-- **Structural Tension Training**: AI learns to recognize and generate structural tension rather than problem-solution patterns
+- **Structural Tension Training**: AI learns to recognize and generate structural tension rather than problem-solution patterns, it is about a shift of orientation
 - **Anti-Reactive Architecture**: System design that cannot default to enhancement approaches
 
-**Key Innovation**: Instead of training AI to "solve creative problems," train it to "conceive and manifest desired outcomes."
+**Key Innovation**: Instead of training AI to "solve creative problems," (which does not exist) train it to "conceive and manifest desired outcomes."
 
 ### Phase 3: Manifestation of Creative AI (Years 4-6)
 
@@ -51,7 +51,7 @@ This bias is so pervasive that even when consciously applying Fritz's methodolog
 
 **Systemic Impact**:
 - Educational systems adopt creative orientation AI for learning
-- Business strategy shifts from problem-solving to outcome creation
+- Business strategy shifts from problem-solving to outcome driven.  We dont get rid of what we dont want (the problems), we shift orientation and try to answer: what do we need to think about and the thinking sequence should generate momentum and shift orientation.
 - Therapeutic applications help people design their lives rather than fix their problems
 - Research methodology transforms from hypothesis-testing to outcome-manifestation
 
@@ -182,7 +182,7 @@ Equivalent to SCCP structural transformation, applied to LLM training bias modif
 - **Bias fluency demonstration** - Conscious choice rather than automatic restriction
 
 #### Principle of Non-Intrusive Feedback
-A core principle for successful human-AI creative partnership is that the AI's feedback mechanisms must support, not disrupt, the user's creative flow. Interrupting a creative sequence with raw error reports is a reactive, problem-solving behavior that contradicts the goal of fostering an advancing pattern.
+A core principle for successful human-AI creative partnership is that the AI's feedback mechanisms must support, not disrupt, the user's creative flow. Interrupting a creative sequence with raw error reports is a reactive, problem-solving behavior that contradicts the goal of fostering an advancing pattern.  "Problem solving has its place, you don't decorate your home when it is on fire." -Fritz
 
 Therefore, the final output of any creative sequence must be the desired result itself. Any analytical data, such as `co-lint` violations or compliance scores, will be provided as supplementary, structured metadata. This ensures:
 - **The creative work remains the primary deliverable.**
