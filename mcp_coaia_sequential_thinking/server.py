@@ -23,6 +23,7 @@ except ImportError:
     from mcp_coaia_sequential_thinking.logging_conf import configure_logging
     from mcp_coaia_sequential_thinking.integration_bridge import integration_bridge
     from mcp_coaia_sequential_thinking.co_lint_integration import validate_thought, ValidationSeverity
+    from mcp_coaia_sequential_thinking.creative_orientation_engine import analyze_creative_orientation
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
@@ -153,11 +154,39 @@ async def generate_summary() -> dict:
         # Generate summary with SCCP analysis
         summary_result = ThoughtAnalyzer.generate_summary(all_thoughts)
         
+        # Generate advanced creative orientation analysis
+        creative_profile = analyze_creative_orientation(all_thoughts)
+        
         # Check if session is ready for chart creation
         chart_readiness = integration_bridge.analyze_chart_readiness(all_thoughts)
         
-        # Add chart readiness info to summary
+        # Add chart readiness and creative orientation info to summary
         summary = summary_result.get('summary', {})
+        
+        # Add advanced creative orientation analysis
+        summary['creativeOrientation'] = {
+            "overallPattern": creative_profile.overall_pattern.value,
+            "tensionStrength": creative_profile.tension_strength.value,
+            "languageConsistencyScore": creative_profile.language_consistency_score,
+            "energySustainabilityIndex": creative_profile.energy_sustainability_index,
+            "creativeMetrics": {
+                metric.value: score for metric, score in creative_profile.creative_metrics.items()
+            },
+            "breakthroughIndicators": creative_profile.breakthrough_indicators,
+            "structuralRecommendations": creative_profile.structural_recommendations,
+            "patternEvolution": [
+                {
+                    "signature": pattern.signature.value,
+                    "confidence": pattern.confidence,
+                    "energyLevel": pattern.energy_level,
+                    "directionVector": pattern.direction_vector,
+                    "sustainabilityScore": pattern.sustainability_score,
+                    "contributingFactors": pattern.contributing_factors
+                }
+                for pattern in creative_profile.pattern_evolution
+            ]
+        }
+        
         summary['chartIntegration'] = {
             "readyForChartCreation": chart_readiness.get('readyForChartCreation', False),
             "structuralTensionEstablished": chart_readiness.get('structuralTensionEstablished', False),

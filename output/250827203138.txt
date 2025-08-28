@@ -1,0 +1,22 @@
+In the context of the "Introduction to Structural Thinking," which posits that **the underlying structure of anything will determine its behavior**, one of the **two patterns of behavior that structure produces is oscillation**. This pattern is crucial for understanding why many change efforts fail and why certain organizational behaviors are persistently repeated.
+
+Here's what the sources say about oscillation:
+
+*   **Definition of Oscillation**: An oscillating pattern is characterized by a cycle where **"you set out for something, maybe you have it for a period of time and there's a reversal that will happen and at the end of the entire pattern you no longer have what you set out for and what you may have had at one point"**. Essentially, efforts to achieve a goal are eventually undone, leading back to a state where the desired outcome is lost.
+
+*   **Examples in Industry**: The sources provide several concrete examples of oscillating patterns prevalent in industry over the last 20 to 30 years:
+    *   Companies **"build up capacity and then downsize and build up capacity and downsize"**.
+    *   Organizations **"centralize decisions and decentralize and centralize and decentralize"**.
+    *   Businesses **"go on acquisition sprees and buy other companies and then divest and acquire and then divest"**.
+    *   There's a recurring shift in focus between **"the market and then focus on the product and then focus on the market and then focus on the product"**.
+
+*   **Difficulty in Perception**: Despite these patterns being quite evident **"if you back up"** and gain sufficient perspective, they are often hard to recognize. The sources state that **"most people are not backed up far enough and they have no perspective"**, making it difficult to **"see the structure you're in"** without getting "out of it".
+
+*   **Suitability of Oscillation**: While oscillation can be a **"perfect structure"** for certain applications (e.g., a rocking chair, which is designed for back-and-forth movement), it is considered a **"terrible structure for personal life or for a company"**. It implies a lack of sustained progress or achievement towards a desired state.
+
+*   **Explaining Rejected Change Efforts and Consultant's Dilemma**: The concept of oscillation directly explains why many change initiatives and the efforts of consultants often do not lead to lasting results.
+    *   Even **"very good" change efforts**, such as the quality movement inspired by Deming, can be **"rejected by the organization the same way the body rejects an implanted organ"**. This happens **"if the underlying structure is not conducive to change"**, meaning the quality of the change effort itself becomes irrelevant if the foundational dynamics are not addressed.
+    *   Consultants frequently experience a situation where, after doing their **"best work"** and achieving initial success, they return later to find **"it's as if it never happened"**. This is not a personal failing, but rather because **"it wasn't an adequate change of underlying structure that would have created sustainability in those changes"**.
+    *   The sources emphasize that this phenomenon is **"not personal," but "structural,"** akin to "nature" or "physics," because **"structure seeks equilibrium"**. An oscillating structure returns to its previous state because the underlying tension driving the behavior was not fundamentally altered to create a new, stable equilibrium.
+
+In summary, oscillation is presented as a predictable behavioral pattern arising from an underlying structure that, while sometimes appropriate, is generally detrimental for organizations and individuals seeking sustained advancement. It highlights the critical need to address the *underlying structure* rather than just implementing surface-level changes, which are inevitably rejected by the system's inherent drive for its existing equilibrium.

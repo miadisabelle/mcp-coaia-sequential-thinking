@@ -1,0 +1,43 @@
+In the larger context of the "Steps in Structural Thinking Process," which is fundamentally based on the principle that **the underlying structure of anything will determine its behavior**, **Step 3: Ask Questions** is a critical component that follows "Step 1: Start with Nothing" and "Step 2: Picture What Is Said." This step ensures a rigorous, internally focused inquiry to understand the true structural dynamics, rather than imposing external theories or problem-solving approaches.
+
+Here's a detailed discussion of "Step 3: Ask Questions":
+
+*   **Purpose and Foundation**:
+    *   Once a person is "picturing what's said" (Step 2), they are in a position to identify gaps or areas needing further exploration. Step 3 introduces **four specific types of questions** designed to expand and refine this internal "picture".
+    *   The core principle of this step is to **keep the inquiry "internally focused" on the information the client has provided**. This aligns with "Step 1: Start with Nothing," ensuring that questions are motivated by what *is* present in the client's narrative, rather than external assumptions or a "fishing expedition".
+    *   It is described as a **"real discipline"** that helps develop "mental muscles".
+
+*   **The Four Types of Questions**:
+
+    1.  **Information Question**:
+        *   **Purpose**: To **"expand the picture"**.
+        *   **Description**: These questions seek to gather more details that flesh out the visual representation of what the client has said.
+        *   **Example**: If a client says, "I have a job," an information question would be, "**What kind of job?**" to elaborate on the initial statement.
+
+    2.  **Clarification Question**:
+        *   **Purpose**: To define a **"word or phrase you don't know"** or to understand its specific meaning in the client's context.
+        *   **Description**: This is about seeking a definition or a specific understanding of a term that might have general meaning but needs precise interpretation within the current context. The description of the word or phrase **"doesn't change the picture"** but refines its understanding.
+        *   **Example**: If someone talks about "quality," and the meaning isn't specific, one might ask, "**What do you mean by quality?**". Another example given is asking, "What is a hemiola?" if the term is unfamiliar.
+
+    3.  **Implication Question**:
+        *   **Purpose**: To **identify what is "implied"** by a client's statement and then to **check if the client agrees with that implication**.
+        *   **Description**: People often imply things rather than stating them directly. The consultant's role is to recognize these implied meanings and then formulate a question to make them explicit and verify them with the client.
+        *   **Process**: It involves two parts:
+            *   **Identify the implication**: Understand what is being suggested.
+            *   **Ask a question to see if the client agrees**: Turn the implied statement into a direct question for confirmation.
+        *   **Example**: If a client says, "We got to market too late," the implication is that if they had gotten there sooner, performance would have been different. The question would be, "**If you got to the market sooner, would the performance have been better?**" The expectation is a "yes" to this question, but asking allows for verification.
+
+    4.  **Discrepancy Question**:
+        *   **Purpose**: To **address contradictions or inconsistencies** within the client's narrative.
+        *   **Description**: These arise when the client says one thing that contradicts another, either close in time and space or much later in the session. By "picturing the whole thing," these discrepancies become evident.
+        *   **Process**: It involves:
+            *   **Articulate and understand the contradiction**: Identify the conflicting statements.
+            *   **Ask questions about it**: Seek clarification or an explanation for the apparent contradiction.
+        *   **Example**: If a client states, "This past year was a great year, sales were down," a discrepancy question would seek to understand how both statements can be true. Possible explanations could be that one statement is factually incorrect, or there's missing information that reconciles the apparent contradiction (e.g., getting a patent made it a great year despite lower sales).
+        *   **Significance**: Sorting out discrepancies is often where **"you start to see a change of underlying structure"**. It can reveal that "some things we think are true are not true".
+
+*   **Avoiding External Influence**:
+    *   It is crucial **not to "go on a fishing expedition" or "import questions from somewhere else"**. All questions must originate from the client's provided information, reinforcing the "Start with Nothing" principle and ensuring the focus remains on the client's reality, not external models or theories.
+    *   If the client runs out of questions, the consultant should **"just go over what you do have"** in the picture, as this might naturally lead to new, internally motivated questions.
+
+By diligently following these question types, Step 3 helps to build a comprehensive and accurate structural picture of the client's situation, revealing the underlying dynamics that cause their observed behaviors without introducing external biases or preconceptions.

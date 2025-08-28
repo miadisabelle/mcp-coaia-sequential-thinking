@@ -1,0 +1,24 @@
+The "Introduction to Structural Thinking" emphasizes that **the underlying structure of anything will determine its behavior**, a concept that serves as its **core principle**. Building on this core principle, the sources explain that structure produces **two distinct patterns of behavior**. Understanding these patterns is crucial for distinguishing between effective and ineffective approaches to change.
+
+Here are the two patterns of behavior:
+
+1.  **Oscillation**:
+    *   **Description**: In this pattern, an individual or organization sets out to achieve something, may have it for a period, but then experiences a **reversal**, ultimately ending up without what was initially sought.
+    *   **Examples in Industry**: The sources point to common oscillating patterns observed in industry over the last 20-30 years, such as:
+        *   Building up capacity and then downsizing, only to build it up again.
+        *   Centralizing decisions and then decentralizing them, and then centralizing again.
+        *   Engaging in acquisition sprees, buying other companies, followed by divestment, and then more acquisitions.
+        *   Focusing on the market, then the product, then the market, and so on.
+    *   **Perception Challenge**: These oscillating patterns are often hard to miss if one has enough perspective. However, most people are not "backed up far enough" and lack the perspective to see the structure they are in, making it difficult to recognize the pattern.
+    *   **Suitability**: While oscillation can be a perfect structure in specific contexts, such as a rocking chair, it is deemed a **"terrible structure for personal life or for a company"**.
+    *   **Consultant's Dilemma**: This pattern explains why many consultants, despite doing their "best work" and being celebrated for initial success, often find that two years later, "**it's as if it never happened**". This is because their efforts did not involve an "**adequate change of underlying structure that would have created sustainability**". The sources stress that this rejection is not personal but "structural," likened to "nature" or "physics," as "**structure seeks equilibrium**".
+
+2.  **Resolving Advancing Structure**:
+    *   **Description**: This pattern represents an **outcome-oriented approach**, contrasting sharply with problem-driven thinking. Instead of solely focusing on solving problems, which "is not creating", an organization or individual with a resolving advancing structure:
+        *   Defines **what outcomes it wants**.
+        *   Assesses **where it currently stands** in relation to those desired outcomes.
+        *   Determines the **best way to move from the current state to the desired state**.
+    *   **Key Requirements**: This process, while sounding simple, requires great clarity on both the desired outcome and the current reality. It also involves an iterative learning process to adapt as current reality changes, ensuring the path chosen remains practical and effective.
+    *   **Dynamic of Tension and Equilibrium**: This pattern is deeply connected to the concept of **tension**, which is defined not as stress or anxiety, but as a "**structure of a contrast between a desired state and an actual state**". This difference creates a state of **non-equilibrium**, which then naturally seeks **equilibrium**. In a proper creative process, the current state is brought into alignment with the desired state, achieving equality or equilibrium. This dynamic is the causal force that drives things to happen.
+
+In essence, the sources present oscillation as a predictable, often undesirable, consequence of an existing underlying structure, while a resolving advancing structure is the desired outcome when structural thinking is applied to intentionally create movement towards a defined outcome. A fundamental shift from one to the other is achieved through a **change of underlying structure**, which "will lead to a change of behavior almost invariably".
