@@ -1,19 +1,19 @@
 import unittest
 from datetime import datetime
 
-from mcp_sequential_thinking.models import ThoughtStage, ThoughtData
+from mcp_coaia_sequential_thinking.models import ThoughtStage, ThoughtData
 
 
 class TestThoughtStage(unittest.TestCase):
     """Test cases for the ThoughtStage enum."""
 
     def test_from_string_valid(self):
-        """Test converting valid strings to ThoughtStage enum values."""
-        self.assertEqual(ThoughtStage.from_string("Problem Definition"), ThoughtStage.PROBLEM_DEFINITION)
-        self.assertEqual(ThoughtStage.from_string("Research"), ThoughtStage.RESEARCH)
-        self.assertEqual(ThoughtStage.from_string("Analysis"), ThoughtStage.ANALYSIS)
-        self.assertEqual(ThoughtStage.from_string("Synthesis"), ThoughtStage.SYNTHESIS)
-        self.assertEqual(ThoughtStage.from_string("Conclusion"), ThoughtStage.CONCLUSION)
+        """Test converting valid strings to SCCP-based ThoughtStage enum values."""
+        self.assertEqual(ThoughtStage.from_string("Desired Outcome"), ThoughtStage.DESIRED_OUTCOME)
+        self.assertEqual(ThoughtStage.from_string("Current Reality"), ThoughtStage.CURRENT_REALITY)
+        self.assertEqual(ThoughtStage.from_string("Action Steps"), ThoughtStage.ACTION_STEPS)
+        self.assertEqual(ThoughtStage.from_string("Pattern Recognition"), ThoughtStage.PATTERN_RECOGNITION)
+        self.assertEqual(ThoughtStage.from_string("Concept Detection"), ThoughtStage.CONCEPT_DETECTION)
 
     def test_from_string_invalid(self):
         """Test that invalid strings raise ValueError."""

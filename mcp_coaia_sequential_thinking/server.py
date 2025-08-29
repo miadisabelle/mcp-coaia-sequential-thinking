@@ -3,7 +3,7 @@ import os
 import sys
 from typing import List, Optional
 
-from mcp.server.fastmcp import FastMCP, Context
+from mcp.server.fastmcp import FastMCP
 
 # Use absolute imports when running as a script
 try:
@@ -15,6 +15,7 @@ try:
     from .integration_bridge import integration_bridge
     from .co_lint_integration import validate_thought, ValidationSeverity
     from .creative_orientation_engine import analyze_creative_orientation
+    from .tension_visualization import create_tension_visualization
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -24,6 +25,7 @@ except ImportError:
     from mcp_coaia_sequential_thinking.integration_bridge import integration_bridge
     from mcp_coaia_sequential_thinking.co_lint_integration import validate_thought, ValidationSeverity
     from mcp_coaia_sequential_thinking.creative_orientation_engine import analyze_creative_orientation
+    from mcp_coaia_sequential_thinking.tension_visualization import create_tension_visualization
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
@@ -38,8 +40,7 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
                     next_thought_needed: bool, stage: str,
                     tags: List[str] = [],
                     axioms_used: List[str] = [],
-                    assumptions_challenged: List[str] = [],
-                    ctx: Optional[Context] = None) -> dict:
+                    assumptions_challenged: List[str] = []) -> dict:
     """Add a sequential thought with its metadata.
 
     Args:
@@ -51,7 +52,6 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
         tags: Optional keywords or categories for the thought
         axioms_used: Optional list of principles or axioms used in this thought
         assumptions_challenged: Optional list of assumptions challenged by this thought
-        ctx: Optional MCP context object
 
     Returns:
         dict: Analysis of the processed thought
@@ -59,10 +59,6 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
     try:
         # Log the request
         logger.info(f"Processing thought #{thought_number}/{total_thoughts} in stage '{stage}'")
-
-        # Report progress if context is available
-        if ctx:
-            ctx.report_progress(thought_number - 1, total_thoughts)
 
         # Convert stage string to enum
         thought_stage = ThoughtStage.from_string(stage)
@@ -186,6 +182,34 @@ async def generate_summary() -> dict:
                 for pattern in creative_profile.pattern_evolution
             ]
         }
+        
+        # Generate mathematical tension visualization
+        try:
+            tension_visualization = create_tension_visualization(creative_profile, all_thoughts)
+            summary['tensionVisualization'] = {
+                "mathematical_models": [
+                    {
+                        "model_type": model.model_type.value,
+                        "tension_vectors_count": len(model.tension_vectors),
+                        "critical_points_count": len(model.critical_points),
+                        "has_trajectory": bool(model.advancement_trajectory),
+                        "field_equations_available": bool(model.field_equations)
+                    }
+                    for model in tension_visualization.get('models', [])
+                ],
+                "visualization_metrics": {
+                    "tension_strength": tension_visualization.get('metrics', {}).tension_strength if tension_visualization.get('metrics') else 0.0,
+                    "advancement_rate": tension_visualization.get('metrics', {}).advancement_rate if tension_visualization.get('metrics') else 0.0,
+                    "stability_index": tension_visualization.get('metrics', {}).stability_index if tension_visualization.get('metrics') else 0.0,
+                    "convergence_probability": tension_visualization.get('metrics', {}).convergence_probability if tension_visualization.get('metrics') else 0.0
+                },
+                "telescoping_data": tension_visualization.get('telescoping_data', {}),
+                "mathematical_summary": tension_visualization.get('mathematical_summary', {})
+            }
+            logger.info("Generated mathematical tension visualization")
+        except Exception as viz_error:
+            logger.error(f"Error creating tension visualization: {viz_error}")
+            summary['tensionVisualization'] = {"error": str(viz_error)}
         
         summary['chartIntegration'] = {
             "readyForChartCreation": chart_readiness.get('readyForChartCreation', False),

@@ -42,24 +42,6 @@ async def test_server(server_path):
     process.stdin.write(init_json)
     process.stdin.flush()
     
-    # Read the response
-    response_line = process.stdout.readline()
-    print(f"Raw response: {repr(response_line)}")
-    
-    # Check for invalid characters
-    if response_line.strip():
-        try:
-            parsed = json.loads(response_line)
-            print("Successfully parsed JSON response:")
-            print(json.dumps(parsed, indent=2))
-        except json.JSONDecodeError as e:
-            print(f"JSON parse error: {e}")
-            print("First 10 characters:", repr(response_line[:10]))
-            
-            # Examine the response in more detail
-            for i, char in enumerate(response_line[:20]):
-                print(f"Character {i}: {repr(char)} (ASCII: {ord(char)})")
-    
     # Wait briefly and terminate the process
     await asyncio.sleep(1)
     process.terminate()
