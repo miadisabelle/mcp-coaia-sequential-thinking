@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mcp-coaia-sequential-thinking = "mcp_coaia_sequential_thinking.server:main"
+mcp-coaia-sequential-thinking = "mcp_coaia_sequential_thinking.wrapper:main"
 
 [project.optional-dependencies]
 dev = [
