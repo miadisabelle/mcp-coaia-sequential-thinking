@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from mcp.server.fastmcp import FastMCP
 
@@ -16,6 +16,7 @@ try:
     from .co_lint_integration import validate_thought, ValidationSeverity
     from .creative_orientation_engine import analyze_creative_orientation
     from .tension_visualization import create_tension_visualization
+    from .constitutional_core import constitutional_core, ConstitutionalPrinciple
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -26,6 +27,7 @@ except ImportError:
     from mcp_coaia_sequential_thinking.co_lint_integration import validate_thought, ValidationSeverity
     from mcp_coaia_sequential_thinking.creative_orientation_engine import analyze_creative_orientation
     from mcp_coaia_sequential_thinking.tension_visualization import create_tension_visualization
+    from mcp_coaia_sequential_thinking.constitutional_core import constitutional_core, ConstitutionalPrinciple
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
@@ -83,6 +85,14 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
         logger.info(f"Validation completed: tension_strength={validation_summary.tension_strength.value}, "
                    f"creative_orientation_score={validation_summary.creative_orientation_score:.2f}")
         
+        # Run constitutional validation
+        constitutional_validation = constitutional_core.validate_content(thought, {
+            "stage": stage,
+            "thought_number": thought_number,
+            "total_thoughts": total_thoughts
+        })
+        logger.info(f"Constitutional validation completed: compliance_score={constitutional_validation['constitutional_compliance_score']:.2f}")
+        
         storage.add_thought(thought_data)
 
         # Get all thoughts for analysis
@@ -112,6 +122,14 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
                 }
                 for result in validation_summary.validation_results
             ]
+        }
+        
+        # Add constitutional validation results
+        analysis['constitutional_validation'] = {
+            'overall_valid': constitutional_validation['overall_valid'],
+            'compliance_score': constitutional_validation['constitutional_compliance_score'],
+            'violated_principles': constitutional_validation['violated_principles'],
+            'recommendations': _generate_constitutional_recommendations(constitutional_validation)
         }
 
         # Log success
@@ -479,6 +497,279 @@ def _generate_tension_advice(validation_summary) -> str:
         return "Your structural tension is supporting creative advancement. Trust this natural pull toward your desired outcome."
     else:
         return "Establish clearer structural tension between where you are and where you want to be."
+
+
+@mcp.tool()
+def validate_constitutional_compliance(content: str, context: Optional[Dict[str, Any]] = None) -> dict:
+    """Validate content against constitutional principles of the generative agentic system.
+    
+    Args:
+        content: The content to validate against constitutional principles
+        context: Optional context information for validation
+        
+    Returns:
+        dict: Comprehensive constitutional compliance analysis
+    """
+    try:
+        logger.info("Validating constitutional compliance")
+        
+        if context is None:
+            context = {}
+            
+        validation_result = constitutional_core.validate_content(content, context)
+        
+        return {
+            "constitutional_compliance": {
+                "overall_valid": validation_result["overall_valid"],
+                "compliance_score": validation_result["constitutional_compliance_score"],
+                "violated_principles": validation_result["violated_principles"],
+                "validation_details": validation_result["validation_details"]
+            },
+            "recommendations": _generate_constitutional_recommendations(validation_result),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error validating constitutional compliance: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def generate_active_pause_drafts(context: str, num_drafts: int = 3, 
+                               selection_criteria: Optional[Dict[str, float]] = None) -> dict:
+    """Generate multiple response drafts with different risk/reliability profiles using active pause mechanism.
+    
+    Args:
+        context: The context for which to generate drafts
+        num_drafts: Number of drafts to generate (default 3)
+        selection_criteria: Criteria weights for draft selection
+        
+    Returns:
+        dict: Multiple drafts with constitutional assessment and recommended selection
+    """
+    try:
+        logger.info(f"Generating {num_drafts} active pause drafts")
+        
+        if selection_criteria is None:
+            selection_criteria = {
+                'novelty_weight': 0.3,
+                'reliability_weight': 0.4,
+                'constitutional_weight': 0.3
+            }
+        
+        drafts = constitutional_core.generate_active_pause_drafts(context, num_drafts)
+        best_draft = constitutional_core.select_best_draft(drafts, selection_criteria)
+        
+        return {
+            "active_pause_analysis": {
+                "drafts_generated": len(drafts),
+                "selection_criteria": selection_criteria,
+                "recommended_draft": best_draft["draft_id"],
+                "recommendation_score": best_draft["selection_criteria"]
+            },
+            "drafts": drafts,
+            "best_draft": best_draft,
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating active pause drafts: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def make_constitutional_decision(decision_context: str, options: List[str], 
+                               context: Optional[Dict[str, Any]] = None) -> dict:
+    """Make a decision based on constitutional principles with full audit trail.
+    
+    Args:
+        decision_context: Description of the decision being made
+        options: List of possible decision options
+        context: Optional context for decision making
+        
+    Returns:
+        dict: Decision outcome with constitutional reasoning and audit trail
+    """
+    try:
+        logger.info(f"Making constitutional decision: {decision_context}")
+        
+        if context is None:
+            context = {}
+            
+        decision = constitutional_core.make_constitutional_decision(decision_context, options, context)
+        
+        return {
+            "constitutional_decision": {
+                "decision_id": decision.decision_id,
+                "timestamp": decision.timestamp.isoformat(),
+                "context": decision.decision_context,
+                "chosen_option": decision.decision_outcome,
+                "alternatives_considered": decision.alternative_considered,
+                "applicable_principles": [p.value for p in decision.applicable_principles],
+                "principle_applications": {p.value: app for p, app in decision.principle_application.items()},
+                "audit_trail_available": True
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error making constitutional decision: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_constitutional_audit_trail(decision_id: str) -> dict:
+    """Retrieve the complete audit trail for a constitutional decision.
+    
+    Args:
+        decision_id: The ID of the decision to audit
+        
+    Returns:
+        dict: Complete audit trail with principle applications and reasoning
+    """
+    try:
+        logger.info(f"Retrieving audit trail for decision: {decision_id}")
+        
+        decision = constitutional_core.get_decision_audit_trail(decision_id)
+        
+        if decision is None:
+            return {
+                "error": f"Decision {decision_id} not found",
+                "status": "not_found"
+            }
+        
+        return {
+            "audit_trail": {
+                "decision_id": decision.decision_id,
+                "timestamp": decision.timestamp.isoformat(),
+                "decision_context": decision.decision_context,
+                "applicable_principles": [p.value for p in decision.applicable_principles],
+                "principle_applications": {p.value: app for p, app in decision.principle_application.items()},
+                "decision_outcome": decision.decision_outcome,
+                "alternatives_considered": decision.alternative_considered,
+                "principle_conflicts": decision.principle_conflicts,
+                "resolution_method": decision.resolution_method
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error retrieving audit trail: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def list_constitutional_principles() -> dict:
+    """List all constitutional principles governing the system.
+    
+    Returns:
+        dict: Complete list of constitutional principles with descriptions
+    """
+    try:
+        logger.info("Listing constitutional principles")
+        
+        principles = {}
+        for principle in ConstitutionalPrinciple:
+            principles[principle.name] = {
+                "value": principle.value,
+                "description": _get_principle_description(principle),
+                "category": _get_principle_category(principle),
+                "hierarchy_level": constitutional_core.principle_hierarchy.get(principle, 999)
+            }
+        
+        return {
+            "constitutional_principles": principles,
+            "total_principles": len(principles),
+            "categories": list(set(p["category"] for p in principles.values())),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error listing constitutional principles: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+def _generate_constitutional_recommendations(validation_result: Dict[str, Any]) -> List[str]:
+    """Generate recommendations based on constitutional validation results."""
+    recommendations = []
+    
+    if not validation_result["overall_valid"]:
+        violated = validation_result["violated_principles"]
+        
+        if "acknowledge_uncertainty_rather_than_invent_facts" in violated:
+            recommendations.append("Consider acknowledging uncertainty where facts are not clearly established")
+        
+        if "prioritize_creating_desired_outcomes_over_eliminating_problems" in violated:
+            recommendations.append("Reframe from problem-solving language to outcome-creation language")
+        
+        if "establish_clear_tension_between_current_reality_and_desired_outcome" in violated:
+            recommendations.append("Clarify both current reality and desired outcome to establish structural tension")
+        
+        if "begin_inquiry_without_preconceptions_or_hypotheses" in violated:
+            recommendations.append("Start from direct observation rather than assumptions or preconceptions")
+    
+    compliance_score = validation_result["constitutional_compliance_score"]
+    if compliance_score < 0.7:
+        recommendations.append("Consider reviewing constitutional principles to improve overall compliance")
+    elif compliance_score > 0.9:
+        recommendations.append("Excellent constitutional compliance - continue with this approach")
+    
+    return recommendations
+
+
+def _get_principle_description(principle: ConstitutionalPrinciple) -> str:
+    """Get human-readable description for a constitutional principle."""
+    descriptions = {
+        ConstitutionalPrinciple.NON_FABRICATION: "Acknowledge uncertainty rather than inventing facts when knowledge is insufficient",
+        ConstitutionalPrinciple.ERROR_AS_COMPASS: "Treat failures and errors as navigational cues for improvement rather than problems to hide",
+        ConstitutionalPrinciple.CREATIVE_PRIORITY: "Prioritize creating desired outcomes over eliminating unwanted conditions",
+        ConstitutionalPrinciple.STRUCTURAL_AWARENESS: "Recognize that underlying structure determines behavior patterns",
+        ConstitutionalPrinciple.TENSION_ESTABLISHMENT: "Establish clear structural tension between current reality and desired outcomes",
+        ConstitutionalPrinciple.START_WITH_NOTHING: "Begin inquiry without preconceptions, hypotheses, or imported assumptions",
+        ConstitutionalPrinciple.PICTURE_WHAT_IS_SAID: "Translate verbal information into visual representations for dimensional thinking",
+        ConstitutionalPrinciple.QUESTION_INTERNALLY: "Ask questions driven by provided information rather than external sources",
+        ConstitutionalPrinciple.MULTIPLE_PERSPECTIVES: "Generate and consider multiple viewpoints before making decisions",
+        ConstitutionalPrinciple.PRINCIPLE_OVER_EXPEDIENCE: "Constitutional principles override operational convenience",
+        ConstitutionalPrinciple.TRANSPARENCY_REQUIREMENT: "All decisions must be traceable to constitutional principles",
+        ConstitutionalPrinciple.ADAPTIVE_PROTOCOLS: "Operational methods can change but core principles remain immutable",
+        ConstitutionalPrinciple.CONFLICT_RESOLUTION: "Resolve conflicts through principle hierarchy rather than compromise"
+    }
+    return descriptions.get(principle, "Description not available")
+
+
+def _get_principle_category(principle: ConstitutionalPrinciple) -> str:
+    """Get the category for a constitutional principle."""
+    categories = {
+        ConstitutionalPrinciple.NON_FABRICATION: "Core Creative Orientation",
+        ConstitutionalPrinciple.ERROR_AS_COMPASS: "Core Creative Orientation",
+        ConstitutionalPrinciple.CREATIVE_PRIORITY: "Core Creative Orientation",
+        ConstitutionalPrinciple.STRUCTURAL_AWARENESS: "Core Creative Orientation",
+        ConstitutionalPrinciple.TENSION_ESTABLISHMENT: "Core Creative Orientation",
+        ConstitutionalPrinciple.START_WITH_NOTHING: "Structural Thinking",
+        ConstitutionalPrinciple.PICTURE_WHAT_IS_SAID: "Structural Thinking",
+        ConstitutionalPrinciple.QUESTION_INTERNALLY: "Structural Thinking",
+        ConstitutionalPrinciple.MULTIPLE_PERSPECTIVES: "Structural Thinking",
+        ConstitutionalPrinciple.PRINCIPLE_OVER_EXPEDIENCE: "Meta-Decision Making",
+        ConstitutionalPrinciple.TRANSPARENCY_REQUIREMENT: "Meta-Decision Making",
+        ConstitutionalPrinciple.ADAPTIVE_PROTOCOLS: "Meta-Decision Making",
+        ConstitutionalPrinciple.CONFLICT_RESOLUTION: "Meta-Decision Making"
+    }
+    return categories.get(principle, "Uncategorized")
 
 
 def main():
