@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from typing import List, Optional, Dict, Any
+from datetime import datetime
 
 from mcp.server.fastmcp import FastMCP
 
@@ -22,6 +23,9 @@ try:
         AgentRole, MessageType, MessagePriority
     )
     from .agent_coordination import task_coordinator, TaskType
+    from .resilient_connection import (
+        resilient_connection, NoveltySearchAgent, ExplorationMode, DiscoveryType
+    )
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -38,6 +42,9 @@ except ImportError:
         AgentRole, MessageType, MessagePriority
     )
     from mcp_coaia_sequential_thinking.agent_coordination import task_coordinator, TaskType
+    from mcp_coaia_sequential_thinking.resilient_connection import (
+        resilient_connection, NoveltySearchAgent, ExplorationMode, DiscoveryType
+    )
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
@@ -1120,6 +1127,537 @@ def _get_recent_activity() -> Dict[str, Any]:
         "recent_collaborations": sum(len(agent.collaboration_history) for agent in agent_registry.agents.values()),
         "recent_competitions": sum(len(agent.competition_history) for agent in agent_registry.agents.values())
     }
+
+
+@mcp.tool()
+def establish_system_goal(description: str, priority: float = 0.5, 
+                         target_completion_days: Optional[int] = None) -> dict:
+    """Establish a new goal in the resilient connection system.
+    
+    Args:
+        description: Clear description of the goal to be achieved
+        priority: Priority level from 0.0 (low) to 1.0 (high)
+        target_completion_days: Optional target completion in days from now
+        
+    Returns:
+        dict: Goal establishment result with constitutional validation
+    """
+    try:
+        logger.info(f"Establishing system goal: {description}")
+        
+        from datetime import datetime, timedelta
+        target_completion = None
+        if target_completion_days is not None:
+            target_completion = datetime.now() + timedelta(days=target_completion_days)
+        
+        goal_id = resilient_connection.add_goal(
+            description=description,
+            priority=priority,
+            target_completion=target_completion
+        )
+        
+        # Get the created goal for response
+        goal = resilient_connection.active_goals[goal_id]
+        
+        return {
+            "goal_establishment": {
+                "goal_id": goal_id,
+                "description": goal.description,
+                "priority": goal.priority,
+                "constitutional_alignment": goal.constitutional_alignment,
+                "target_completion": goal.target_completion.isoformat() if goal.target_completion else None,
+                "created_at": goal.created_at.isoformat()
+            },
+            "system_impact": {
+                "total_active_goals": len(resilient_connection.active_goals),
+                "connection_strength": resilient_connection.evaluate_resilient_connection_strength(),
+                "current_exploration_mode": resilient_connection.current_mode.value
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error establishing system goal: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def conduct_novelty_search(context: Dict[str, Any], current_solutions: List[str] = None,
+                          target_novelty: float = 0.7) -> dict:
+    """Conduct a novelty search to discover innovative solutions.
+    
+    Args:
+        context: Context for the novelty search
+        current_solutions: List of known solutions to differentiate from
+        target_novelty: Target novelty score (0.0 to 1.0)
+        
+    Returns:
+        dict: Novel solutions discovered with novelty scores
+    """
+    try:
+        logger.info("Conducting novelty search")
+        
+        if current_solutions is None:
+            current_solutions = []
+        
+        # Create or get novelty search agent
+        novelty_agents = [agent for agent in agent_registry.agents.values() 
+                         if hasattr(agent, 'capabilities') and 'novelty_search' in agent.capabilities]
+        
+        if not novelty_agents:
+            # Create a novelty search agent
+            novelty_agent = NoveltySearchAgent()
+            agent_registry.register_agent(novelty_agent)
+            logger.info(f"Created novelty search agent: {novelty_agent.agent_id}")
+        else:
+            novelty_agent = novelty_agents[0]
+        
+        # Submit novelty search request
+        search_request = {
+            "type": "novelty_search",
+            "context": context,
+            "current_solutions": current_solutions,
+            "target_novelty": target_novelty
+        }
+        
+        search_results = novelty_agent.process_request(search_request)
+        
+        # Record discoveries as emergent possibilities
+        discoveries = []
+        for solution in search_results.get("novel_solutions", []):
+            possibility_id = resilient_connection.discover_possibility(
+                discovery_type=DiscoveryType.NOVEL_APPROACH,
+                description=solution["solution"],
+                discovered_by=novelty_agent.agent_id,
+                potential_value=solution["novelty_score"],
+                confidence=solution["constitutional_compliance"],
+                exploration_context=context
+            )
+            discoveries.append(possibility_id)
+        
+        return {
+            "novelty_search": {
+                "agent_id": novelty_agent.agent_id,
+                "search_context": context,
+                "target_novelty": target_novelty,
+                "solutions_found": len(search_results.get("novel_solutions", [])),
+                "novel_solutions": search_results.get("novel_solutions", []),
+                "discoveries_registered": discoveries
+            },
+            "system_impact": {
+                "total_possibilities": len(resilient_connection.emergent_possibilities),
+                "exploration_effectiveness": resilient_connection._calculate_discovery_rate()
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error conducting novelty search: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def evaluate_resilient_connection() -> dict:
+    """Evaluate the current state of the resilient connection system.
+    
+    Returns:
+        dict: Comprehensive evaluation of connection strength and balance
+    """
+    try:
+        logger.info("Evaluating resilient connection")
+        
+        # Get system status
+        system_status = resilient_connection.get_system_status()
+        
+        # Perform balance adjustment
+        current_mode = resilient_connection.adjust_exploration_balance({
+            "evaluation_timestamp": datetime.now().isoformat(),
+            "evaluation_type": "manual_assessment"
+        })
+        
+        # Get balance recommendations
+        recommendations = resilient_connection.generate_exploration_recommendations()
+        
+        return {
+            "resilient_connection_evaluation": {
+                "connection_strength": system_status["resilient_connection"]["connection_strength"],
+                "current_mode": current_mode.value,
+                "balance_adjusted": True,
+                "system_health": _assess_resilient_connection_health(system_status)
+            },
+            "detailed_status": system_status,
+            "recommendations": recommendations,
+            "optimization_suggestions": _generate_optimization_suggestions(system_status),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error evaluating resilient connection: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def integrate_emergent_possibility(possibility_id: str, 
+                                 integration_strategy: str = "enhancement") -> dict:
+    """Integrate an emergent possibility with existing goals.
+    
+    Args:
+        possibility_id: ID of the possibility to integrate
+        integration_strategy: Strategy for integration (enhancement, new_goal)
+        
+    Returns:
+        dict: Integration result with constitutional validation
+    """
+    try:
+        logger.info(f"Integrating emergent possibility: {possibility_id}")
+        
+        integration_result = resilient_connection.integrate_emergent_possibility(
+            possibility_id=possibility_id,
+            integration_strategy=integration_strategy
+        )
+        
+        if "error" in integration_result:
+            return {
+                "integration_error": integration_result["error"],
+                "status": "failed"
+            }
+        
+        # Get updated system status
+        system_status = resilient_connection.get_system_status()
+        
+        return {
+            "possibility_integration": {
+                "possibility_id": possibility_id,
+                "integration_strategy": integration_strategy,
+                "integration_successful": integration_result["integration_successful"],
+                "integration_results": integration_result["integration_results"],
+                "constitutional_compliance": integration_result["constitutional_compliance"]
+            },
+            "system_impact": {
+                "total_goals": system_status["goals"]["total_active"],
+                "integration_success_rate": system_status["emergent_possibilities"]["highly_feasible"] / max(len(resilient_connection.emergent_possibilities), 1),
+                "connection_strength": system_status["resilient_connection"]["connection_strength"]
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error integrating emergent possibility: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def discover_emergent_opportunities(exploration_context: Dict[str, Any]) -> dict:
+    """Discover emergent opportunities in the given context.
+    
+    Args:
+        exploration_context: Context for opportunity discovery
+        
+    Returns:
+        dict: Discovered opportunities with potential value assessments
+    """
+    try:
+        logger.info("Discovering emergent opportunities")
+        
+        # Get or create novelty search agent
+        novelty_agents = [agent for agent in agent_registry.agents.values() 
+                         if hasattr(agent, 'capabilities') and 'emergent_opportunity_detection' in agent.capabilities]
+        
+        if not novelty_agents:
+            novelty_agent = NoveltySearchAgent()
+            agent_registry.register_agent(novelty_agent)
+        else:
+            novelty_agent = novelty_agents[0]
+        
+        # Request opportunity discovery
+        discovery_request = {
+            "type": "discover_opportunities",
+            "exploration_context": exploration_context
+        }
+        
+        discovery_results = novelty_agent.process_request(discovery_request)
+        
+        # Register discoveries
+        registered_opportunities = []
+        for opportunity in discovery_results.get("emergent_opportunities", []):
+            # Convert type string back to enum
+            discovery_type = DiscoveryType.EMERGENT_OPPORTUNITY
+            for dt in DiscoveryType:
+                if dt.value == opportunity["type"]:
+                    discovery_type = dt
+                    break
+            
+            possibility_id = resilient_connection.discover_possibility(
+                discovery_type=discovery_type,
+                description=opportunity["description"],
+                discovered_by=novelty_agent.agent_id,
+                potential_value=opportunity["potential_value"],
+                confidence=opportunity["confidence"],
+                exploration_context=exploration_context
+            )
+            
+            registered_opportunities.append({
+                "possibility_id": possibility_id,
+                "opportunity": opportunity
+            })
+        
+        return {
+            "opportunity_discovery": {
+                "agent_id": novelty_agent.agent_id,
+                "exploration_context": exploration_context,
+                "opportunities_found": len(registered_opportunities),
+                "registered_opportunities": registered_opportunities
+            },
+            "discovery_analysis": {
+                "high_value_count": sum(1 for opp in registered_opportunities 
+                                      if opp["opportunity"]["potential_value"] > 0.7),
+                "discovery_types": list(set(opp["opportunity"]["type"] for opp in registered_opportunities)),
+                "avg_potential_value": sum(opp["opportunity"]["potential_value"] for opp in registered_opportunities) / len(registered_opportunities) if registered_opportunities else 0.0
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error discovering emergent opportunities: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def adjust_exploration_balance(context: Optional[Dict[str, Any]] = None) -> dict:
+    """Manually adjust the exploration-exploitation balance.
+    
+    Args:
+        context: Optional context for balance adjustment
+        
+    Returns:
+        dict: New balance configuration and system adjustments
+    """
+    try:
+        logger.info("Manually adjusting exploration balance")
+        
+        if context is None:
+            context = {"manual_adjustment": True, "timestamp": datetime.now().isoformat()}
+        
+        # Perform balance adjustment
+        new_mode = resilient_connection.adjust_exploration_balance(context)
+        
+        # Get current metrics
+        system_status = resilient_connection.get_system_status()
+        
+        # Get latest balance metrics
+        latest_balance = resilient_connection.balance_history[-1] if resilient_connection.balance_history else None
+        
+        return {
+            "balance_adjustment": {
+                "new_mode": new_mode.value,
+                "previous_mode": resilient_connection.current_mode.value if hasattr(resilient_connection, 'previous_mode') else "unknown",
+                "adjustment_context": context,
+                "balance_metrics": {
+                    "exploitation_ratio": latest_balance.exploitation_ratio if latest_balance else 0.0,
+                    "exploration_ratio": latest_balance.exploration_ratio if latest_balance else 0.0,
+                    "overall_effectiveness": latest_balance.overall_effectiveness if latest_balance else 0.0
+                } if latest_balance else None
+            },
+            "system_status": system_status,
+            "optimization_recommendations": _generate_balance_recommendations(system_status, new_mode),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error adjusting exploration balance: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_goal_progress(goal_id: Optional[str] = None) -> dict:
+    """Get progress information for goals in the system.
+    
+    Args:
+        goal_id: Optional specific goal ID, or None for all goals
+        
+    Returns:
+        dict: Goal progress information and recommendations
+    """
+    try:
+        logger.info(f"Getting goal progress for: {goal_id or 'all goals'}")
+        
+        if goal_id:
+            if goal_id not in resilient_connection.active_goals:
+                return {
+                    "error": f"Goal {goal_id} not found",
+                    "status": "not_found"
+                }
+            
+            goal = resilient_connection.active_goals[goal_id]
+            goal_info = {
+                goal_id: {
+                    "description": goal.description,
+                    "priority": goal.priority,
+                    "progress": goal.progress,
+                    "constitutional_alignment": goal.constitutional_alignment,
+                    "created_at": goal.created_at.isoformat(),
+                    "target_completion": goal.target_completion.isoformat() if goal.target_completion else None,
+                    "achieved": goal.achieved,
+                    "metrics": goal.metrics,
+                    "sub_goals": goal.sub_goals
+                }
+            }
+        else:
+            goal_info = {}
+            for gid, goal in resilient_connection.active_goals.items():
+                goal_info[gid] = {
+                    "description": goal.description,
+                    "priority": goal.priority,
+                    "progress": goal.progress,
+                    "constitutional_alignment": goal.constitutional_alignment,
+                    "created_at": goal.created_at.isoformat(),
+                    "target_completion": goal.target_completion.isoformat() if goal.target_completion else None,
+                    "achieved": goal.achieved,
+                    "metrics": goal.metrics,
+                    "sub_goals": goal.sub_goals
+                }
+        
+        # Analyze goal patterns
+        all_goals = list(resilient_connection.active_goals.values())
+        goal_analysis = {
+            "total_goals": len(all_goals),
+            "achieved_goals": sum(1 for g in all_goals if g.achieved),
+            "high_priority_goals": sum(1 for g in all_goals if g.priority > 0.7),
+            "low_progress_goals": sum(1 for g in all_goals if g.progress < 0.3),
+            "avg_constitutional_alignment": sum(g.constitutional_alignment for g in all_goals) / len(all_goals) if all_goals else 0.0,
+            "avg_progress": sum(g.progress for g in all_goals) / len(all_goals) if all_goals else 0.0
+        }
+        
+        return {
+            "goal_progress": goal_info,
+            "goal_analysis": goal_analysis,
+            "recommendations": _generate_goal_recommendations(goal_analysis),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting goal progress: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+def _assess_resilient_connection_health(system_status: Dict[str, Any]) -> Dict[str, Any]:
+    """Assess the health of the resilient connection system."""
+    connection_strength = system_status["resilient_connection"]["connection_strength"]
+    goals = system_status["goals"]
+    possibilities = system_status["emergent_possibilities"]
+    
+    # Health indicators
+    goal_health = goals["constitutional_alignment_avg"]
+    exploration_health = min(possibilities["total_discovered"] / 5.0, 1.0)  # Normalize to 5 discoveries
+    integration_health = possibilities["highly_feasible"] / max(possibilities["total_discovered"], 1)
+    
+    overall_health = (connection_strength + goal_health + exploration_health + integration_health) / 4.0
+    
+    health_status = "excellent"
+    if overall_health < 0.8:
+        health_status = "good"
+    if overall_health < 0.6:
+        health_status = "fair"  
+    if overall_health < 0.4:
+        health_status = "poor"
+    
+    return {
+        "overall_health": overall_health,
+        "health_status": health_status,
+        "connection_strength": connection_strength,
+        "goal_health": goal_health,
+        "exploration_health": exploration_health,
+        "integration_health": integration_health
+    }
+
+
+def _generate_optimization_suggestions(system_status: Dict[str, Any]) -> List[str]:
+    """Generate optimization suggestions for the resilient connection system."""
+    suggestions = []
+    
+    connection_strength = system_status["resilient_connection"]["connection_strength"]
+    goals = system_status["goals"]
+    possibilities = system_status["emergent_possibilities"]
+    
+    if connection_strength < 0.6:
+        suggestions.append("Strengthen resilient connection through better goal-exploration alignment")
+    
+    if goals["constitutional_alignment_avg"] < 0.7:
+        suggestions.append("Review and improve constitutional alignment of active goals")
+    
+    if possibilities["total_discovered"] < 3:
+        suggestions.append("Increase exploration activities to discover more emergent possibilities")
+    
+    if possibilities["highly_feasible"] == 0:
+        suggestions.append("Focus on improving the quality and feasibility of discovered possibilities")
+    
+    if len(system_status["recommendations"]) > 2:
+        suggestions.append("Address high-priority recommendations to improve system performance")
+    
+    return suggestions
+
+
+def _generate_balance_recommendations(system_status: Dict[str, Any], current_mode: ExplorationMode) -> List[str]:
+    """Generate recommendations for exploration balance optimization."""
+    recommendations = []
+    
+    if current_mode == ExplorationMode.EXPLOITATION:
+        recommendations.append("Focus on advancing existing goals while maintaining some exploration")
+        recommendations.append("Consider constitutional review of goal alignment")
+    
+    elif current_mode == ExplorationMode.EXPLORATION:
+        recommendations.append("Prioritize novelty search and opportunity discovery")
+        recommendations.append("Look for integration opportunities with existing goals")
+    
+    elif current_mode == ExplorationMode.BALANCED:
+        recommendations.append("Maintain current balance between goal pursuit and exploration")
+        recommendations.append("Monitor for emerging patterns that might require balance adjustment")
+    
+    connection_strength = system_status["resilient_connection"]["connection_strength"]
+    if connection_strength < 0.5:
+        recommendations.append("Focus on strengthening the resilient connection before major adjustments")
+    
+    return recommendations
+
+
+def _generate_goal_recommendations(goal_analysis: Dict[str, Any]) -> List[str]:
+    """Generate recommendations based on goal analysis."""
+    recommendations = []
+    
+    if goal_analysis["low_progress_goals"] > goal_analysis["total_goals"] * 0.5:
+        recommendations.append("Review low-progress goals for potential restructuring or exploration enhancement")
+    
+    if goal_analysis["avg_constitutional_alignment"] < 0.7:
+        recommendations.append("Improve constitutional alignment of goals through constitutional review")
+    
+    if goal_analysis["total_goals"] == 0:
+        recommendations.append("Establish clear goals to provide direction for the resilient connection system")
+    
+    if goal_analysis["achieved_goals"] / max(goal_analysis["total_goals"], 1) > 0.8:
+        recommendations.append("Consider establishing new ambitious goals to maintain momentum")
+    
+    return recommendations
 
 
 def _generate_constitutional_recommendations(validation_result: Dict[str, Any]) -> List[str]:
