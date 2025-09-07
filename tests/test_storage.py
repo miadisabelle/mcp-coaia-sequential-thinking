@@ -4,8 +4,8 @@ import json
 import os
 from pathlib import Path
 
-from mcp_sequential_thinking.models import ThoughtStage, ThoughtData
-from mcp_sequential_thinking.storage import ThoughtStorage
+from mcp_coaia_sequential_thinking.models import ThoughtStage, ThoughtData
+from mcp_coaia_sequential_thinking.storage import ThoughtStorage
 
 
 class TestThoughtStorage(unittest.TestCase):

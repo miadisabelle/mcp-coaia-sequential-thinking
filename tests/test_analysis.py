@@ -1,6 +1,6 @@
 import unittest
-from mcp_sequential_thinking.models import ThoughtStage, ThoughtData
-from mcp_sequential_thinking.analysis import ThoughtAnalyzer
+from mcp_coaia_sequential_thinking.models import ThoughtStage, ThoughtData
+from mcp_coaia_sequential_thinking.analysis import ThoughtAnalyzer
 
 
 class TestThoughtAnalyzer(unittest.TestCase):
