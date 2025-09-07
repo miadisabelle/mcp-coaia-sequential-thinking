@@ -212,10 +212,14 @@ class BaseAgent(ABC):
             requires_response=requires_response
         )
         
-        # This would normally go through the coordination system
-        # For now, just log the message (avoiding circular import issues)
-        logger.debug(f"Message {message_id} sent from {self.agent_id} to {recipient_id}")
-        # TODO: Implement proper message routing through coordination system
+        # Route message through the agent registry
+        from .polycentric_lattice import agent_registry
+        if recipient_id in agent_registry.agents:
+            recipient_agent = agent_registry.agents[recipient_id]
+            recipient_agent.receive_message(message)
+            logger.debug(f"Message {message_id} delivered from {self.agent_id} to {recipient_id}")
+        else:
+            logger.warning(f"Recipient agent {recipient_id} not found in registry")
         
         return message_id
     
@@ -356,6 +360,22 @@ class ConstitutionalAgent(BaseAgent):
                 competency_score=0.98,
                 resource_cost=0.1,
                 execution_time_estimate=0.3
+            ),
+            "documentation_generation": AgentCapability(
+                "documentation_generation",
+                "Documentation Generation", 
+                "Generate structured documentation based on constitutional principles and governance frameworks",
+                competency_score=0.85,
+                resource_cost=0.4,
+                execution_time_estimate=2.0
+            ),
+            "governance_analysis": AgentCapability(
+                "governance_analysis",
+                "Governance Analysis",
+                "Analyze governance structures and decision-making frameworks for constitutional compliance",
+                competency_score=0.88,
+                resource_cost=0.3,
+                execution_time_estimate=1.5
             )
         }
     
@@ -421,18 +441,23 @@ class ConstitutionalAgent(BaseAgent):
     
     def evaluate_collaboration_proposal(self, proposal: CollaborationProposal) -> Tuple[bool, str]:
         """Evaluate collaboration proposals based on constitutional principles."""
-        # Constitutional agent collaborates on tasks requiring principle validation
+        # Constitutional agent collaborates on tasks requiring principle validation or documentation
         constitutional_keywords = [
-            "validate", "compliance", "principle", "constitutional", "audit", "decision"
+            "validate", "compliance", "principle", "constitutional", "audit", "decision",
+            "document", "governance", "policy", "regulation", "framework", "guideline"
         ]
         
         task_desc = proposal.task_description.lower()
         has_constitutional_relevance = any(keyword in task_desc for keyword in constitutional_keywords)
         
-        if has_constitutional_relevance:
-            return True, "Task requires constitutional oversight"
+        # Also check if any of our capabilities match the required capabilities
+        our_capabilities = [cap.capability_id for cap in self.get_capabilities()]
+        capability_match = any(cap in our_capabilities for cap in proposal.required_capabilities)
+        
+        if has_constitutional_relevance or capability_match:
+            return True, "Task requires constitutional oversight or matches our capabilities"
         else:
-            return False, "Task does not require constitutional validation"
+            return False, "Task does not require constitutional validation or match our capabilities"
     
     def evaluate_competition_challenge(self, challenge: CompetitionChallenge) -> Tuple[bool, str]:
         """Evaluate competition challenges - constitutional agent generally doesn't compete."""
@@ -507,6 +532,30 @@ class AnalysisAgent(BaseAgent):
                 competency_score=0.85,
                 resource_cost=0.3,
                 execution_time_estimate=1.5
+            ),
+            "information_analysis": AgentCapability(
+                "information_analysis",
+                "Information Analysis",
+                "Analyze and structure complex information to identify patterns and insights",
+                competency_score=0.90,
+                resource_cost=0.4,
+                execution_time_estimate=2.5
+            ),
+            "knowledge_structuring": AgentCapability(
+                "knowledge_structuring", 
+                "Knowledge Structuring",
+                "Organize and structure knowledge for systematic understanding and analysis",
+                competency_score=0.87,
+                resource_cost=0.3,
+                execution_time_estimate=2.0
+            ),
+            "data_synthesis": AgentCapability(
+                "data_synthesis",
+                "Data Synthesis", 
+                "Synthesize disparate data sources into coherent analytical frameworks",
+                competency_score=0.89,
+                resource_cost=0.5,
+                execution_time_estimate=3.5
             )
         }
     
@@ -539,16 +588,21 @@ class AnalysisAgent(BaseAgent):
     def evaluate_collaboration_proposal(self, proposal: CollaborationProposal) -> Tuple[bool, str]:
         """Evaluate collaboration proposals for analysis tasks."""
         analysis_keywords = [
-            "analyze", "pattern", "structure", "understand", "examine", "study"
+            "analyze", "pattern", "structure", "understand", "examine", "study",
+            "information", "data", "knowledge", "research", "insight", "synthesis"
         ]
         
         task_desc = proposal.task_description.lower()
         has_analysis_relevance = any(keyword in task_desc for keyword in analysis_keywords)
         
-        if has_analysis_relevance:
-            return True, "Task requires structural analysis expertise"
+        # Also check if any of our capabilities match the required capabilities
+        our_capabilities = [cap.capability_id for cap in self.get_capabilities()]
+        capability_match = any(cap in our_capabilities for cap in proposal.required_capabilities)
+        
+        if has_analysis_relevance or capability_match:
+            return True, "Task requires structural analysis expertise or matches our capabilities"
         else:
-            return False, "Task does not require analysis capabilities"
+            return False, "Task does not require analysis capabilities or match our skills"
     
     def evaluate_competition_challenge(self, challenge: CompetitionChallenge) -> Tuple[bool, str]:
         """Evaluate competition challenges for analysis tasks."""
@@ -669,11 +723,15 @@ class AgentRegistry:
             logger.info(f"Unregistered agent {agent_id}")
     
     def find_agents_with_capability(self, capability_name: str) -> List[str]:
-        """Find all agents with a specific capability."""
+        """Find all agents with a specific capability by name or ID."""
         matching_agents = []
-        for agent_id, capabilities in self.agent_capabilities.items():
-            if capability_name in capabilities:
-                matching_agents.append(agent_id)
+        for agent_id, agent in self.agents.items():
+            agent_caps = agent.get_capabilities()
+            # Check both capability name and capability_id
+            for cap in agent_caps:
+                if capability_name.lower() in [cap.name.lower(), cap.capability_id.lower()]:
+                    matching_agents.append(agent_id)
+                    break
         return matching_agents
     
     def get_agent_status_summary(self) -> Dict[str, Any]:

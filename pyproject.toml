@@ -1,11 +1,11 @@
 [project]
 name = "mcp-coaia-sequential-thinking"
 version = "0.3.0"
-description = "A Sequential Thinking MCP Server for advanced problem solving"
+description = "CoAiA's Structural Core: Guiding Intelligent Agents with Foundational Creative Thinking"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-keywords = ["mcp", "ai", "coaia", "sequential-thinking","creative-orientation"]
+keywords = ["mcp", "ai", "coaia", "sequential-thinking","creative-orientation", "structural-thinking", "polycentric-lattice"]
 authors = [
    { name = "Arben Ademi", email = "arben.ademi@tuta.io" }
 ]
