@@ -185,35 +185,69 @@ class TaskCoordinator:
     
     def _coordinate_collaboration(self, task: CoordinatedTask):
         """Coordinate a collaborative task among multiple agents."""
-        # Find agents for each required capability
+        # Find agents for each required capability AND all active agents for broader evaluation
         agent_capabilities = {}
+        all_target_agents = set()
+        
         for requirement in task.requirements:
             matching_agents = agent_registry.find_agents_with_capability(requirement)
             agent_capabilities[requirement] = matching_agents
+            all_target_agents.update(matching_agents)
+        
+        # If no exact capability matches, include all active agents for evaluation
+        if not all_target_agents:
+            all_target_agents = set(agent_registry.agents.keys())
         
         # Create collaboration proposal
         proposal_id = str(uuid.uuid4())
         proposal = CollaborationProposal(
             proposal_id=proposal_id,
             proposer_id="task_coordinator",
-            target_agents=list(set(sum(agent_capabilities.values(), []))),
+            target_agents=list(all_target_agents),
             task_description=task.description,
             required_capabilities=task.requirements,
-            resource_allocation={agent: 1.0 for agent in agent_capabilities},
+            resource_allocation={agent: 1.0 for agent in all_target_agents},
             expected_outcome=f"Completion of task {task.task_id}",
             deadline=task.deadline or datetime.now() + timedelta(hours=24)
         )
         
-        # Send collaboration invitations
+        # Send collaboration invitations through message system
         accepted_agents = []
         for agent_id in proposal.target_agents:
             if agent_id in agent_registry.agents:
                 agent = agent_registry.agents[agent_id]
+                
+                # Send collaboration invitation message
+                message_content = {
+                    "proposal": proposal.__dict__
+                }
+                # Note: In a full message-based system, we would send this message
+                # and wait for responses. For now we do direct evaluation.
+                # agent.send_message(
+                #     agent_id,
+                #     MessageType.COLLABORATION_INVITE,
+                #     message_content,
+                #     priority=MessagePriority.HIGH,
+                #     requires_response=True
+                # )
+                
+                # For now, also do direct evaluation to ensure functionality
+                # In a full implementation, we'd wait for message responses
                 accept, reason = agent.evaluate_collaboration_proposal(proposal)
                 if accept:
                     accepted_agents.append(agent_id)
+                    logger.info(f"Agent {agent_id} accepted collaboration: {reason}")
+                else:
+                    logger.debug(f"Agent {agent_id} declined collaboration: {reason}")
         
-        if len(accepted_agents) >= len(task.requirements):
+        # Accept collaboration if we have at least one agent or agents covering all requirements
+        required_capabilities_covered = all(
+            any(cap_id in [cap.capability_id for cap in agent_registry.agents[agent_id].get_capabilities()] 
+                for agent_id in accepted_agents)
+            for cap_id in task.requirements
+        )
+        
+        if accepted_agents and (len(accepted_agents) >= 1 or required_capabilities_covered):
             task.assigned_agents = accepted_agents
             task.status = TaskStatus.ASSIGNED
             
@@ -223,7 +257,7 @@ class TaskCoordinator:
             
             logger.info(f"Collaboration started for task {task.task_id} with agents {accepted_agents}")
         else:
-            logger.warning(f"Insufficient agents accepted collaboration for task {task.task_id}")
+            logger.warning(f"No agents accepted collaboration for task {task.task_id}. Available agents: {list(all_target_agents)}")
             task.status = TaskStatus.FAILED
     
     def _coordinate_competition(self, task: CoordinatedTask):
