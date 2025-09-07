@@ -3,8 +3,8 @@
 ## Critical Terminology Corrections
 
 ### ⚠️ IMPORTANT: "SCCP" Clarification
-- **WRONG ASSUMPTION**: "SCCP" is a specific acronym (like "Structural Creative Cognitive Process")
-- **CORRECT UNDERSTANDING**: References to "SCCP" in this codebase refer to the broader **Structural Creative methodology** based on Robert Fritz's work
+- **CORRECT DEFINITION**: SCCP = **Structural Consultation Certificate Program** (Robert Fritz's formal training program)
+- **WRONG ASSUMPTION**: Trying to expand "SCCP" into other meanings without evidence
 - **Key Components**: 
   - **Structural Thinking** (3-step process: Start with Nothing → Picture What Is Said → Ask Questions)
   - **Creative Orientation** (generative vs reactive approaches)
