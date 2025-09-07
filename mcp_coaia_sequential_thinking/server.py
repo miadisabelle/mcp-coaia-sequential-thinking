@@ -83,6 +83,20 @@ def process_thought(thought: str, thought_number: int, total_thoughts: int,
         logger.info(f"Validation completed: tension_strength={validation_summary.tension_strength.value}, "
                    f"creative_orientation_score={validation_summary.creative_orientation_score:.2f}")
         
+        # Store validation results in thought data
+        thought_data.colint_violations = [
+            {
+                'rule_id': result.rule_id,
+                'severity': result.severity.value,
+                'message': result.message,
+                'line_number': result.line_number,
+                'suggestion': result.suggestion,
+                'structural_insight': result.structural_insight,
+                'tension_impact': result.tension_impact.value if result.tension_impact else None
+            }
+            for result in validation_summary.validation_results
+        ]
+        
         storage.add_thought(thought_data)
 
         # Get all thoughts for analysis
@@ -150,13 +164,23 @@ async def generate_summary() -> dict:
         # Generate summary with SCCP analysis
         summary_result = ThoughtAnalyzer.generate_summary(all_thoughts)
         
+<<<<<<< HEAD
         # Generate advanced creative orientation analysis
         creative_profile = analyze_creative_orientation(all_thoughts)
+        
+        # Perform co-lint validation on the summary
+        summary_text = json.dumps(summary_result.get('summary', {}))
+        validation_summary = validate_thought(summary_text)
+        
+        # Calculate compliance score for quality gating
+        compliance_score = validation_summary.creative_orientation_score
+        if validation_summary.structural_tension_established:
+            compliance_score = min(1.0, compliance_score + 0.2)  # Boost for structural tension
         
         # Check if session is ready for chart creation
         chart_readiness = integration_bridge.analyze_chart_readiness(all_thoughts)
         
-        # Add chart readiness and creative orientation info to summary
+        # Add chart readiness, creative orientation info, and validation to summary
         summary = summary_result.get('summary', {})
         
         # Add advanced creative orientation analysis
@@ -211,15 +235,33 @@ async def generate_summary() -> dict:
             logger.error(f"Error creating tension visualization: {viz_error}")
             summary['tensionVisualization'] = {"error": str(viz_error)}
         
+        summary['creativeOrientationCompliance'] = {
+            'compliance_score': compliance_score,
+            'structural_tension_established': validation_summary.structural_tension_established,
+            'tension_strength': validation_summary.tension_strength.value,
+            'creative_orientation_score': validation_summary.creative_orientation_score,
+            'validation_results': [
+                {
+                    'rule_id': result.rule_id,
+                    'severity': result.severity.value,
+                    'message': result.message,
+                    'suggestion': result.suggestion,
+                    'structural_insight': result.structural_insight
+                }
+                for result in validation_summary.validation_results
+            ]
+        }
         summary['chartIntegration'] = {
             "readyForChartCreation": chart_readiness.get('readyForChartCreation', False),
             "structuralTensionEstablished": chart_readiness.get('structuralTensionEstablished', False),
             "tensionStrength": chart_readiness.get('tensionStrength', 0.0),
-            "overallPattern": chart_readiness.get('overallPattern', 'insufficient_data')
+            "overallPattern": chart_readiness.get('overallPattern', 'insufficient_data'),
+            "complianceScore": compliance_score,
+            "qualityGatePassed": compliance_score > 0.8
         }
         
-        # Trigger chart creation if ready
-        if chart_readiness.get('readyForChartCreation', False):
+        # Trigger chart creation if ready AND compliant (quality gate)
+        if chart_readiness.get('readyForChartCreation', False) and compliance_score > 0.8:
             try:
                 chart_data = chart_readiness.get('chartCreationData')
                 if chart_data:
@@ -235,6 +277,11 @@ async def generate_summary() -> dict:
             except Exception as chart_error:
                 logger.error(f"Error creating chart: {chart_error}")
                 summary['chartIntegration']['chartCreationError'] = str(chart_error)
+        elif chart_readiness.get('readyForChartCreation', False) and compliance_score <= 0.8:
+            # Quality gate blocked chart creation
+            logger.info(f"Chart creation blocked by quality gate: compliance_score={compliance_score:.2f} <= 0.8")
+            summary['chartIntegration']['chartCreationBlocked'] = True
+            summary['chartIntegration']['blockReason'] = f"Compliance score {compliance_score:.2f} below threshold 0.8"
         
         return {"summary": summary}
     except json.JSONDecodeError as e:

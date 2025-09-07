@@ -51,6 +51,7 @@ class ThoughtData(BaseModel):
     structural_tension_strength: Optional[float] = Field(default=None, description="0.0-1.0 measure of tension clarity")
     hidden_concepts_detected: List[str] = Field(default_factory=list, description="limiting concepts identified")
     action_step_strategic: Optional[bool] = Field(default=None, description="whether action is strategic vs reactive")
+    colint_violations: List[Dict[str, Any]] = Field(default_factory=list, description="Stores results from co-lint validation.")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
     id: UUID = Field(default_factory=uuid4)
 

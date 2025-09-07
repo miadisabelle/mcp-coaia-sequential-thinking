@@ -31,7 +31,7 @@ class TestThoughtData(unittest.TestCase):
             thought_number=1,
             total_thoughts=3,
             next_thought_needed=True,
-            stage=ThoughtStage.PROBLEM_DEFINITION
+            stage=ThoughtStage.DESIRED_OUTCOME
         )
         self.assertTrue(thought.validate())
 
@@ -45,7 +45,7 @@ class TestThoughtData(unittest.TestCase):
                 thought_number=0,  # Invalid: must be positive
                 total_thoughts=3,
                 next_thought_needed=True,
-                stage=ThoughtStage.PROBLEM_DEFINITION
+                stage=ThoughtStage.DESIRED_OUTCOME
             )
 
     def test_validate_invalid_total_thoughts(self):
@@ -58,7 +58,7 @@ class TestThoughtData(unittest.TestCase):
                 thought_number=3,
                 total_thoughts=2,  # Invalid: less than thought_number
                 next_thought_needed=True,
-                stage=ThoughtStage.PROBLEM_DEFINITION
+                stage=ThoughtStage.DESIRED_OUTCOME
             )
 
     def test_validate_empty_thought(self):
@@ -71,7 +71,7 @@ class TestThoughtData(unittest.TestCase):
                 thought_number=1,
                 total_thoughts=3,
                 next_thought_needed=True,
-                stage=ThoughtStage.PROBLEM_DEFINITION
+                stage=ThoughtStage.DESIRED_OUTCOME
             )
 
     def test_to_dict(self):
@@ -81,7 +81,7 @@ class TestThoughtData(unittest.TestCase):
             thought_number=1,
             total_thoughts=3,
             next_thought_needed=True,
-            stage=ThoughtStage.PROBLEM_DEFINITION,
+            stage=ThoughtStage.DESIRED_OUTCOME,
             tags=["tag1", "tag2"],
             axioms_used=["axiom1"],
             assumptions_challenged=["assumption1"]
@@ -95,10 +95,15 @@ class TestThoughtData(unittest.TestCase):
             "thoughtNumber": 1,
             "totalThoughts": 3,
             "nextThoughtNeeded": True,
-            "stage": "Problem Definition",
+            "stage": "Desired Outcome",
             "tags": ["tag1", "tag2"],
             "axiomsUsed": ["axiom1"],
             "assumptionsChallenged": ["assumption1"],
+            "patternType": None,
+            "structuralTensionStrength": None,
+            "hiddenConceptsDetected": [],
+            "actionStepStrategic": None,
+            "colintViolations": [],
             "timestamp": timestamp
         }
 
@@ -111,7 +116,7 @@ class TestThoughtData(unittest.TestCase):
             "thoughtNumber": 1,
             "totalThoughts": 3,
             "nextThoughtNeeded": True,
-            "stage": "Problem Definition",
+            "stage": "Desired Outcome",
             "tags": ["tag1", "tag2"],
             "axiomsUsed": ["axiom1"],
             "assumptionsChallenged": ["assumption1"],
@@ -124,7 +129,7 @@ class TestThoughtData(unittest.TestCase):
         self.assertEqual(thought.thought_number, 1)
         self.assertEqual(thought.total_thoughts, 3)
         self.assertTrue(thought.next_thought_needed)
-        self.assertEqual(thought.stage, ThoughtStage.PROBLEM_DEFINITION)
+        self.assertEqual(thought.stage, ThoughtStage.DESIRED_OUTCOME)
         self.assertEqual(thought.tags, ["tag1", "tag2"])
         self.assertEqual(thought.axioms_used, ["axiom1"])
         self.assertEqual(thought.assumptions_challenged, ["assumption1"])
