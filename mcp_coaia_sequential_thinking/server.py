@@ -17,6 +17,11 @@ try:
     from .creative_orientation_engine import analyze_creative_orientation
     from .tension_visualization import create_tension_visualization
     from .constitutional_core import constitutional_core, ConstitutionalPrinciple
+    from .polycentric_lattice import (
+        agent_registry, ConstitutionalAgent, AnalysisAgent, 
+        AgentRole, MessageType, MessagePriority
+    )
+    from .agent_coordination import task_coordinator, TaskType
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -28,6 +33,11 @@ except ImportError:
     from mcp_coaia_sequential_thinking.creative_orientation_engine import analyze_creative_orientation
     from mcp_coaia_sequential_thinking.tension_visualization import create_tension_visualization
     from mcp_coaia_sequential_thinking.constitutional_core import constitutional_core, ConstitutionalPrinciple
+    from mcp_coaia_sequential_thinking.polycentric_lattice import (
+        agent_registry, ConstitutionalAgent, AnalysisAgent, 
+        AgentRole, MessageType, MessagePriority
+    )
+    from mcp_coaia_sequential_thinking.agent_coordination import task_coordinator, TaskType
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
@@ -702,6 +712,414 @@ def list_constitutional_principles() -> dict:
             "error": str(e),
             "status": "failed"
         }
+
+
+@mcp.tool()
+def initialize_polycentric_lattice() -> dict:
+    """Initialize the polycentric agentic lattice with core agents.
+    
+    Returns:
+        dict: Status of lattice initialization with agent details
+    """
+    try:
+        logger.info("Initializing polycentric agentic lattice")
+        
+        # Create core agents
+        constitutional_agent = ConstitutionalAgent()
+        analysis_agent = AnalysisAgent()
+        
+        # Register agents in the lattice
+        agent_registry.register_agent(constitutional_agent)
+        agent_registry.register_agent(analysis_agent)
+        
+        # Get lattice status
+        status = agent_registry.get_agent_status_summary()
+        
+        return {
+            "lattice_initialization": {
+                "status": "success",
+                "agents_created": 2,
+                "constitutional_agent_id": constitutional_agent.agent_id,
+                "analysis_agent_id": analysis_agent.agent_id,
+                "lattice_status": status
+            },
+            "available_capabilities": {
+                "constitutional": [cap.name for cap in constitutional_agent.get_capabilities()],
+                "analysis": [cap.name for cap in analysis_agent.get_capabilities()]
+            },
+            "coordination_status": task_coordinator.get_coordination_status(),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error initializing polycentric lattice: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def submit_agent_task(description: str, requirements: List[str], 
+                     task_type: str = "individual",
+                     priority: str = "medium") -> dict:
+    """Submit a task to the polycentric agent lattice.
+    
+    Args:
+        description: Description of the task to be performed
+        requirements: List of required capabilities for the task
+        task_type: Type of task (individual, collaborative, competitive, constitutional_review)
+        priority: Task priority (low, medium, high, critical)
+        
+    Returns:
+        dict: Task submission result with task ID and assignment details
+    """
+    try:
+        logger.info(f"Submitting agent task: {description}")
+        
+        # Convert string enums
+        task_type_enum = TaskType.INDIVIDUAL
+        if task_type == "collaborative":
+            task_type_enum = TaskType.COLLABORATIVE
+        elif task_type == "competitive":
+            task_type_enum = TaskType.COMPETITIVE
+        elif task_type == "constitutional_review":
+            task_type_enum = TaskType.CONSTITUTIONAL_REVIEW
+        
+        priority_enum = MessagePriority.MEDIUM
+        if priority == "low":
+            priority_enum = MessagePriority.LOW
+        elif priority == "high":
+            priority_enum = MessagePriority.HIGH
+        elif priority == "critical":
+            priority_enum = MessagePriority.CRITICAL
+        
+        # Submit task to coordinator
+        task_id = task_coordinator.submit_task(
+            description=description,
+            requirements=requirements,
+            task_type=task_type_enum,
+            priority=priority_enum
+        )
+        
+        # Get initial task status
+        task_status = task_coordinator.get_task_status(task_id)
+        
+        return {
+            "task_submission": {
+                "task_id": task_id,
+                "submitted_successfully": True,
+                "task_type": task_type,
+                "priority": priority,
+                "requirements": requirements,
+                "initial_status": task_status
+            },
+            "lattice_info": {
+                "available_agents": len(agent_registry.agents),
+                "coordination_status": task_coordinator.get_coordination_status()
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error submitting agent task: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_lattice_status() -> dict:
+    """Get comprehensive status of the polycentric agentic lattice.
+    
+    Returns:
+        dict: Complete lattice status including agents, tasks, and performance
+    """
+    try:
+        logger.info("Getting polycentric lattice status")
+        
+        # Get agent registry status
+        agent_status = agent_registry.get_agent_status_summary()
+        
+        # Get coordination status
+        coordination_status = task_coordinator.get_coordination_status()
+        
+        # Get individual agent details
+        agent_details = {}
+        for agent_id, agent in agent_registry.agents.items():
+            agent_details[agent_id] = {
+                "name": agent.name,
+                "role": agent.role.value,
+                "active": agent.active,
+                "capabilities": [cap.name for cap in agent.get_capabilities()],
+                "performance_metrics": agent.performance_metrics,
+                "collaboration_count": len(agent.collaboration_history),
+                "competition_count": len(agent.competition_history),
+                "message_queue_size": agent.message_queue.qsize()
+            }
+        
+        return {
+            "lattice_status": {
+                "agent_registry": agent_status,
+                "coordination_system": coordination_status,
+                "agent_details": agent_details,
+                "system_health": _assess_lattice_health(agent_status, coordination_status)
+            },
+            "capabilities_available": _get_available_capabilities(),
+            "recent_activity": _get_recent_activity(),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting lattice status: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def query_agent_capabilities(capability_filter: Optional[str] = None) -> dict:
+    """Query available agent capabilities in the lattice.
+    
+    Args:
+        capability_filter: Optional filter to search for specific capabilities
+        
+    Returns:
+        dict: Available capabilities and agents that provide them
+    """
+    try:
+        logger.info(f"Querying agent capabilities with filter: {capability_filter}")
+        
+        all_capabilities = {}
+        
+        for agent_id, agent in agent_registry.agents.items():
+            for capability in agent.get_capabilities():
+                if capability_filter is None or capability_filter.lower() in capability.name.lower():
+                    if capability.name not in all_capabilities:
+                        all_capabilities[capability.name] = {
+                            "description": capability.description,
+                            "agents": [],
+                            "avg_competency": 0.0,
+                            "avg_resource_cost": 0.0,
+                            "avg_execution_time": 0.0
+                        }
+                    
+                    all_capabilities[capability.name]["agents"].append({
+                        "agent_id": agent_id,
+                        "agent_name": agent.name,
+                        "competency_score": capability.competency_score,
+                        "resource_cost": capability.resource_cost,
+                        "execution_time_estimate": capability.execution_time_estimate
+                    })
+        
+        # Calculate averages
+        for cap_name, cap_info in all_capabilities.items():
+            agents = cap_info["agents"]
+            if agents:
+                cap_info["avg_competency"] = sum(a["competency_score"] for a in agents) / len(agents)
+                cap_info["avg_resource_cost"] = sum(a["resource_cost"] for a in agents) / len(agents)
+                cap_info["avg_execution_time"] = sum(a["execution_time_estimate"] for a in agents) / len(agents)
+        
+        return {
+            "capability_query": {
+                "filter_applied": capability_filter,
+                "capabilities_found": len(all_capabilities),
+                "capabilities": all_capabilities
+            },
+            "lattice_summary": {
+                "total_agents": len(agent_registry.agents),
+                "unique_capabilities": len(all_capabilities),
+                "avg_competency_across_lattice": sum(
+                    cap["avg_competency"] for cap in all_capabilities.values()
+                ) / len(all_capabilities) if all_capabilities else 0.0
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error querying agent capabilities: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_task_status(task_id: str) -> dict:
+    """Get the status of a specific task in the coordination system.
+    
+    Args:
+        task_id: The ID of the task to check
+        
+    Returns:
+        dict: Detailed task status and progress information
+    """
+    try:
+        logger.info(f"Getting status for task: {task_id}")
+        
+        task_status = task_coordinator.get_task_status(task_id)
+        
+        if task_status is None:
+            return {
+                "error": f"Task {task_id} not found",
+                "status": "not_found"
+            }
+        
+        # Get additional details about assigned agents
+        agent_details = {}
+        for agent_id in task_status.get("assigned_agents", []):
+            if agent_id in agent_registry.agents:
+                agent = agent_registry.agents[agent_id]
+                agent_details[agent_id] = {
+                    "name": agent.name,
+                    "role": agent.role.value,
+                    "current_workload": agent.message_queue.qsize(),
+                    "performance_score": agent.performance_metrics.get("task_completion_rate", 0.0)
+                }
+        
+        return {
+            "task_status": task_status,
+            "assigned_agent_details": agent_details,
+            "coordination_context": {
+                "total_active_tasks": len(task_coordinator.active_tasks),
+                "system_load": task_coordinator.get_coordination_status()
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting task status: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def create_agent_collaboration(description: str, required_capabilities: List[str],
+                             target_agents: Optional[List[str]] = None) -> dict:
+    """Create a collaboration between multiple agents.
+    
+    Args:
+        description: Description of the collaborative task
+        required_capabilities: List of capabilities needed for the collaboration
+        target_agents: Optional list of specific agents to invite
+        
+    Returns:
+        dict: Collaboration creation result and participant details
+    """
+    try:
+        logger.info(f"Creating agent collaboration: {description}")
+        
+        # If no target agents specified, find agents with required capabilities
+        if target_agents is None:
+            target_agents = []
+            for capability in required_capabilities:
+                matching_agents = agent_registry.find_agents_with_capability(capability)
+                target_agents.extend(matching_agents)
+            target_agents = list(set(target_agents))  # Remove duplicates
+        
+        # Submit as collaborative task
+        task_id = task_coordinator.submit_task(
+            description=description,
+            requirements=required_capabilities,
+            task_type=TaskType.COLLABORATIVE,
+            priority=MessagePriority.MEDIUM
+        )
+        
+        # Get task status
+        task_status = task_coordinator.get_task_status(task_id)
+        
+        return {
+            "collaboration": {
+                "task_id": task_id,
+                "description": description,
+                "required_capabilities": required_capabilities,
+                "target_agents": target_agents,
+                "collaboration_status": task_status,
+                "expected_participants": len(target_agents)
+            },
+            "coordination_info": {
+                "coordination_system_active": task_coordinator.active,
+                "current_system_load": task_coordinator.get_coordination_status()
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error creating agent collaboration: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+def _assess_lattice_health(agent_status: Dict[str, Any], coordination_status: Dict[str, Any]) -> Dict[str, Any]:
+    """Assess the overall health of the polycentric lattice."""
+    total_agents = agent_status.get("total_agents", 0)
+    active_agents = agent_status.get("active_agents", 0)
+    
+    agent_health = active_agents / total_agents if total_agents > 0 else 0.0
+    
+    total_tasks = coordination_status.get("active_tasks", 0)
+    failed_tasks = coordination_status.get("failed_tasks", 0)
+    
+    task_health = 1.0 - (failed_tasks / max(total_tasks, 1))
+    
+    overall_health = (agent_health + task_health) / 2.0
+    
+    health_status = "excellent"
+    if overall_health < 0.9:
+        health_status = "good"
+    if overall_health < 0.7:
+        health_status = "fair"
+    if overall_health < 0.5:
+        health_status = "poor"
+    
+    return {
+        "overall_health_score": overall_health,
+        "health_status": health_status,
+        "agent_health": agent_health,
+        "task_health": task_health,
+        "recommendations": _generate_health_recommendations(overall_health, agent_health, task_health)
+    }
+
+
+def _generate_health_recommendations(overall: float, agent: float, task: float) -> List[str]:
+    """Generate recommendations for improving lattice health."""
+    recommendations = []
+    
+    if agent < 0.8:
+        recommendations.append("Consider activating more agents or checking agent status")
+    
+    if task < 0.7:
+        recommendations.append("Review task coordination and failure patterns")
+    
+    if overall > 0.9:
+        recommendations.append("Lattice operating optimally - consider expanding capabilities")
+    
+    return recommendations
+
+
+def _get_available_capabilities() -> Dict[str, int]:
+    """Get summary of available capabilities across the lattice."""
+    capabilities = {}
+    for agent in agent_registry.agents.values():
+        for cap in agent.get_capabilities():
+            capabilities[cap.name] = capabilities.get(cap.name, 0) + 1
+    return capabilities
+
+
+def _get_recent_activity() -> Dict[str, Any]:
+    """Get recent activity summary from the lattice."""
+    return {
+        "active_message_processing": sum(1 for agent in agent_registry.agents.values() if agent.active),
+        "total_message_queue_size": sum(agent.message_queue.qsize() for agent in agent_registry.agents.values()),
+        "recent_collaborations": sum(len(agent.collaboration_history) for agent in agent_registry.agents.values()),
+        "recent_competitions": sum(len(agent.competition_history) for agent in agent_registry.agents.values())
+    }
 
 
 def _generate_constitutional_recommendations(validation_result: Dict[str, Any]) -> List[str]:
