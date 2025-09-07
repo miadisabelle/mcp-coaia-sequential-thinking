@@ -1,5 +1,3 @@
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/arben-adm-mcp-sequential-thinking-badge.png)](https://mseep.ai/app/arben-adm-mcp-sequential-thinking)
-
 # MCP Server: Creative Orientation Engine
 
 ## STC
@@ -15,7 +13,6 @@ The MCP Server: Creative Orientation Engine is a groundbreaking package designed
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-<a href="https://glama.ai/mcp/servers/m83dfy8feg"><img width="380" height="200" src="https://glama.ai/mcp/servers/m83dfy8feg/badge" alt="COAIA Sequential Thinking Server MCP server" /></a>
 
 ## Key Features
 - **Structural Tension Analysis**: The engine analyzes the gap between a clearly defined desired outcome and the current reality, identifying the inherent tension that drives progress.
