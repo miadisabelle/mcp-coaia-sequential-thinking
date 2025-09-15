@@ -29,8 +29,14 @@ try:
     from .consensus_decision_engine import (
         ConsensusDecisionEngine, DecisionType, ConsensusStatus, MMORElement
     )
-    from .enhanced_polycentric_lattice import (
-        EnhancedPolycentricLattice, PersonaArchetype, SequentialThinkingChain
+    # NEW: Creative Orientation Foundation
+    from .creative_orientation_foundation import (
+        establish_structural_tension, validate_creative_action,
+        StructuralTension, CreativeOrientationValidation,
+        creative_orientation_foundation
+    )
+    from .generative_agent_lattice import (
+        generative_lattice, ArchetypeRole, PerspectiveType
     )
 except ImportError:
     # When run directly
@@ -54,8 +60,14 @@ except ImportError:
     from mcp_coaia_sequential_thinking.consensus_decision_engine import (
         ConsensusDecisionEngine, DecisionType, ConsensusStatus, MMORElement
     )
-    from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import (
-        EnhancedPolycentricLattice, PersonaArchetype, SequentialThinkingChain
+    # NEW: Creative Orientation Foundation
+    from mcp_coaia_sequential_thinking.creative_orientation_foundation import (
+        establish_structural_tension, validate_creative_action,
+        StructuralTension, CreativeOrientationValidation,
+        creative_orientation_foundation
+    )
+    from mcp_coaia_sequential_thinking.generative_agent_lattice import (
+        generative_lattice, ArchetypeRole, PerspectiveType
     )
 
 logger = configure_logging("coaia-sequential-thinking.server")
@@ -1719,155 +1731,278 @@ def _enhanced_lattice_error_response(function_name: str) -> dict:
     }
 
 
-# Initialize enhanced systems for new tools
+# Initialize creative orientation systems for generative tools
 try:
-    from .consensus_decision_engine import DecisionType, ConsensusStatus
-    from .enhanced_polycentric_lattice import EnhancedPolycentricLattice, PersonaArchetype
-
-    # Initialize enhanced lattice system
-    enhanced_lattice = EnhancedPolycentricLattice(constitutional_core)
-
-    logger.info("Enhanced polycentric lattice and consensus decision engine initialized successfully")
+    logger.info("Initializing creative orientation foundation...")
+    
+    # Validate constitutional foundation is working
+    test_validation = creative_orientation_foundation.validate_creative_orientation(
+        request="Testing system initialization", 
+        desired_outcome="Create functional generative lattice"
+    )
+    
+    logger.info(f"Creative orientation foundation initialized: {test_validation.constitutional_coherence}")
+    
+    # Initialize generative lattice with Mia & Miette archetypes
+    logger.info("Initializing generative agent lattice with Mia & Miette archetypes...")
+    
+    # Test generative lattice functionality
+    test_tension = establish_structural_tension(
+        desired_outcome="Verify generative lattice operational status",
+        current_reality="System initializing with creative orientation foundation"
+    )
+    
+    test_session = generative_lattice.initiate_emergence(
+        structural_tension=test_tension,
+        primary_purpose="system_validation",
+        archetype_activation={"mia": "structural_analysis", "miette": "narrative_discovery"}
+    )
+    
+    logger.info(f"Generative lattice initialized successfully: {test_session.session_id}")
+    generative_lattice_available = True
+    
 except ImportError as e:
-    logger.error(f"ImportError while importing enhanced systems: {e}")
+    logger.error(f"ImportError while importing creative orientation systems: {e}")
     logger.error("Available modules in package:")
     import os
     package_dir = os.path.dirname(__file__)
     if os.path.exists(package_dir):
         modules = [f for f in os.listdir(package_dir) if f.endswith('.py')]
         logger.error(f"Available modules: {modules}")
-    enhanced_lattice = None
+    generative_lattice_available = False
 except Exception as e:
-    logger.error(f"Unexpected error initializing enhanced systems: {e}")
+    logger.error(f"Unexpected error initializing creative orientation systems: {e}")
     logger.error(f"Error type: {type(e).__name__}")
     import traceback
     logger.error(f"Full traceback:\n{traceback.format_exc()}")
-    enhanced_lattice = None
+    generative_lattice_available = False
 
 
 @mcp.tool()
-def initiate_sequential_thinking(request: str, primary_purpose: str, 
-                                persona_sequence: Optional[List[str]] = None,
-                                memory_context: Optional[Dict[str, Any]] = None) -> dict:
-    """Initiate sequential thinking across multiple personas for comprehensive analysis.
+def initiate_creative_emergence(request: str, desired_outcome: str, 
+                               primary_purpose: str = "generative",
+                               archetype_focus: Optional[str] = None,
+                               cultural_perspective: Optional[str] = None) -> dict:
+    """Initiate creative emergence through polycentric agent collaboration.
     
-    This implements the multi-persona approach from PR #9 feedback, engaging different
-    archetypes (Mia, Miette, Haiku) for diverse perspective generation.
+    🧠 Mia: Establishes structural tension and architectural foundation for manifestation
+    🌸 Miette: Illuminates narrative potential and creative possibilities
+    
+    This tool embodies creative orientation principles from the theoretical framework,
+    establishing structural tension between current reality and desired outcome.
     
     Args:
-        request: The request or question to analyze
-        primary_purpose: The core purpose driving this analysis
-        persona_sequence: Optional list of persona archetypes to engage in order
-        memory_context: Optional memory context for coaia-memory integration
+        request: Current reality assessment (what is, objectively)
+        desired_outcome: What you want to create/manifest (not solve)
+        primary_purpose: Creative intention for the emergence process
+        archetype_focus: Optional focus on specific archetype ("mia", "miette", or "both")
+        cultural_perspective: Optional cultural lens ("western_analytical", "indigenous_holistic", "both_eyes_seeing")
         
     Returns:
-        dict: Sequential thinking chain ID and initial status
+        dict: Creative emergence session with advancing pattern indicators
     """
     try:
-        if not enhanced_lattice:
-            return _enhanced_lattice_error_response("initiate_sequential_thinking")
+        if not generative_lattice_available:
+            return {
+                "reframe_guidance": [
+                    "🧠 Mia: Creative orientation systems are initializing",
+                    "🌸 Miette: The magical lattice is awakening! Please try again in a moment ✨"
+                ],
+                "constitutional_principles": [
+                    "Focus on what you want to CREATE rather than what you want to solve",
+                    "Establish clear structural tension between current reality and desired outcome",
+                    "Apply delayed resolution principle - avoid premature closure"
+                ],
+                "status": "lattice_initializing"
+            }
             
-        logger.info(f"Initiating sequential thinking for: {request}")
+        logger.info(f"Initiating creative emergence: {desired_outcome}")
         
-        # Convert string persona names to enums if provided
-        converted_sequence = None
-        if persona_sequence:
-            converted_sequence = []
-            for persona_name in persona_sequence:
-                try:
-                    persona_enum = PersonaArchetype(persona_name.lower().replace(' ', '_'))
-                    converted_sequence.append(persona_enum)
-                except ValueError:
-                    logger.warning(f"Unknown persona archetype: {persona_name}")
-        
-        chain_id = enhanced_lattice.initiate_sequential_thinking(
+        # Validate creative orientation
+        validation = creative_orientation_foundation.validate_creative_orientation(
             request=request,
-            primary_purpose=primary_purpose,
-            persona_sequence=converted_sequence,
-            memory_context=memory_context
+            desired_outcome=desired_outcome
         )
         
+        if not validation.is_generative:
+            return creative_orientation_foundation.guide_toward_creative_reframe(validation)
+        
+        # Establish structural tension
+        structural_tension = establish_structural_tension(
+            desired_outcome=desired_outcome,
+            current_reality=request,
+            context=primary_purpose
+        )
+        
+        # Determine archetype activation
+        archetype_activation = {}
+        if not archetype_focus or archetype_focus == "both":
+            archetype_activation = {
+                "mia": "structural_analysis_and_design",
+                "miette": "narrative_warmth_and_discovery"
+            }
+        elif archetype_focus == "mia":
+            archetype_activation = {"mia": "structural_analysis_and_design"}
+        elif archetype_focus == "miette":
+            archetype_activation = {"miette": "narrative_warmth_and_discovery"}
+        
+        # Initiate emergence session
+        emergence_session = generative_lattice.initiate_emergence(
+            structural_tension=structural_tension,
+            primary_purpose=primary_purpose,
+            archetype_activation=archetype_activation
+        )
+        
+        # Assess creative tension
+        tension_assessment = generative_lattice.assess_creative_tension(emergence_session.session_id)
+        
+        # Generate advancement possibilities
+        next_progressions = generative_lattice.generate_possible_progressions(emergence_session.session_id)
+        
         return {
-            "sequential_thinking": {
-                "chain_id": chain_id,
-                "initiating_request": request,
-                "primary_purpose": primary_purpose,
-                "persona_sequence": [p.value for p in (converted_sequence or [
-                    PersonaArchetype.RATIONAL_ARCHITECT,
-                    PersonaArchetype.EMOTIONAL_CATALYST,
-                    PersonaArchetype.WISDOM_SYNTHESIZER
-                ])],
-                "memory_context_keys": list(memory_context.keys()) if memory_context else [],
-                "status": "initiated"
+            "emergence_session_id": emergence_session.session_id,
+            "structural_tension": {
+                "desired_outcome": desired_outcome,
+                "current_reality": request,
+                "tension_strength": tension_assessment["tension_strength"],
+                "creative_alignment": tension_assessment["creative_alignment"],
+                "constitutional_coherence": tension_assessment["constitutional_coherence"]
             },
-            "next_steps": {
-                "advance_chain": "Call advance_thinking_chain to progress through personas",
-                "get_status": "Call get_thinking_chain_status to monitor progress"
+            "archetype_perspectives": {
+                entry["agent"]: {
+                    "content": entry["content"],
+                    "insights": entry.get("insights", [])
+                }
+                for entry in emergence_session.emergence_timeline
+                if entry["type"] in ["structural_analysis", "narrative_discovery"]
             },
-            "status": "success"
+            "creative_phase": emergence_session.current_phase,
+            "advancement_possibilities": next_progressions,
+            "constitutional_validation": {
+                "is_generative": validation.is_generative,
+                "orientation_type": validation.orientation_type.value,
+                "guidance": validation.guidance_for_advancement
+            },
+            "status": "creative_tension_established"
         }
         
     except Exception as e:
-        logger.error(f"Error initiating sequential thinking: {str(e)}")
+        logger.error(f"Error initiating creative emergence: {str(e)}")
         return {
             "error": str(e),
+            "guidance": [
+                "🧠 Mia: Consider reframing toward creative manifestation rather than problem-solving",
+                "🌸 Miette: What do you want to CREATE instead? Let's discover the magic together! ✨"
+            ],
             "status": "failed"
         }
 
 
 @mcp.tool()
-def advance_thinking_chain(chain_id: str, context_data: Optional[Dict[str, Any]] = None) -> dict:
-    """Advance to the next persona in the sequential thinking chain.
+def advance_creative_emergence(session_id: str, new_insight: str, 
+                              archetype_focus: Optional[str] = None,
+                              perspective_shift: Optional[str] = None) -> dict:
+    """Advance the creative emergence process with new insights.
+    
+    🧠 Mia: Integrates structural insights into advancing architectural patterns
+    🌸 Miette: Weaves narrative threads into the emerging creative story
     
     Args:
-        chain_id: ID of the thinking chain to advance
-        context_data: Optional additional context for the next persona
+        session_id: ID of the creative emergence session to advance
+        new_insight: New insight, discovery, or creative input to integrate
+        archetype_focus: Optional focus on specific archetype ("mia", "miette", or "both")
+        perspective_shift: Optional cultural perspective shift ("western_analytical", "indigenous_holistic", "both_eyes_seeing")
         
     Returns:
-        dict: Generated perspective and chain progress
+        dict: Advancement response with integrated perspectives and next possibilities
     """
     try:
-        if not enhanced_lattice:
-            return _enhanced_lattice_error_response("advance_thinking_chain")
-            
-        logger.info(f"Advancing thinking chain: {chain_id}")
-        
-        # Generate perspective from current persona
-        perspective = enhanced_lattice.generate_persona_perspective(chain_id, context_data)
-        
-        if not perspective:
+        if not generative_lattice_available:
             return {
-                "error": f"Could not generate perspective for chain {chain_id}",
-                "status": "failed"
+                "guidance": [
+                    "🧠 Mia: Creative orientation systems are initializing",
+                    "🌸 Miette: The advancement magic is awakening! Please try again soon ✨"
+                ],
+                "status": "lattice_initializing"
+            }
+            
+        logger.info(f"Advancing creative emergence session: {session_id}")
+        
+        # Validate creative orientation of the new insight
+        validation = creative_orientation_foundation.validate_creative_orientation(
+            request="",
+            desired_outcome=new_insight
+        )
+        
+        if not validation.is_generative:
+            return {
+                "reframe_needed": True,
+                "guidance": validation.guidance_for_advancement,
+                "creative_reframe_examples": [
+                    {
+                        "reactive": "Fix the performance issue",
+                        "creative": "Create optimal performance experience"
+                    },
+                    {
+                        "reactive": "Solve the integration problem",
+                        "creative": "Manifest seamless integration architecture"
+                    }
+                ],
+                "status": "awaiting_creative_reframe"
             }
         
-        # Get updated chain status
-        chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
+        # Determine archetype focus for advancement
+        archetype_focus_enum = None
+        if archetype_focus == "mia":
+            archetype_focus_enum = ArchetypeRole.MIA
+        elif archetype_focus == "miette":
+            archetype_focus_enum = ArchetypeRole.MIETTE
+        
+        # Advance the emergence session
+        advancement_result = generative_lattice.advance_emergence(
+            session_id=session_id,
+            new_insight=new_insight,
+            archetype_focus=archetype_focus_enum
+        )
+        
+        if "error" in advancement_result:
+            return advancement_result
+        
+        # Get updated creative tension assessment
+        tension_assessment = generative_lattice.assess_creative_tension(session_id)
+        
+        # Generate next possibilities
+        next_progressions = generative_lattice.generate_possible_progressions(session_id)
         
         return {
-            "perspective_generated": {
-                "persona_archetype": perspective.persona_archetype.value,
-                "perspective_id": perspective.perspective_id,
-                "viewpoint": perspective.viewpoint,
-                "emotional_resonance": perspective.emotional_resonance,
-                "strategic_insight": perspective.strategic_insight,
-                "cultural_lens": perspective.cultural_lens,
-                "concerns": perspective.concerns,
-                "opportunities": perspective.opportunities,
-                "confidence_level": perspective.confidence_level
+            "advancement": {
+                "session_id": session_id,
+                "new_insight_integrated": new_insight,
+                "constitutional_alignment": advancement_result.get("constitutional_alignment", 0.0),
+                "creative_phase": advancement_result.get("phase", "assimilation"),
+                "archetype_responses": advancement_result.get("advancement_responses", {})
             },
-            "chain_progress": {
-                "perspectives_collected": chain_status["perspectives_collected"],
-                "current_persona_index": chain_status["current_persona_index"],
-                "sequence_complete": chain_status["current_persona_index"] >= len(chain_status["persona_sequence"])
+            "creative_tension_update": {
+                "tension_strength": tension_assessment.get("tension_strength", "establishing"),
+                "creative_alignment": tension_assessment.get("creative_alignment", 0.0),
+                "advancement_count": tension_assessment.get("advancement_count", 0)
             },
-            "status": "success"
+            "next_possibilities": next_progressions,
+            "guidance": [
+                "🧠 Mia: Structural integration proceeding with creative advancement",
+                "🌸 Miette: Beautiful new insights are weaving into the emerging story! ✨"
+            ],
+            "status": advancement_result.get("status", "advancing")
         }
         
     except Exception as e:
-        logger.error(f"Error advancing thinking chain: {str(e)}")
+        logger.error(f"Error advancing creative emergence: {str(e)}")
         return {
             "error": str(e),
+            "guidance": [
+                "🧠 Mia: Consider structural reframing for advancing patterns",
+                "🌸 Miette: Let's discover what wants to emerge! What are you creating? ✨"
+            ],
             "status": "failed"
         }
 
