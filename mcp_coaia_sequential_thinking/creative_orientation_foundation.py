@@ -137,7 +137,7 @@ class ConstitutionalCore:
         delayed_resolution_applied = self._check_delayed_resolution_compliance(combined_text)
         
         # Determine orientation type
-        if creative_score > reactive_score and creative_score > 0.3:
+        if creative_score > reactive_score and creative_score > 0.2:  # Lowered threshold
             orientation_type = OrientationType.CREATIVE
             is_generative = True
         else:
@@ -161,7 +161,7 @@ class ConstitutionalCore:
             tension_strength=tension_strength,
             creative_alignment_score=creative_score,
             guidance_for_advancement=guidance,
-            constitutional_coherence=creative_score > 0.6,
+            constitutional_coherence=creative_score > 0.4,  # Lowered threshold
             delayed_resolution_applied=delayed_resolution_applied
         )
     
@@ -181,11 +181,19 @@ class ConstitutionalCore:
         total_matches = 0
         for pattern in self.advancing_language_patterns:
             matches = len(re.findall(pattern, text.lower()))
-            total_matches += matches
+            total_matches += matches * 2  # Weight creative patterns more heavily
             
-        # Normalize by text length
+        # Normalize by text length with boost for creative content
         words = len(text.split())
-        return min(total_matches / max(words, 1), 1.0)
+        base_score = total_matches / max(words, 1)
+        
+        # Boost for explicit creative verbs
+        creative_verbs = ["create", "manifest", "generate", "build", "establish", "develop"]
+        for verb in creative_verbs:
+            if verb in text.lower():
+                base_score += 0.15
+                
+        return min(base_score, 1.0)
     
     def _check_delayed_resolution_compliance(self, text: str) -> bool:
         """Check if delayed resolution principle is being applied"""
