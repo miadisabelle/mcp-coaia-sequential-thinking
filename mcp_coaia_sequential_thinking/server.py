@@ -1701,17 +1701,17 @@ def _generate_constitutional_recommendations(validation_result: Dict[str, Any]) 
 
 
 # Initialize enhanced systems for new tools
-try:
-    from .consensus_decision_engine import DecisionType, ConsensusStatus
-    from .enhanced_polycentric_lattice import EnhancedPolycentricLattice, PersonaArchetype
-    
-    # Initialize enhanced lattice system
-    enhanced_lattice = EnhancedPolycentricLattice(constitutional_core)
-    
-    logger.info("Enhanced polycentric lattice and consensus decision engine initialized")
-except ImportError as e:
-    logger.error(f"Could not import enhanced systems: {e}")
-    enhanced_lattice = None
+# try: # Commented out for debugging
+from .consensus_decision_engine import DecisionType, ConsensusStatus
+from .enhanced_polycentric_lattice import EnhancedPolycentricLattice, PersonaArchetype
+
+# Initialize enhanced lattice system
+enhanced_lattice = EnhancedPolycentricLattice(constitutional_core)
+
+logger.info("Enhanced polycentric lattice and consensus decision engine initialized")
+# except ImportError as e: # Commented out for debugging
+#     logger.error(f"Could not import enhanced systems: {e}") # Commented out for debugging
+#     enhanced_lattice = None # Commented out for debugging
 
 
 @mcp.tool()
