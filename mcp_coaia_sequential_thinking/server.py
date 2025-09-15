@@ -72,6 +72,18 @@ except ImportError:
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
+# Initialize enhanced polycentric lattice
+enhanced_lattice = None
+try:
+    from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import EnhancedPolycentricLattice
+    enhanced_lattice = EnhancedPolycentricLattice(constitutional_core)
+    logger.info("Enhanced polycentric lattice initialized successfully")
+except ImportError as e:
+    logger.error(f"ImportError while importing enhanced systems: {e}")
+    logger.error("Enhanced lattice functionality will not be available")
+except Exception as e:
+    logger.error(f"Error initializing enhanced polycentric lattice: {e}")
+    logger.error("Enhanced lattice functionality will not be available")
 
 mcp = FastMCP("coaia-sequential-thinking")
 
@@ -2379,6 +2391,127 @@ def get_active_thinking_chains() -> dict:
         }
 
 
+@mcp.tool() 
+def initiate_sequential_thinking(request: str, primary_purpose: str,
+                               persona_sequence: Optional[List[str]] = None,
+                               memory_context: Optional[Dict[str, Any]] = None) -> dict:
+    """Initiate sequential thinking process across multiple personas.
+    
+    Args:
+        request: The request or question to analyze  
+        primary_purpose: The core purpose driving this analysis
+        persona_sequence: Optional ordered list of personas to engage
+        memory_context: Optional memory context for coaia-memory integration
+        
+    Returns:
+        dict: Sequential thinking session details and first perspective
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("initiate_sequential_thinking")
+            
+        logger.info(f"Initiating sequential thinking for: {request}")
+        
+        # Convert string persona sequence to enum if provided
+        converted_sequence = None
+        if persona_sequence:
+            from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import PersonaArchetype
+            converted_sequence = []
+            for persona in persona_sequence:
+                if hasattr(PersonaArchetype, persona.upper()):
+                    converted_sequence.append(PersonaArchetype(persona.lower()))
+        
+        chain_id = enhanced_lattice.initiate_sequential_thinking(
+            request=request,
+            primary_purpose=primary_purpose,
+            persona_sequence=converted_sequence,
+            memory_context=memory_context
+        )
+        
+        # Get the initial thinking status
+        chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
+        
+        return {
+            "sequential_thinking": {
+                "chain_id": chain_id,
+                "initial_request": request,
+                "primary_purpose": primary_purpose,
+                "memory_context_available": memory_context is not None,
+                "chain_status": chain_status
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error initiating sequential thinking: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def advance_thinking_chain(chain_id: str, focus_persona: Optional[str] = None) -> dict:
+    """Advance the sequential thinking chain with the next persona perspective.
+    
+    Args:
+        chain_id: ID of the thinking chain to advance
+        focus_persona: Optional specific persona to focus on for this advancement
+        
+    Returns:
+        dict: New perspective and advancement status
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("advance_thinking_chain")
+            
+        logger.info(f"Advancing thinking chain: {chain_id}")
+        
+        # Convert focus persona if provided
+        focus_enum = None
+        if focus_persona:
+            from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import PersonaArchetype
+            if hasattr(PersonaArchetype, focus_persona.upper()):
+                focus_enum = PersonaArchetype(focus_persona.lower())
+        
+        perspective = enhanced_lattice.advance_thinking_chain(
+            chain_id=chain_id,
+            focus_persona=focus_enum
+        )
+        
+        if not perspective:
+            return {
+                "error": f"Could not advance thinking chain {chain_id}",
+                "status": "failed"
+            }
+        
+        # Get updated chain status
+        chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
+        
+        return {
+            "advancement": {
+                "chain_id": chain_id,
+                "new_perspective": {
+                    "perspective_id": perspective.perspective_id,
+                    "persona_archetype": perspective.persona_archetype,
+                    "viewpoint": perspective.viewpoint,
+                    "concerns": perspective.concerns,
+                    "opportunities": perspective.opportunities,
+                    "confidence_level": perspective.confidence_level
+                },
+                "chain_status": chain_status
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error advancing thinking chain: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
 @mcp.tool()
 def run_full_analysis_chain(request: str, primary_purpose: str, 
                           synthesis_focus: str = "integrated_wisdom",
@@ -2404,16 +2537,13 @@ def run_full_analysis_chain(request: str, primary_purpose: str,
         logger.info(f"Running full analysis chain for: {request}")
         
         # Step 1: Initiate sequential thinking
-        init_result = initiate_sequential_thinking(
+        from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import PersonaArchetype
+        
+        chain_id = enhanced_lattice.initiate_sequential_thinking(
             request=request,
             primary_purpose=primary_purpose,
             memory_context=memory_context
         )
-        
-        if init_result.get("status") != "success":
-            return init_result
-            
-        chain_id = init_result["sequential_thinking"]["chain_id"]
         
         # Step 2: Advance through all personas in sequence
         personas = [
@@ -2424,17 +2554,28 @@ def run_full_analysis_chain(request: str, primary_purpose: str,
         
         collected_perspectives = []
         for persona in personas:
-            advance_result = advance_thinking_chain(chain_id=chain_id)
+            perspective = enhanced_lattice.advance_thinking_chain(
+                chain_id=chain_id,
+                focus_persona=persona
+            )
             
-            if advance_result.get("status") != "success":
+            if not perspective:
                 return {
-                    "error": f"Failed during {persona.value} perspective generation: {advance_result.get('error')}",
+                    "error": f"Failed during {persona.value} perspective generation",
                     "chain_id": chain_id,
                     "collected_perspectives": collected_perspectives,
                     "status": "failed"
                 }
             
-            collected_perspectives.append(advance_result["perspective_generated"])
+            perspective_data = {
+                "perspective_id": perspective.perspective_id,
+                "persona_archetype": perspective.persona_archetype,
+                "viewpoint": perspective.viewpoint,
+                "concerns": perspective.concerns,
+                "opportunities": perspective.opportunities,
+                "confidence_level": perspective.confidence_level
+            }
+            collected_perspectives.append(perspective_data)
         
         # Step 3: Synthesize all perspectives
         synthesis_result = synthesize_thinking_chain(chain_id=chain_id)
