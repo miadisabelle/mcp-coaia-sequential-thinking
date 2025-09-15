@@ -26,6 +26,12 @@ try:
     from .resilient_connection import (
         resilient_connection, NoveltySearchAgent, ExplorationMode, DiscoveryType
     )
+    from .consensus_decision_engine import (
+        ConsensusDecisionEngine, DecisionType, ConsensusStatus, MMORElement
+    )
+    from .enhanced_polycentric_lattice import (
+        EnhancedPolycentricLattice, PersonaArchetype, SequentialThinkingChain
+    )
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -44,6 +50,12 @@ except ImportError:
     from mcp_coaia_sequential_thinking.agent_coordination import task_coordinator, TaskType
     from mcp_coaia_sequential_thinking.resilient_connection import (
         resilient_connection, NoveltySearchAgent, ExplorationMode, DiscoveryType
+    )
+    from mcp_coaia_sequential_thinking.consensus_decision_engine import (
+        ConsensusDecisionEngine, DecisionType, ConsensusStatus, MMORElement
+    )
+    from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import (
+        EnhancedPolycentricLattice, PersonaArchetype, SequentialThinkingChain
     )
 
 logger = configure_logging("coaia-sequential-thinking.server")
@@ -1686,6 +1698,546 @@ def _generate_constitutional_recommendations(validation_result: Dict[str, Any]) 
         recommendations.append("Excellent constitutional compliance - continue with this approach")
     
     return recommendations
+
+
+# Initialize enhanced systems for new tools
+try:
+    from .consensus_decision_engine import DecisionType, ConsensusStatus
+    from .enhanced_polycentric_lattice import EnhancedPolycentricLattice, PersonaArchetype
+    
+    # Initialize enhanced lattice system
+    enhanced_lattice = EnhancedPolycentricLattice(constitutional_core)
+    
+    logger.info("Enhanced polycentric lattice and consensus decision engine initialized")
+except ImportError as e:
+    logger.error(f"Could not import enhanced systems: {e}")
+    enhanced_lattice = None
+
+
+@mcp.tool()
+def initiate_sequential_thinking(request: str, primary_purpose: str, 
+                                persona_sequence: Optional[List[str]] = None,
+                                memory_context: Optional[Dict[str, Any]] = None) -> dict:
+    """Initiate sequential thinking across multiple personas for comprehensive analysis.
+    
+    This implements the multi-persona approach from PR #9 feedback, engaging different
+    archetypes (Mia, Miette, Haiku) for diverse perspective generation.
+    
+    Args:
+        request: The request or question to analyze
+        primary_purpose: The core purpose driving this analysis
+        persona_sequence: Optional list of persona archetypes to engage in order
+        memory_context: Optional memory context for coaia-memory integration
+        
+    Returns:
+        dict: Sequential thinking chain ID and initial status
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed"
+            }
+            
+        logger.info(f"Initiating sequential thinking for: {request}")
+        
+        # Convert string persona names to enums if provided
+        converted_sequence = None
+        if persona_sequence:
+            converted_sequence = []
+            for persona_name in persona_sequence:
+                try:
+                    persona_enum = PersonaArchetype(persona_name.lower().replace(' ', '_'))
+                    converted_sequence.append(persona_enum)
+                except ValueError:
+                    logger.warning(f"Unknown persona archetype: {persona_name}")
+        
+        chain_id = enhanced_lattice.initiate_sequential_thinking(
+            request=request,
+            primary_purpose=primary_purpose,
+            persona_sequence=converted_sequence,
+            memory_context=memory_context
+        )
+        
+        return {
+            "sequential_thinking": {
+                "chain_id": chain_id,
+                "initiating_request": request,
+                "primary_purpose": primary_purpose,
+                "persona_sequence": [p.value for p in (converted_sequence or [
+                    PersonaArchetype.RATIONAL_ARCHITECT,
+                    PersonaArchetype.EMOTIONAL_CATALYST,
+                    PersonaArchetype.WISDOM_SYNTHESIZER
+                ])],
+                "memory_context_keys": list(memory_context.keys()) if memory_context else [],
+                "status": "initiated"
+            },
+            "next_steps": {
+                "advance_chain": "Call advance_thinking_chain to progress through personas",
+                "get_status": "Call get_thinking_chain_status to monitor progress"
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error initiating sequential thinking: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def advance_thinking_chain(chain_id: str, context_data: Optional[Dict[str, Any]] = None) -> dict:
+    """Advance to the next persona in the sequential thinking chain.
+    
+    Args:
+        chain_id: ID of the thinking chain to advance
+        context_data: Optional additional context for the next persona
+        
+    Returns:
+        dict: Generated perspective and chain progress
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available", 
+                "status": "failed"
+            }
+            
+        logger.info(f"Advancing thinking chain: {chain_id}")
+        
+        # Generate perspective from current persona
+        perspective = enhanced_lattice.generate_persona_perspective(chain_id, context_data)
+        
+        if not perspective:
+            return {
+                "error": f"Could not generate perspective for chain {chain_id}",
+                "status": "failed"
+            }
+        
+        # Get updated chain status
+        chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
+        
+        return {
+            "perspective_generated": {
+                "persona_archetype": perspective.persona_archetype.value,
+                "perspective_id": perspective.perspective_id,
+                "viewpoint": perspective.viewpoint,
+                "emotional_resonance": perspective.emotional_resonance,
+                "strategic_insight": perspective.strategic_insight,
+                "cultural_lens": perspective.cultural_lens,
+                "concerns": perspective.concerns,
+                "opportunities": perspective.opportunities,
+                "confidence_level": perspective.confidence_level
+            },
+            "chain_progress": {
+                "perspectives_collected": chain_status["perspectives_collected"],
+                "current_persona_index": chain_status["current_persona_index"],
+                "sequence_complete": chain_status["current_persona_index"] >= len(chain_status["persona_sequence"])
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error advancing thinking chain: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def synthesize_thinking_chain(chain_id: str) -> dict:
+    """Synthesize all perspectives in a thinking chain into integrated wisdom.
+    
+    Args:
+        chain_id: ID of the thinking chain to synthesize
+        
+    Returns:
+        dict: Synthesized perspective integrating all viewpoints
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed"
+            }
+            
+        logger.info(f"Synthesizing thinking chain: {chain_id}")
+        
+        synthesis = enhanced_lattice.synthesize_perspectives(chain_id)
+        
+        if not synthesis:
+            return {
+                "error": f"Could not synthesize perspectives for chain {chain_id}",
+                "status": "failed"
+            }
+        
+        # Get memory integration structure
+        memory_structure = enhanced_lattice.prepare_memory_integration(chain_id)
+        
+        return {
+            "synthesis": {
+                "perspective_id": synthesis.perspective_id,
+                "integrated_viewpoint": synthesis.viewpoint,
+                "emotional_resonance": synthesis.emotional_resonance,
+                "strategic_insight": synthesis.strategic_insight,
+                "cultural_lens": synthesis.cultural_lens,
+                "synthesized_concerns": synthesis.concerns,
+                "synthesized_opportunities": synthesis.opportunities,
+                "confidence_level": synthesis.confidence_level
+            },
+            "memory_integration": memory_structure,
+            "coaia_memory_ready": memory_structure.get("knowledge_graph_ready", False),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error synthesizing thinking chain: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def create_consensus_decision(decision_type: str, primary_purpose: str, proposal: str,
+                            current_reality: str, desired_outcome: str,
+                            participating_agents: Optional[List[str]] = None,
+                            mmor_elements: Optional[List[Dict[str, Any]]] = None) -> dict:
+    """Create a multi-agent consensus decision with delayed resolution principle.
+    
+    This implements the consensus-based decision making system from PR #9 feedback,
+    with MMOR integration and delayed resolution principle.
+    
+    Args:
+        decision_type: Type of decision (primary_choice, secondary_choice, design_element, execution_element)
+        primary_purpose: The primary purpose driving this decision
+        proposal: The proposal to be decided upon
+        current_reality: Current state assessment
+        desired_outcome: Desired outcome from the decision
+        participating_agents: Optional list of agent IDs to include
+        mmor_elements: Optional MMOR elements for design/execution categorization
+        
+    Returns:
+        dict: Consensus decision details and participation info
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed"
+            }
+            
+        logger.info(f"Creating consensus decision: {proposal}")
+        
+        # Convert decision type string to enum
+        try:
+            decision_type_enum = DecisionType(decision_type.lower())
+        except ValueError:
+            return {
+                "error": f"Invalid decision type: {decision_type}",
+                "valid_types": [dt.value for dt in DecisionType],
+                "status": "failed"
+            }
+        
+        # Use persona agents if no specific agents provided
+        if not participating_agents:
+            participating_agents = [
+                "persona_mia_rational",
+                "persona_miette_catalyst", 
+                "persona_haiku_synthesizer"
+            ]
+        
+        # Generate decision ID
+        decision_id = f"consensus_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        # Create consensus decision
+        decision = enhanced_lattice.consensus_engine.initiate_consensus_decision(
+            decision_id=decision_id,
+            decision_type=decision_type_enum,
+            primary_purpose=primary_purpose,
+            proposal=proposal,
+            current_reality=current_reality,
+            desired_outcome=desired_outcome,
+            participating_agents=participating_agents,
+            mmor_elements=mmor_elements
+        )
+        
+        return {
+            "consensus_decision": {
+                "decision_id": decision.decision_id,
+                "decision_type": decision.decision_type.value,
+                "primary_purpose": decision.primary_purpose,
+                "proposal": decision.proposal,
+                "consensus_status": decision.consensus_status.value,
+                "participating_agents": decision.participating_agents,
+                "resolution_delayed": decision.resolution_delayed,
+                "delay_reason": decision.delay_reason,
+                "human_consultation_available": True
+            },
+            "delayed_resolution": {
+                "tension_level": decision.tension.tension_level if decision.tension else 0.0,
+                "resolution_pressure": decision.tension.resolution_pressure if decision.tension else 0.0,
+                "delay_justification": decision.tension.delay_justification if decision.tension else ""
+            },
+            "next_steps": {
+                "get_status": f"Call get_consensus_decision_status with decision_id: {decision_id}",
+                "request_consultation": f"Call request_human_consultation for clarification if needed"
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error creating consensus decision: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_consensus_decision_status(decision_id: str) -> dict:
+    """Get the current status of a consensus decision.
+    
+    Args:
+        decision_id: ID of the consensus decision
+        
+    Returns:
+        dict: Current status, votes, and resolution readiness
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed" 
+            }
+            
+        logger.info(f"Getting consensus decision status: {decision_id}")
+        
+        decision_status = enhanced_lattice.consensus_engine.get_decision_status(decision_id)
+        
+        if not decision_status:
+            return {
+                "error": f"Decision {decision_id} not found",
+                "status": "not_found"
+            }
+        
+        # Check resolution readiness
+        ready, reason = enhanced_lattice.consensus_engine.check_resolution_readiness(decision_id)
+        
+        # Get active decision details if still active
+        additional_details = {}
+        if decision_id in enhanced_lattice.consensus_engine.active_decisions:
+            decision = enhanced_lattice.consensus_engine.active_decisions[decision_id]
+            additional_details = {
+                "current_votes": [
+                    {
+                        "agent_id": vote.agent_id,
+                        "vote": vote.vote,
+                        "reasoning": vote.reasoning,
+                        "confidence": vote.confidence,
+                        "conditions": vote.conditions
+                    }
+                    for vote in decision.votes
+                ],
+                "human_consultation_requests": decision.human_clarification_requests,
+                "human_response": decision.human_response
+            }
+        
+        return {
+            "decision_status": decision_status,
+            "resolution_readiness": {
+                "ready_for_resolution": ready,
+                "readiness_reason": reason
+            },
+            "additional_details": additional_details,
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting consensus decision status: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def request_human_consultation(decision_id: str, clarification_request: str) -> dict:
+    """Request human companion consultation for decision clarification.
+    
+    This implements the human companion loop from PR #9 feedback for complex decisions
+    requiring human insight or clarification.
+    
+    Args:
+        decision_id: ID of the decision requiring consultation
+        clarification_request: Specific clarification or insight needed
+        
+    Returns:
+        dict: Consultation request details and agent perspectives
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed"
+            }
+            
+        logger.info(f"Requesting human consultation for decision: {decision_id}")
+        
+        consultation_request = enhanced_lattice.consensus_engine.request_human_consultation(
+            decision_id=decision_id,
+            clarification_request=clarification_request
+        )
+        
+        if "error" in consultation_request:
+            return {
+                "error": consultation_request["error"],
+                "status": "failed"
+            }
+        
+        return {
+            "human_consultation": consultation_request,
+            "consultation_workflow": {
+                "step_1": "Human reviews the decision context and agent perspectives",
+                "step_2": "Human provides insights via provide_human_response tool", 
+                "step_3": "Agents incorporate human input for final decision"
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error requesting human consultation: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def provide_human_response(decision_id: str, human_response: str) -> dict:
+    """Provide human response to a consultation request.
+    
+    Args:
+        decision_id: ID of the decision being consulted on
+        human_response: Human insights, clarification, or guidance
+        
+    Returns:
+        dict: Response integration status and updated decision state
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed"
+            }
+            
+        logger.info(f"Providing human response for decision: {decision_id}")
+        
+        success = enhanced_lattice.consensus_engine.provide_human_response(
+            decision_id=decision_id,
+            human_response=human_response
+        )
+        
+        if not success:
+            return {
+                "error": f"Could not provide human response for decision {decision_id}",
+                "status": "failed"
+            }
+        
+        # Get updated decision status
+        updated_status = enhanced_lattice.consensus_engine.get_decision_status(decision_id)
+        
+        return {
+            "human_response_integration": {
+                "decision_id": decision_id,
+                "response_integrated": True,
+                "human_response": human_response,
+                "updated_status": updated_status["consensus_status"]
+            },
+            "next_steps": {
+                "agents_will": "Incorporate human insights into their analysis",
+                "check_status": f"Monitor decision progress with get_consensus_decision_status"
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error providing human response: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_thinking_chain_status(chain_id: str) -> dict:
+    """Get the current status of a sequential thinking chain.
+    
+    Args:
+        chain_id: ID of the thinking chain
+        
+    Returns:
+        dict: Chain status, perspectives collected, and progress
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed"
+            }
+            
+        chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
+        
+        if not chain_status:
+            return {
+                "error": f"Thinking chain {chain_id} not found",
+                "status": "not_found"
+            }
+        
+        return {
+            "thinking_chain_status": chain_status,
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting thinking chain status: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_active_thinking_chains() -> dict:
+    """Get all active sequential thinking chains.
+    
+    Returns:
+        dict: List of active thinking chains and their status
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed"
+            }
+            
+        active_chains = enhanced_lattice.get_active_thinking_chains()
+        
+        return {
+            "active_thinking_chains": active_chains,
+            "total_active": len(active_chains),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting active thinking chains: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
 
 
 def _get_principle_description(principle: ConstitutionalPrinciple) -> str:
