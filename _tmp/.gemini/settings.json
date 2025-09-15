@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "coaia-sequential-thinker": {
+      "command": "/opt/anaconda3/envs/src/bin/mcp-coaia-sequential-thinking",
+      "args": [ ],
+      "env": {
+        }
+    }
+  }
+}
