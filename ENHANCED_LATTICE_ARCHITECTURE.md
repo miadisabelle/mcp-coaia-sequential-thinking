@@ -24,7 +24,7 @@ graph TB
         subgraph "Consensus Decision Engine"
             CDE[Consensus Decision Engine]
             DRP[Delayed Resolution Principle]
-            MMOR[MMOR Integration<br/>Design/Execution Elements]
+            MMOT[MMOT Integration<br/>Design/Execution Elements]
         end
         
         subgraph "Sequential Thinking Chain"
@@ -62,7 +62,7 @@ graph TB
     SYN --> CDE
     
     CDE --> DRP
-    CDE --> MMOR
+    CDE --> MMOT
     CDE --> HCL
     
     HCL --> HRI
@@ -83,7 +83,7 @@ graph TB
     classDef constitutional fill:#fff3e0
     
     class MIA,MIETTE,HAIKU persona
-    class CDE,DRP,MMOR,HCL,HRI consensus
+    class CDE,DRP,MMOT,HCL,HRI consensus
     class CM,KG,STC_CHART memory
     class CC,DR,ST constitutional
 ```
@@ -206,11 +206,11 @@ mindmap
         Knowledge Preservation
 ```
 
-## MMOR Integration: Design vs Execution Elements
+## MMOT Integration: Design vs Execution Elements
 
 ```mermaid
 graph LR
-    subgraph "MMOR Framework"
+    subgraph "MMOT Framework"
         subgraph "Design Elements (Strategic)"
             DE1[Vision & Purpose]
             DE2[Structural Architecture]
@@ -371,9 +371,9 @@ graph TB
     "proposal": "Implement progressive disclosure with persona-based navigation",
     "current_reality": "Current interface is complex and overwhelming for new users",
     "desired_outcome": "Intuitive interface that guides users through multi-persona collaboration",
-    "mmor_elements": [
+    "mmot_elements": [
       {
-        "element_type": "design_element",
+        "element_type": "design_element", 
         "description": "User interface architecture",
         "strategic_level": true
       }
@@ -454,5 +454,63 @@ graph LR
     SP --> ARCANA
     CW --> ME
 ```
+
+## Orientation-Shifting Sequential Thinking
+
+### Dynamic Perspective Switching Capabilities
+
+Based on the request from Mia - Recursive Mapper regarding orientation-shifting capabilities, the enhanced lattice implements **Orientation-Fluid Sequential Processing** with the following specifications:
+
+```typescript
+interface OrientationShiftingAgent {
+  sequentialProcessor: {
+    thinkingChain: Array<ReasoningStep>
+    orientationFlow: PerspectiveShift[]
+    latticeAwareness: PolycentricContext
+  }
+  
+  capabilityDiscovery: {
+    availableOrientations: AgentCapabilityMap
+    dynamicSwitching: OrientationTrigger[]
+    coherenceMaintenance: NarrativeThread
+  }
+}
+```
+
+### Orientation Flow Patterns
+
+```mermaid
+stateDiagram-v2
+    [*] --> Scientist: Context-triggered switch
+    Scientist --> Artist: Creative leap required
+    Artist --> Facilitator: Integration needed
+    Facilitator --> Scientist: Analysis required
+    
+    Scientist --> Facilitator: Direct facilitation
+    Artist --> Scientist: Technical grounding
+    Facilitator --> Artist: Creative inspiration
+    
+    note right of Scientist: Technical precision, structural analysis
+    note right of Artist: Creative exploration, possibility generation
+    note right of Facilitator: Integration, consensus building
+```
+
+### Integration Points
+
+- **MMOT Design/Execution Framework**: Orientation shifts align with strategic/tactical categorization
+- **CoAiA Arena Creative Orientation Research**: Leverages creative orientation principles
+- **Human Companion Decision Loops**: Orientation switching informed by human insights  
+- **Knowledge Graph Memory**: Context-aware orientation selection based on memory patterns
+
+### Expected Behaviors
+
+- **Scientist → Artist → Facilitator**: Natural progression through creative process phases
+- **Context-Triggered Switching**: Automatic orientation changes based on task requirements
+- **Coherent Reasoning**: Maintains narrative thread across orientation shifts
+- **Structural Tension Holding**: Preserves tension dynamics through perspective changes
+
+This implementation enables the gap between rigid sequential AI and fluid human-like perspective shifting while maintaining technical rigor, perfectly aligned for federated consensus completion and the Agora/Arcana migration ecosystem.
+
+---
 
 This architecture positions the enhanced polycentric lattice as the foundation for the next generation of creative AI systems, integrating human wisdom with artificial intelligence in a truly collaborative framework.
