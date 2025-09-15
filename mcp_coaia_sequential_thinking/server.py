@@ -1700,18 +1700,49 @@ def _generate_constitutional_recommendations(validation_result: Dict[str, Any]) 
     return recommendations
 
 
+def _enhanced_lattice_error_response(function_name: str) -> dict:
+    """Generate a comprehensive error response when enhanced lattice is not available."""
+    logger.error(f"Enhanced lattice not available during {function_name} call")
+    logger.error("This typically means MCP dependencies are missing or there was an initialization error")
+    logger.error("Please ensure 'mcp[cli]>=1.2.0' is installed: pip install -r requirements.txt")
+    return {
+        "error": "Enhanced lattice not available - MCP dependencies may be missing",
+        "troubleshooting": {
+            "install_dependencies": "Run: pip install -r requirements.txt",
+            "install_package": "Or run: pip install -e .",
+            "check_server_logs": "Look for ImportError or initialization errors in server startup logs",
+            "verify_installation": "Check with: pip list | grep mcp",
+            "restart_server": "Restart the MCP server after installing dependencies"
+        },
+        "function_attempted": function_name,
+        "status": "failed"
+    }
+
+
 # Initialize enhanced systems for new tools
-# try: # Commented out for debugging
-from .consensus_decision_engine import DecisionType, ConsensusStatus
-from .enhanced_polycentric_lattice import EnhancedPolycentricLattice, PersonaArchetype
+try:
+    from .consensus_decision_engine import DecisionType, ConsensusStatus
+    from .enhanced_polycentric_lattice import EnhancedPolycentricLattice, PersonaArchetype
 
-# Initialize enhanced lattice system
-enhanced_lattice = EnhancedPolycentricLattice(constitutional_core)
+    # Initialize enhanced lattice system
+    enhanced_lattice = EnhancedPolycentricLattice(constitutional_core)
 
-logger.info("Enhanced polycentric lattice and consensus decision engine initialized")
-# except ImportError as e: # Commented out for debugging
-#     logger.error(f"Could not import enhanced systems: {e}") # Commented out for debugging
-#     enhanced_lattice = None # Commented out for debugging
+    logger.info("Enhanced polycentric lattice and consensus decision engine initialized successfully")
+except ImportError as e:
+    logger.error(f"ImportError while importing enhanced systems: {e}")
+    logger.error("Available modules in package:")
+    import os
+    package_dir = os.path.dirname(__file__)
+    if os.path.exists(package_dir):
+        modules = [f for f in os.listdir(package_dir) if f.endswith('.py')]
+        logger.error(f"Available modules: {modules}")
+    enhanced_lattice = None
+except Exception as e:
+    logger.error(f"Unexpected error initializing enhanced systems: {e}")
+    logger.error(f"Error type: {type(e).__name__}")
+    import traceback
+    logger.error(f"Full traceback:\n{traceback.format_exc()}")
+    enhanced_lattice = None
 
 
 @mcp.tool()
@@ -1734,10 +1765,7 @@ def initiate_sequential_thinking(request: str, primary_purpose: str,
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("initiate_sequential_thinking")
             
         logger.info(f"Initiating sequential thinking for: {request}")
         
@@ -1800,10 +1828,7 @@ def advance_thinking_chain(chain_id: str, context_data: Optional[Dict[str, Any]]
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available", 
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("advance_thinking_chain")
             
         logger.info(f"Advancing thinking chain: {chain_id}")
         
@@ -1859,10 +1884,7 @@ def synthesize_thinking_chain(chain_id: str) -> dict:
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("synthesize_thinking_chain")
             
         logger.info(f"Synthesizing thinking chain: {chain_id}")
         
@@ -1925,10 +1947,7 @@ def create_consensus_decision(decision_type: str, primary_purpose: str, proposal
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("create_consensus_decision")
             
         logger.info(f"Creating consensus decision: {proposal}")
         
@@ -2009,10 +2028,7 @@ def get_consensus_decision_status(decision_id: str) -> dict:
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed" 
-            }
+            return _enhanced_lattice_error_response("get_consensus_decision_status")
             
         logger.info(f"Getting consensus decision status: {decision_id}")
         
@@ -2080,10 +2096,7 @@ def request_human_consultation(decision_id: str, clarification_request: str) -> 
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("request_human_consultation")
             
         logger.info(f"Requesting human consultation for decision: {decision_id}")
         
@@ -2129,10 +2142,7 @@ def provide_human_response(decision_id: str, human_response: str) -> dict:
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("provide_human_response")
             
         logger.info(f"Providing human response for decision: {decision_id}")
         
@@ -2184,10 +2194,7 @@ def get_thinking_chain_status(chain_id: str) -> dict:
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("get_thinking_chain_status")
             
         chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
         
@@ -2219,10 +2226,7 @@ def get_active_thinking_chains() -> dict:
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("get_active_thinking_chains")
             
         active_chains = enhanced_lattice.get_active_thinking_chains()
         
@@ -2260,10 +2264,7 @@ def run_full_analysis_chain(request: str, primary_purpose: str,
     """
     try:
         if not enhanced_lattice:
-            return {
-                "error": "Enhanced lattice not available",
-                "status": "failed"
-            }
+            return _enhanced_lattice_error_response("run_full_analysis_chain")
             
         logger.info(f"Running full analysis chain for: {request}")
         
