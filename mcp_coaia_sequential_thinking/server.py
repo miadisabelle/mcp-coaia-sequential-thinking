@@ -2240,6 +2240,111 @@ def get_active_thinking_chains() -> dict:
         }
 
 
+@mcp.tool()
+def run_full_analysis_chain(request: str, primary_purpose: str, 
+                          synthesis_focus: str = "integrated_wisdom",
+                          memory_context: Optional[Dict[str, Any]] = None) -> dict:
+    """High-level wrapper that runs complete sequential thinking analysis in one call.
+    
+    This is Mia's requested wrapper tool for simpler use cases, encapsulating the
+    initiate -> advance (loop) -> synthesize workflow with internal chain_id management.
+    
+    Args:
+        request: The request or question to analyze
+        primary_purpose: The core purpose driving this analysis  
+        synthesis_focus: Focus for final synthesis (default: "integrated_wisdom")
+        memory_context: Optional memory context for coaia-memory integration
+        
+    Returns:
+        dict: Complete analysis including all perspectives and final synthesis
+    """
+    try:
+        if not enhanced_lattice:
+            return {
+                "error": "Enhanced lattice not available",
+                "status": "failed"
+            }
+            
+        logger.info(f"Running full analysis chain for: {request}")
+        
+        # Step 1: Initiate sequential thinking
+        init_result = initiate_sequential_thinking(
+            request=request,
+            primary_purpose=primary_purpose,
+            memory_context=memory_context
+        )
+        
+        if init_result.get("status") != "success":
+            return init_result
+            
+        chain_id = init_result["sequential_thinking"]["chain_id"]
+        
+        # Step 2: Advance through all personas in sequence
+        personas = [
+            PersonaArchetype.RATIONAL_ARCHITECT,
+            PersonaArchetype.EMOTIONAL_CATALYST, 
+            PersonaArchetype.WISDOM_SYNTHESIZER
+        ]
+        
+        collected_perspectives = []
+        for persona in personas:
+            advance_result = advance_thinking_chain(chain_id=chain_id)
+            
+            if advance_result.get("status") != "success":
+                return {
+                    "error": f"Failed during {persona.value} perspective generation: {advance_result.get('error')}",
+                    "chain_id": chain_id,
+                    "collected_perspectives": collected_perspectives,
+                    "status": "failed"
+                }
+            
+            collected_perspectives.append(advance_result["perspective_generated"])
+        
+        # Step 3: Synthesize all perspectives
+        synthesis_result = synthesize_thinking_chain(chain_id=chain_id)
+        
+        if synthesis_result.get("status") != "success":
+            return {
+                "error": f"Failed during synthesis: {synthesis_result.get('error')}",
+                "chain_id": chain_id,
+                "collected_perspectives": collected_perspectives,
+                "status": "failed"
+            }
+        
+        # Return comprehensive results
+        return {
+            "complete_analysis": {
+                "chain_id": chain_id,
+                "original_request": request,
+                "primary_purpose": primary_purpose,
+                "analysis_summary": {
+                    "mia_confidence": next((p["confidence_level"] for p in collected_perspectives 
+                                          if p["persona_archetype"] == "rational_architect"), 0.0),
+                    "miette_confidence": next((p["confidence_level"] for p in collected_perspectives 
+                                            if p["persona_archetype"] == "emotional_catalyst"), 0.0),
+                    "haiku_confidence": next((p["confidence_level"] for p in collected_perspectives 
+                                           if p["persona_archetype"] == "wisdom_synthesizer"), 0.0),
+                    "final_confidence": synthesis_result["synthesis"]["confidence_level"]
+                }
+            },
+            "personas_perspectives": collected_perspectives,
+            "final_synthesis": synthesis_result["synthesis"]["integrated_viewpoint"],
+            "confidence": synthesis_result["synthesis"]["confidence_level"],
+            "strategic_insights": synthesis_result["synthesis"]["strategic_insight"],
+            "synthesized_opportunities": synthesis_result["synthesis"]["synthesized_opportunities"],
+            "memory_integration": synthesis_result["memory_integration"],
+            "coaia_memory_ready": synthesis_result.get("coaia_memory_ready", False),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error running full analysis chain: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
 def _get_principle_description(principle: ConstitutionalPrinciple) -> str:
     """Get human-readable description for a constitutional principle."""
     descriptions = {
