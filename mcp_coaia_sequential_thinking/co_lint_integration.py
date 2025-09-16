@@ -4,6 +4,10 @@ Co-Lint SCCP Integration Module
 This module integrates CO-Lint Creative Orientation Linter with SCCP-based
 structural tension methodology for real-time thought validation and guidance.
 
+Enhanced with data persistence for pattern learning and constitutional compliance tracking.
+Follows non-intrusive feedback principle: creative work remains primary deliverable,
+with analytical data provided as structured metadata.
+
 Connects to Issue #136 (CO-Lint) and #133 (AI consistency checker for structural tension methodology compliance)
 """
 
@@ -23,14 +27,30 @@ try:
     from co_lint.realtime_filter import lint_text
     from co_lint.rules import ALL_RULES
     CO_LINT_AVAILABLE = True
+    # logger will be defined later
 except ImportError:
     CO_LINT_AVAILABLE = False
     lint_text = None
     ALL_RULES = {}
+    # logger will be defined later
 
 from .models import ThoughtData, ThoughtStage
 
+# Import data persistence for pattern learning
+try:
+    from .data_persistence import data_store
+    DATA_PERSISTENCE_AVAILABLE = True
+except ImportError:
+    DATA_PERSISTENCE_AVAILABLE = False
+    data_store = None
+
 logger = logging.getLogger(__name__)
+
+# Log CO-Lint status after logger is defined
+if CO_LINT_AVAILABLE:
+    logger.info("CO-Lint successfully integrated with data persistence")
+else:
+    logger.warning("CO-Lint not available - using SCCP-only rules with data persistence")
 
 
 class ValidationSeverity(Enum):
@@ -345,4 +365,124 @@ def validate_thought(content: str, thought_data: Optional[ThoughtData] = None) -
     Returns:
         SCCPValidationSummary with comprehensive validation results
     """
-    return co_lint_filter.validate_thought_content(content, thought_data)
+    validator = CoLintSCCPFilter()
+    summary = validator.validate_thought_content(content, thought_data)
+    
+    # Store validation results for pattern learning if data persistence is available
+    if DATA_PERSISTENCE_AVAILABLE and data_store:
+        try:
+            validation_data = {
+                'content': content,
+                'creative_orientation_score': summary.creative_orientation_score,
+                'reactive_patterns_detected': {
+                    'patterns': [finding.message for finding in summary.co_lint_findings if finding.severity == ValidationSeverity.ERROR],
+                    'count': len([f for f in summary.co_lint_findings if finding.severity == ValidationSeverity.ERROR])
+                },
+                'advancing_indicators': {
+                    'patterns': [finding.message for finding in summary.co_lint_findings if finding.severity == ValidationSeverity.INFO],
+                    'structural_tension_strength': summary.structural_tension.value
+                },
+                'co_lint_results': {
+                    'findings': [{'rule': f.rule_id, 'message': f.message, 'severity': f.severity.value} 
+                               for f in summary.co_lint_findings],
+                    'total_findings': len(summary.co_lint_findings)
+                },
+                'recommendations': summary.recommendations
+            }
+            
+            data_store.store_orientation_validation(validation_data)
+            logger.debug(f"Stored validation results for pattern learning")
+            
+        except Exception as e:
+            logger.warning(f"Failed to store validation data: {e}")
+    
+    return summary
+
+
+# Enhanced pattern analysis functions for creative orientation learning
+
+def get_user_creative_patterns(limit: int = 100) -> Dict[str, Any]:
+    """
+    Analyze user's creative orientation patterns from stored validation data.
+    
+    Returns insights about creative vs reactive tendencies, common patterns,
+    and recommendations for improving creative orientation.
+    """
+    if not DATA_PERSISTENCE_AVAILABLE or not data_store:
+        return {"error": "Data persistence not available"}
+    
+    try:
+        # Get recent validation data for pattern analysis
+        patterns = data_store.get_orientation_patterns(limit)
+        
+        if not patterns:
+            return {"message": "No validation data available yet"}
+        
+        # Analyze patterns
+        total_validations = len(patterns)
+        avg_creative_score = sum(p.get('creative_orientation_score', 0) for p in patterns) / total_validations
+        
+        # Identify most common reactive patterns
+        reactive_patterns = {}
+        advancing_indicators = {}
+        
+        for pattern in patterns:
+            # Count reactive patterns
+            reactive_data = pattern.get('reactive_patterns_detected', {})
+            if isinstance(reactive_data, dict):
+                for p in reactive_data.get('patterns', []):
+                    reactive_patterns[p] = reactive_patterns.get(p, 0) + 1
+            
+            # Count advancing indicators  
+            advancing_data = pattern.get('advancing_indicators', {})
+            if isinstance(advancing_data, dict):
+                for p in advancing_data.get('patterns', []):
+                    advancing_indicators[p] = advancing_indicators.get(p, 0) + 1
+        
+        # Generate insights
+        insights = {
+            "total_validations": total_validations,
+            "average_creative_orientation_score": round(avg_creative_score, 2),
+            "orientation_trend": "creative" if avg_creative_score > 0.7 else "reactive" if avg_creative_score < 0.4 else "mixed",
+            "most_common_reactive_patterns": sorted(reactive_patterns.items(), key=lambda x: x[1], reverse=True)[:5],
+            "strongest_advancing_indicators": sorted(advancing_indicators.items(), key=lambda x: x[1], reverse=True)[:5],
+            "recommendations": _generate_personalized_recommendations(avg_creative_score, reactive_patterns, advancing_indicators)
+        }
+        
+        return insights
+        
+    except Exception as e:
+        logger.error(f"Error analyzing creative patterns: {e}")
+        return {"error": str(e)}
+
+
+def _generate_personalized_recommendations(avg_score: float, reactive_patterns: Dict, advancing_indicators: Dict) -> List[str]:
+    """Generate personalized recommendations based on user patterns."""
+    recommendations = []
+    
+    if avg_score < 0.4:
+        recommendations.append("Focus on establishing clear desired outcomes before analyzing current reality")
+        recommendations.append("Practice framing challenges as 'What do I want to create?' instead of 'What problem needs fixing?'")
+    
+    if avg_score < 0.6:
+        recommendations.append("Strengthen structural tension by clarifying both current reality and desired outcomes")
+        recommendations.append("Use advancing language: 'create', 'build', 'develop' instead of 'fix', 'solve', 'eliminate'")
+    
+    # Recommendations based on most common reactive patterns
+    common_reactive = list(reactive_patterns.keys())[:3]
+    if any('problem' in pattern.lower() for pattern in common_reactive):
+        recommendations.append("Reduce problem-focused language - reframe as outcome creation opportunities")
+    
+    if any('fix' in pattern.lower() or 'solve' in pattern.lower() for pattern in common_reactive):
+        recommendations.append("Transform fix/solve language into build/create language for advancing patterns")
+    
+    # Leverage existing strengths
+    strong_advancing = list(advancing_indicators.keys())[:2] 
+    if strong_advancing:
+        recommendations.append(f"Continue leveraging your strengths in: {', '.join(strong_advancing)}")
+    
+    return recommendations[:5]  # Limit to top 5 recommendations
+
+
+# Export enhanced co_lint validator for integration with other modules
+enhanced_co_lint_validator = CoLintSCCPFilter()

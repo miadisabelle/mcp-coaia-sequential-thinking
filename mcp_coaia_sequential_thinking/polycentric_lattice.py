@@ -19,6 +19,7 @@ from queue import Queue, Empty
 import time
 
 from .constitutional_core import constitutional_core, ConstitutionalPrinciple
+from .data_persistence import data_store
 
 logger = logging.getLogger(__name__)
 
@@ -211,6 +212,21 @@ class BaseAgent(ABC):
             timestamp=datetime.now(),
             requires_response=requires_response
         )
+        
+        # Store message in persistent storage
+        try:
+            data_store.store_agent_message({
+                'message_id': message_id,
+                'sender_id': self.agent_id,
+                'recipient_id': recipient_id,
+                'message_type': message_type.value,
+                'priority': priority.value,
+                'content': content,
+                'timestamp': message.timestamp.isoformat(),
+                'requires_response': requires_response
+            })
+        except Exception as e:
+            logger.warning(f"Failed to store message {message_id}: {e}")
         
         # Route message through the agent registry
         from .polycentric_lattice import agent_registry
