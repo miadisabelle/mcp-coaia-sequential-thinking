@@ -2662,6 +2662,171 @@ def _get_principle_category(principle: ConstitutionalPrinciple) -> str:
     return categories.get(principle, "Uncategorized")
 
 
+@mcp.tool()
+def check_agent_creative_orientation(
+    recent_content: Optional[str] = None,
+    tool_intention: Optional[str] = None
+) -> dict:
+    """Allow agents to check their creative vs reactive orientation before using other MCP tools.
+    
+    This enables agents to self-assess their orientation and receive guidance on appropriate
+    tool usage, supporting the dotCoAiA framework for Creative-Orientation-Agentic-Intelligence.
+    
+    Args:
+        recent_content: Optional recent content/thoughts to validate orientation
+        tool_intention: What MCP tool the agent intends to use next
+        
+    Returns:
+        dict: Orientation status, tool readiness, and usage guidance
+    """
+    try:
+        # Import the enhanced pattern analysis
+        from mcp_coaia_sequential_thinking.co_lint_integration import (
+            get_user_creative_patterns, validate_thought
+        )
+        
+        # Get overall pattern analysis
+        patterns = get_user_creative_patterns(limit=50)
+        
+        result = {
+            "orientation_check": {
+                "timestamp": datetime.now().isoformat(),
+                "agent_status": patterns.get("agent_orientation_awareness", {}),
+                "overall_score": patterns.get("average_creative_orientation_score", 0),
+                "trend": patterns.get("orientation_trend", "unknown")
+            },
+            "mcp_tool_readiness": patterns.get("agent_orientation_awareness", {}).get("mcp_interaction_recommendations", {}),
+            "guidance": patterns.get("agent_orientation_awareness", {}).get("tool_usage_guidance", [])
+        }
+        
+        # If recent content provided, validate it specifically
+        if recent_content:
+            validation = validate_thought(recent_content)
+            content_score = validation.creative_orientation_score
+            
+            result["recent_content_analysis"] = {
+                "creative_orientation_score": content_score,
+                "advancing_pattern_detected": validation.advancing_pattern_detected,
+                "structural_tension_established": validation.structural_tension_established,
+                "content_readiness": "ready" if content_score >= 0.6 else "needs_improvement" if content_score >= 0.3 else "requires_reframing"
+            }
+        
+        # If tool intention specified, provide specific guidance
+        if tool_intention:
+            tool_guidance = _get_tool_specific_guidance(
+                tool_intention, 
+                result["orientation_check"]["overall_score"],
+                patterns.get("most_common_reactive_patterns", [])
+            )
+            result["tool_specific_guidance"] = tool_guidance
+        
+        # CoAiA-memory integration data
+        result["coaia_memory_integration"] = patterns.get("coaia_memory_integration", {})
+        
+        # Self-awareness recommendations
+        result["self_awareness_recommendations"] = _generate_self_awareness_recommendations(
+            result["orientation_check"]["overall_score"],
+            patterns.get("most_common_reactive_patterns", [])
+        )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error in orientation check: {e}")
+        return {
+            "error": f"Orientation check failed: {str(e)}",
+            "fallback_guidance": [
+                "Establish clear desired outcome before proceeding",
+                "Avoid problem-solving language",
+                "Focus on creating rather than fixing"
+            ]
+        }
+
+
+def _get_tool_specific_guidance(tool_name: str, orientation_score: float, reactive_patterns: List) -> Dict[str, Any]:
+    """Generate specific guidance for intended MCP tool usage."""
+    
+    tool_guidance = {
+        "tool_name": tool_name,
+        "readiness_level": "high" if orientation_score >= 0.7 else "moderate" if orientation_score >= 0.5 else "low",
+        "proceed": orientation_score >= 0.4,
+        "warnings": [],
+        "preparation_steps": []
+    }
+    
+    # Tool-specific guidance
+    if tool_name == "initiate_sequential_thinking":
+        if orientation_score < 0.5:
+            tool_guidance["warnings"].append("Risk of reactive pattern in chain initiation")
+            tool_guidance["preparation_steps"].append("Clarify desired outcome before initiating chain")
+        
+        if any("problem" in str(pattern[0]).lower() for pattern in reactive_patterns[:3]):
+            tool_guidance["warnings"].append("Problem-focused language detected in recent patterns")
+            tool_guidance["preparation_steps"].append("Reframe request as outcome creation")
+    
+    elif tool_name == "advance_thinking_chain":
+        if orientation_score < 0.6:
+            tool_guidance["warnings"].append("May disrupt creative flow between personas")
+            tool_guidance["preparation_steps"].append("Establish structural tension before advancing")
+    
+    elif tool_name == "create_consensus_decision":
+        if orientation_score < 0.7:
+            tool_guidance["warnings"].append("Risk of problem-solving consensus rather than creative consensus")
+            tool_guidance["preparation_steps"].append("Verify advancing pattern focus in decision context")
+    
+    elif tool_name == "run_full_analysis_chain":
+        if orientation_score < 0.6:
+            tool_guidance["warnings"].append("Complex analysis may amplify reactive patterns")
+            tool_guidance["preparation_steps"].append("Complete orientation training before full analysis")
+            tool_guidance["proceed"] = False
+    
+    return tool_guidance
+
+
+def _generate_self_awareness_recommendations(orientation_score: float, reactive_patterns: List) -> List[str]:
+    """Generate self-awareness recommendations for agent development."""
+    recommendations = []
+    
+    if orientation_score < 0.4:
+        recommendations.extend([
+            "CRITICAL: Agent demonstrates strong reactive orientation",
+            "PRACTICE: Daily desired outcome establishment exercises", 
+            "AVOID: Using complex MCP tools until orientation improves",
+            "FOCUS: Transform all 'problems' into 'desired outcomes'"
+        ])
+    elif orientation_score < 0.6:
+        recommendations.extend([
+            "DEVELOPING: Agent shows mixed orientation patterns",
+            "STRENGTHEN: Structural tension awareness in all interactions",
+            "MONITOR: Watch for reactive language patterns",
+            "ADVANCE: Practice advancing language consistently"
+        ])
+    elif orientation_score < 0.8:
+        recommendations.extend([
+            "GOOD: Agent demonstrates solid creative orientation",
+            "REFINE: Optimize consistency across all tool interactions",
+            "LEADERSHIP: Ready to guide other agents in orientation",
+            "EXCEL: Focus on mastery of complex structural tensions"
+        ])
+    else:
+        recommendations.extend([
+            "MASTERY: Agent exhibits excellent creative orientation",
+            "MENTOR: Capable of training other agents in creative practices",
+            "INNOVATE: Ready for advanced structural dynamics work",
+            "LEAD: Can pioneer new creative orientation applications"
+        ])
+    
+    # Pattern-specific recommendations
+    if reactive_patterns:
+        top_reactive = [pattern[0] for pattern in reactive_patterns[:2]]
+        if any('solve' in pattern.lower() for pattern in top_reactive):
+            recommendations.append("TRANSFORM: Replace 'solve' language with 'create' language")
+        if any('fix' in pattern.lower() for pattern in top_reactive):
+            recommendations.append("REFRAME: Change 'fix' mindset to 'build' mindset")
+    
+    return recommendations
+
+
 def main():
     """Entry point for the MCP server."""
     logger.info("Starting CoAiA Sequential Thinking MCP server")

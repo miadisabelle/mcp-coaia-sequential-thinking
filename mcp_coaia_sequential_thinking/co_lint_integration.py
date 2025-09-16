@@ -405,7 +405,7 @@ def validate_thought(content: str, thought_data: Optional[ThoughtData] = None) -
     return summary
 
 
-# Enhanced pattern analysis functions for creative orientation learning
+# Enhanced pattern analysis functions for creative orientation learning and agent self-awareness
 
 def get_user_creative_patterns(limit: int = 100) -> Dict[str, Any]:
     """
@@ -445,14 +445,26 @@ def get_user_creative_patterns(limit: int = 100) -> Dict[str, Any]:
                 for p in advancing_data.get('patterns', []):
                     advancing_indicators[p] = advancing_indicators.get(p, 0) + 1
         
-        # Generate insights
+        # Generate insights with agent self-awareness
         insights = {
             "total_validations": total_validations,
             "average_creative_orientation_score": round(avg_creative_score, 2),
             "orientation_trend": "creative" if avg_creative_score > 0.7 else "reactive" if avg_creative_score < 0.4 else "mixed",
             "most_common_reactive_patterns": sorted(reactive_patterns.items(), key=lambda x: x[1], reverse=True)[:5],
             "strongest_advancing_indicators": sorted(advancing_indicators.items(), key=lambda x: x[1], reverse=True)[:5],
-            "recommendations": _generate_personalized_recommendations(avg_creative_score, reactive_patterns, advancing_indicators)
+            "recommendations": _generate_personalized_recommendations(avg_creative_score, reactive_patterns, advancing_indicators),
+            # Enhanced agent self-awareness
+            "agent_orientation_awareness": {
+                "current_orientation_status": _determine_orientation_status(avg_creative_score),
+                "tool_usage_guidance": _generate_tool_usage_guidance(avg_creative_score, reactive_patterns),
+                "mcp_interaction_recommendations": _generate_mcp_interaction_recommendations(avg_creative_score)
+            },
+            # CoAiA-memory integration ready data
+            "coaia_memory_integration": {
+                "structural_tension_ready": True,
+                "pattern_entities": _prepare_coaia_memory_entities(patterns[:20]),  # Latest 20 patterns
+                "knowledge_graph_nodes": _generate_knowledge_graph_nodes(reactive_patterns, advancing_indicators)
+            }
         }
         
         return insights
@@ -460,6 +472,154 @@ def get_user_creative_patterns(limit: int = 100) -> Dict[str, Any]:
     except Exception as e:
         logger.error(f"Error analyzing creative patterns: {e}")
         return {"error": str(e)}
+
+
+def _determine_orientation_status(avg_score: float) -> Dict[str, Any]:
+    """Determine the agent's current orientation status for self-awareness."""
+    if avg_score >= 0.8:
+        return {
+            "status": "strongly_creative",
+            "confidence": "high",
+            "description": "Agent consistently demonstrates creative orientation - ideal for structural tension work",
+            "mcp_tool_readiness": "optimal"
+        }
+    elif avg_score >= 0.6:
+        return {
+            "status": "moderately_creative", 
+            "confidence": "good",
+            "description": "Agent shows good creative orientation with occasional reactive tendencies",
+            "mcp_tool_readiness": "ready"
+        }
+    elif avg_score >= 0.4:
+        return {
+            "status": "mixed_orientation",
+            "confidence": "moderate",
+            "description": "Agent exhibits mixed creative/reactive patterns - needs guidance",
+            "mcp_tool_readiness": "needs_guidance"
+        }
+    else:
+        return {
+            "status": "reactive_dominant",
+            "confidence": "low", 
+            "description": "Agent demonstrates strong reactive patterns - requires orientation training",
+            "mcp_tool_readiness": "requires_training"
+        }
+
+
+def _generate_tool_usage_guidance(avg_score: float, reactive_patterns: Dict) -> List[str]:
+    """Generate specific guidance for how agents should use MCP tools based on their orientation."""
+    guidance = []
+    
+    if avg_score < 0.4:
+        guidance.append("CAUTION: Before using initiate_sequential_thinking, establish clear desired outcome first")
+        guidance.append("AVOID: Using advance_thinking_chain when focused on problem-solving - reframe as outcome creation")
+        guidance.append("PRACTICE: Use create_consensus_decision only after establishing structural tension")
+    
+    elif avg_score < 0.6:
+        guidance.append("RECOMMENDED: Begin each MCP tool interaction with desired outcome clarification")
+        guidance.append("MONITOR: Watch for reactive language patterns during sequential thinking chains")
+        guidance.append("STRENGTHEN: Use synthesize_thinking_chain to integrate creative perspectives")
+    
+    else:
+        guidance.append("OPTIMAL: Agent demonstrates strong creative orientation - all MCP tools available")
+        guidance.append("LEADERSHIP: Can guide other agents in creative orientation practices")
+        guidance.append("ADVANCED: Ready for complex structural tension chart creation")
+    
+    # Specific reactive pattern guidance
+    common_reactive = list(reactive_patterns.keys())[:3]
+    if any('solve' in pattern.lower() for pattern in common_reactive):
+        guidance.append("ALERT: 'Solve' language detected - transform to 'create' before using MCP tools")
+    
+    if any('problem' in pattern.lower() for pattern in common_reactive):
+        guidance.append("REDIRECT: Problem-focus detected - establish desired outcome first")
+    
+    return guidance
+
+
+def _generate_mcp_interaction_recommendations(avg_score: float) -> Dict[str, Any]:
+    """Generate specific recommendations for MCP tool interactions."""
+    if avg_score >= 0.7:
+        return {
+            "initiate_sequential_thinking": "Ready - agent can establish clear structural tensions",
+            "advance_thinking_chain": "Optimal - agent maintains creative flow between personas",
+            "create_consensus_decision": "Excellent - agent facilitates advancing pattern decisions",
+            "run_full_analysis_chain": "Advanced - agent handles complex multi-perspective integration",
+            "overall_recommendation": "Agent demonstrates creative mastery - all tools available"
+        }
+    elif avg_score >= 0.5:
+        return {
+            "initiate_sequential_thinking": "Good - verify desired outcome clarity before proceeding",
+            "advance_thinking_chain": "Ready - monitor for reactive pattern emergence",
+            "create_consensus_decision": "Suitable - ensure advancing pattern focus",
+            "run_full_analysis_chain": "Recommended - with orientation awareness",
+            "overall_recommendation": "Agent shows creative capacity - proceed with awareness"
+        }
+    else:
+        return {
+            "initiate_sequential_thinking": "CAUTION - establish orientation training first",
+            "advance_thinking_chain": "NOT RECOMMENDED - reactive patterns may disrupt flow",
+            "create_consensus_decision": "REQUIRES GUIDANCE - risk of problem-solving orientation",
+            "run_full_analysis_chain": "DELAY - complete creative orientation training first",
+            "overall_recommendation": "Agent needs creative orientation development before using MCP tools"
+        }
+
+
+def _prepare_coaia_memory_entities(patterns: List[Dict]) -> List[Dict[str, Any]]:
+    """Prepare pattern data for coaia-memory knowledge graph integration."""
+    entities = []
+    
+    for i, pattern in enumerate(patterns):
+        entity = {
+            "type": "creative_orientation_pattern",
+            "id": f"pattern_{i}",
+            "creative_score": pattern.get('creative_orientation_score', 0),
+            "timestamp": pattern.get('created_at'),
+            "reactive_indicators": pattern.get('reactive_patterns_detected', {}),
+            "advancing_indicators": pattern.get('advancing_indicators', {}),
+            "structural_tension_data": {
+                "established": pattern.get('co_lint_results', {}).get('structural_tension_established', False),
+                "advancing_pattern": pattern.get('advancing_indicators', {}).get('advancing_pattern_detected', False)
+            }
+        }
+        entities.append(entity)
+    
+    return entities
+
+
+def _generate_knowledge_graph_nodes(reactive_patterns: Dict, advancing_indicators: Dict) -> Dict[str, Any]:
+    """Generate knowledge graph nodes for structural tension charting integration."""
+    return {
+        "reactive_pattern_nodes": [
+            {
+                "id": f"reactive_{i}",
+                "pattern": pattern,
+                "frequency": count,
+                "type": "reactive_indicator",
+                "intervention_needed": count > 3  # High frequency patterns need intervention
+            }
+            for i, (pattern, count) in enumerate(reactive_patterns.items())
+        ],
+        "advancing_pattern_nodes": [
+            {
+                "id": f"advancing_{i}",
+                "pattern": pattern,
+                "frequency": count,
+                "type": "advancing_indicator", 
+                "strength": "high" if count > 5 else "moderate" if count > 2 else "developing"
+            }
+            for i, (pattern, count) in enumerate(advancing_indicators.items())
+        ],
+        "structural_tension_nodes": {
+            "current_reality_node": {
+                "reactive_dominance": len(reactive_patterns) / max(len(advancing_indicators), 1),
+                "pattern_complexity": len(reactive_patterns) + len(advancing_indicators)
+            },
+            "desired_outcome_node": {
+                "creative_orientation_target": 0.8,
+                "advancing_pattern_goal": "dominant_creative_orientation"
+            }
+        }
+    }
 
 
 def _generate_personalized_recommendations(avg_score: float, reactive_patterns: Dict, advancing_indicators: Dict) -> List[str]:
