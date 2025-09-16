@@ -18,9 +18,10 @@ from typing import List, Dict, Optional, Tuple, Any
 from enum import Enum
 from dataclasses import dataclass
 
-# Add co_lint to path if available
-co_lint_path = os.path.join(os.path.dirname(__file__), '../../../co_lint')
-if os.path.exists(co_lint_path):
+# Add co_lint to path if available - corrected path
+co_lint_path = os.path.join(os.path.dirname(__file__), '..', 'co_lint')
+co_lint_module_path = os.path.join(co_lint_path, 'co_lint')
+if os.path.exists(co_lint_module_path):
     sys.path.insert(0, co_lint_path)
 
 try:
@@ -28,11 +29,12 @@ try:
     from co_lint.rules import ALL_RULES
     CO_LINT_AVAILABLE = True
     # logger will be defined later
-except ImportError:
+except ImportError as e:
     CO_LINT_AVAILABLE = False
     lint_text = None
     ALL_RULES = {}
-    # logger will be defined later
+    # Store import error for debugging
+    import_error = str(e)
 
 from .models import ThoughtData, ThoughtStage
 
@@ -50,7 +52,9 @@ logger = logging.getLogger(__name__)
 if CO_LINT_AVAILABLE:
     logger.info("CO-Lint successfully integrated with data persistence")
 else:
-    logger.warning("CO-Lint not available - using SCCP-only rules with data persistence")
+    error_msg = import_error if 'import_error' in locals() else "Unknown import error"
+    logger.warning(f"CO-Lint not available - using SCCP-only rules with data persistence. Error: {error_msg}")
+    logger.debug(f"CO-Lint search paths: co_lint_path={co_lint_path}, co_lint_module_path={co_lint_module_path if 'co_lint_module_path' in locals() else 'undefined'}")
 
 
 class ValidationSeverity(Enum):
@@ -375,19 +379,21 @@ def validate_thought(content: str, thought_data: Optional[ThoughtData] = None) -
                 'content': content,
                 'creative_orientation_score': summary.creative_orientation_score,
                 'reactive_patterns_detected': {
-                    'patterns': [finding.message for finding in summary.co_lint_findings if finding.severity == ValidationSeverity.ERROR],
-                    'count': len([f for f in summary.co_lint_findings if finding.severity == ValidationSeverity.ERROR])
+                    'patterns': [finding.message for finding in summary.validation_results if finding.severity == ValidationSeverity.ERROR],
+                    'count': len([f for f in summary.validation_results if f.severity == ValidationSeverity.ERROR])
                 },
                 'advancing_indicators': {
-                    'patterns': [finding.message for finding in summary.co_lint_findings if finding.severity == ValidationSeverity.INFO],
-                    'structural_tension_strength': summary.structural_tension.value
+                    'patterns': [finding.message for finding in summary.validation_results if finding.severity == ValidationSeverity.INFO],
+                    'structural_tension_strength': summary.tension_strength.value,
+                    'advancing_pattern_detected': summary.advancing_pattern_detected
                 },
                 'co_lint_results': {
                     'findings': [{'rule': f.rule_id, 'message': f.message, 'severity': f.severity.value} 
-                               for f in summary.co_lint_findings],
-                    'total_findings': len(summary.co_lint_findings)
+                               for f in summary.validation_results],
+                    'total_findings': len(summary.validation_results),
+                    'structural_tension_established': summary.structural_tension_established
                 },
-                'recommendations': summary.recommendations
+                'recommendations': [f.recommendation for f in summary.validation_results if hasattr(f, 'recommendation') and f.recommendation]
             }
             
             data_store.store_orientation_validation(validation_data)
