@@ -214,19 +214,25 @@ class EnhancedPolycentricLattice:
     def generate_persona_perspective(
         self,
         chain_id: str,
-        context_data: Optional[Dict[str, Any]] = None
+        context_data: Optional[Dict[str, Any]] = None,
+        override_persona: Optional[PersonaArchetype] = None
     ) -> Optional[PersonaPerspective]:
-        """Generate perspective from current persona in sequence"""
+        """Generate perspective from current persona in sequence or override persona"""
         
         if chain_id not in self.active_thinking_chains:
             return None
             
         chain = self.active_thinking_chains[chain_id]
         
-        if chain.current_persona_index >= len(chain.persona_sequence):
-            return None  # Sequence complete
-            
-        current_persona = chain.persona_sequence[chain.current_persona_index]
+        # Use override persona if provided, otherwise use current sequence position
+        if override_persona:
+            current_persona = override_persona
+            # Don't increment current_persona_index when using override
+        else:
+            if chain.current_persona_index >= len(chain.persona_sequence):
+                return None  # Sequence complete
+            current_persona = chain.persona_sequence[chain.current_persona_index]
+        
         persona_agent = self.persona_agents.get(current_persona)
         
         if not persona_agent:
@@ -242,7 +248,10 @@ class EnhancedPolycentricLattice:
         
         # Add to chain
         chain.perspectives.append(perspective)
-        chain.current_persona_index += 1
+        
+        # Only increment index if not using override persona
+        if not override_persona:
+            chain.current_persona_index += 1
         
         logger.info(f"Generated perspective from {current_persona.value} for chain {chain_id}")
         
@@ -334,16 +343,21 @@ class EnhancedPolycentricLattice:
                 timestamp=datetime.utcnow()
             )
     
-    def advance_thinking_chain(self, chain_id: str) -> bool:
-        """Advance to next persona in thinking chain"""
+    def advance_thinking_chain(self, chain_id: str, focus_persona: Optional[PersonaArchetype] = None) -> bool:
+        """Advance to next persona in thinking chain, optionally focusing on a specific persona"""
         
         if chain_id not in self.active_thinking_chains:
             return False
             
         chain = self.active_thinking_chains[chain_id]
         
-        # Generate perspective from current persona
-        perspective = self.generate_persona_perspective(chain_id)
+        # If focus_persona is specified, use it; otherwise use the current sequence position
+        if focus_persona:
+            # Generate perspective specifically from the requested persona
+            perspective = self.generate_persona_perspective(chain_id, override_persona=focus_persona)
+        else:
+            # Generate perspective from current persona in sequence
+            perspective = self.generate_persona_perspective(chain_id)
         
         if not perspective:
             # Chain complete or error
