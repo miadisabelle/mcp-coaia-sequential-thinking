@@ -1,6 +1,6 @@
 [project]
 name = "mcp-coaia-sequential-thinking"
-version = "0.3.10"
+version = "0.3.11"
 description = "CoAiA's Structural Core: Guiding Intelligent Agents with Foundational Creative Thinking"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -66,7 +66,7 @@ profile = "black"
 line_length = 100
 
 [tool.mypy]
-python_version = "0.3.10"
+python_version = "0.3.11"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
