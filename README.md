@@ -1,50 +1,153 @@
-# CoAiA Structural Core: Polycentric Agentic Lattice
-
-## Overview
-CoAiA's Structural Core is an advanced MCP (Model Context Protocol) server that implements a polycentric agentic lattice for guiding intelligent agents with foundational creative thinking. The system enables multi-agent collaboration, constitutional governance, and structural tension analysis to manifest desired outcomes through creative orientation rather than reactive problem-solving.
+# CoAiA Sequential Thinking: Stateful Reasoning Engine
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## System Status: ✅ Operational
+## Overview
 
-### ✅ Core Systems Functioning
-- **Polycentric Agentic Lattice**: Multi-agent architecture with constitutional and analysis agents
-- **Agent Collaboration**: Intelligent task coordination and collaboration between agents  
-- **Constitutional Governance**: Built-in constitutional principles and compliance validation
-- **Creative Orientation Engine**: Structural tension analysis and advancing pattern recognition
-- **Knowledge Structuring**: Information analysis and synthesis capabilities
+An advanced MCP (Model Context Protocol) server implementing a **Stateful Inquiry Engine** that enables continuous, multi-perspective creative reasoning. The system transcends traditional problem-solving by guiding users through structural tension analysis, multi-persona collaboration (Mia 🧠, Miette 🌸, Haiku 🍃), and constitutional governance to manifest desired outcomes through creative orientation.
 
-## Key Features
-- **Multi-Agent Coordination**: Deploy specialized agents for constitutional validation, structural analysis, and creative orientation
-- **Collaborative Task Processing**: Agents can collaborate on complex tasks requiring multiple capabilities
-- **Constitutional Compliance**: Built-in governance framework ensuring decisions align with creative orientation principles
-- **Structural Tension Analysis**: Analyze the productive tension between current reality and desired outcomes
-- **Creative Orientation**: Focus on outcome creation rather than problem elimination
+**🎯 Core Innovation**: Transforms fragmented, stateless AI interactions into a coherent, persistent reasoning journey where every insight builds upon the last—enabling true creative partnership between human and AI.
 
-## Benefits
-- **Enhanced Outcome Creation**: By adopting a creative orientation and focusing on structural tension, users develop more effective strategies for manifesting desired futures.
-- **Increased Generative Capacity**: The sequential structuring approach enables users to systematically build towards their desired outcomes, fostering innovation and progress.
-- **Cultivated Creativity**: By emphasizing the creation of new possibilities and the resolution of structural tension, the engine cultivates an environment that promotes generative thinking.
+## System Status: ✅ Fully Operational & Experimentally Validated
 
-## Applications
-- **Strategic Visioning**: Ideal for organizations seeking to define and realize ambitious future states.
-- **Personal Development**: Individuals can leverage the engine to clarify and achieve personal aspirations through a structured, outcome-focused process.
-- **Innovation and Design**: A valuable tool for fostering innovation by guiding the creation of novel solutions and experiences.
+### Recent Updates (2025-10-18)
+- ✅ **Architectural Enhancement**: Comprehensive improvement proposals by Mia (see [Architecture Docs](docs/architecture/))
+- ✅ **Documentation Consolidation**: Organized structure for clarity and maintainability
+- ✅ **Experimental Validation**: All 4 scenarios successfully tested (see [Experimental Analysis](docs/analysis/ISSUE_12_EXPERIMENTAL_ANALYSIS.md))
 
-## Technical Specifications
-- **Engine Architecture**: Built on a robust architecture ensuring high performance and reliability in driving creative processes.
-- **User Interface**: Designed for intuitive navigation, enabling users to easily engage with the engine's outcome-creation functionalities.
-- **Integration Capabilities**: Seamlessly integrates with other systems to support comprehensive creative workflow management.
+### Core Systems
+- **Stateful Inquiry Engine**: Persistent reasoning that survives tool calls and sessions
+- **Multi-Persona Integration**: Mia 🧠 (rational), Miette 🌸 (emotional), Haiku 🍃 (wisdom)
+- **Constitutional Governance**: Built-in principles preventing reactive decision-making
+- **Creative Orientation**: Structural tension methodology over problem-solving bias
+- **MCP Prompts & Resources**: Context-aware guidance for LLMs to think structurally
 
-## Conclusion
-The MCP Server: Creative Orientation Engine marks a significant advancement in technology for outcome creation. By embedding a creative orientation and a focus on structural tension, this engine empowers users to move beyond reactive problem-solving and actively shape their desired futures.
+## Quick Start
 
-## References
-Fritz, R. (1999). The path of least resistance: Learning to become totally immersed in the creative process. Fawcett Columbine.
-Kahneman, D., & Tversky, A. (1979). Prospect theory: An analysis of decision under risk. Econometrica, 47(2), 263-292.
-Russell, S. J., & Norvig, P. (2003). Artificial intelligence: A modern approach. Prentice Hall.
+### Installation
+```bash
+# Clone repository
+git clone https://github.com/miadisabelle/mcp-coaia-sequential-thinking.git
+cd mcp-coaia-sequential-thinking
+
+# Install dependencies
+pip install -r requirements.txt
+pip install -e .
+
+# Run MCP server
+python run_server.py
+```
+
+### First Steps
+1. **New User?** Start with [Quick Start Guide](docs/user/QUICK_START_GUIDE.md)
+2. **Explore Scenarios** in [Usage Scenarios](docs/user/USAGE_SCENARIOS.md)
+3. **Understand Value** in [Value Proposition](docs/user/USER_VALUE_PROPOSITION.md)
+
+## Documentation Structure
+
+### 📚 User Documentation
+- [Quick Start Guide](docs/user/QUICK_START_GUIDE.md) - Get started in 10 minutes
+- [Usage Scenarios](docs/user/USAGE_SCENARIOS.md) - Real-world examples
+- [Practical Usage](docs/user/PRACTICAL_USAGE_SCENARIOS.md) - Step-by-step workflows
+- [Value Proposition](docs/user/USER_VALUE_PROPOSITION.md) - Why this matters
+
+### 🏗️ Architecture Documentation
+- [Architectural Improvement Proposal](docs/architecture/ARCHITECTURAL_IMPROVEMENT_PROPOSAL.md) - Mia's analysis
+- [RISE Specification](docs/architecture/ARCHITECTURAL_IMPROVEMENT_PROPOSAL.RISE.md) - RISE-formatted specs
+- [Enhanced Lattice](docs/architecture/ENHANCED_LATTICE_ARCHITECTURE.md) - System design
+- [MCP Prompts & Resources](docs/architecture/MCP_PROMPTS_RESOURCES_IMPLEMENTATION.md) - Bias correction system
+- [Natural Language Specs](docs/architecture/NATURAL_LANGUAGE_SPECIFICATIONS.md) - Human-readable specs
+
+### 📊 Analysis & Research
+- [Issue #12 Experimental Analysis](docs/analysis/ISSUE_12_EXPERIMENTAL_ANALYSIS.md) - Validation results
+- [Structural Thinking Analysis](docs/analysis/STRUCTURAL_THINKING_ANALYSIS.md) - Framework comparison
+- [CoAiA Memory Analysis](docs/analysis/COAIA_MEMORY_ANALYSIS.md) - Knowledge integration
+- [Problem-Solving vs Creating](docs/analysis/PROBLEM_SOLVING_VS_CREATING_REFLECTION.md) - Core distinction
+
+### 🎤 Presentations
+- [Presentation Summary](docs/presentations/PRESENTATION_SUMMARY.md) - Demo materials
+- [Mia's Recommendations](docs/presentations/MIAS_RECOMMENDATIONS_IMPLEMENTED.md) - Implementation status
+
+### 🧪 Experiments
+Located in `experiments/` directory:
+- [Scenario 1: Creative Problem Reframing](experiments/scenario_1_creative_reframing.md) ✅ Validated
+- [Scenario 2: Novel Solution Discovery](experiments/scenario_2_novel_solution.md) ✅ Validated
+- [Scenario 3: Constitutional Decision Making](experiments/scenario_3_constitutional_governance.md) ⏳ Ready
+- [Scenario 4: Structural Tension Analysis](experiments/scenario_4_structural_analysis.md) ⏳ Ready
+
+Reports available in `experiments/reports/`
+
+## Key Capabilities
+
+### 1. **Stateful Reasoning**
+Unlike traditional AI that forgets context between interactions, this system maintains complete reasoning state across sessions:
+- Survives server restarts
+- Builds progressively on prior insights
+- Complete audit trails
+- Natural progression tracking
+
+### 2. **Multi-Persona Creative Intelligence**
+Integrate diverse perspectives through specialized AI personas:
+- **Mia 🧠**: Rational architect - systems thinking, structural analysis
+- **Miette 🌸**: Emotional catalyst - heart-centered wisdom, human impact
+- **Haiku 🍃**: Holistic synthesizer - integrated wisdom, non-linear insights
+
+### 3. **Western Bias Correction**
+Explicit training to overcome "everything is a problem" assumption:
+- 5 core prompts for structural thinking
+- 5 comprehensive resources for non-linear reasoning
+- Real-time bias detection and correction
+- Creative orientation vs reactive problem-solving
+
+### 4. **Constitutional Governance**
+Principle-based decision making with complete transparency:
+- 13 embedded constitutional principles
+- Audit trail for all decisions
+- Multi-stakeholder balance
+- Prevents reactive decision loops
+
+## Technical Architecture
+
+### Core Components
+1. **Stateful Inquiry Engine** (`inquiry_engine.py`) - Central memory & state management
+2. **Data Persistence** (`data_persistence.py`) - SQLite-based permanent storage
+3. **Multi-Persona System** (`generative_agent_lattice.py`) - AI persona orchestration
+4. **Constitutional Core** (`constitutional_core.py`) - Governance framework
+5. **MCP Prompts & Resources** (`prompts.py`, `resources.py`) - Bias correction system
+
+### Integration
+The system exposes 17+ MCP tools accessible via the Model Context Protocol:
+- `initiate_inquiry` - Begin new reasoning process
+- `advance_inquiry` - Add perspectives/insights
+- `synthesize_thinking_chain` - Integrate multi-perspective analysis
+- `make_constitutional_decision` - Principled decision making
+- `check_agent_creative_orientation` - Bias detection
+- And more...
+
+## Development Roadmap
+
+See [ROADMAP.md](ROADMAP.md) and [Architectural Consolidation](ARCHITECTURAL_CONSOLIDATION.md) for:
+- Stateful Inquiry Engine implementation status
+- Tool consolidation plans
+- Database schema enhancements
+- Future capability expansion
+
+## References & Theoretical Foundation
+
+**Robert Fritz Methodology:**
+- Fritz, R. (1999). *The path of least resistance: Learning to become totally immersed in the creative process*. Fawcett Columbine.
+
+**Structural Thinking:**
+- Kahneman, D., & Tversky, A. (1979). Prospect theory: An analysis of decision under risk. *Econometrica*, 47(2), 263-292.
+
+**AI Architecture:**
+- Russell, S. J., & Norvig, P. (2003). *Artificial intelligence: A modern approach*. Prentice Hall.
+
+## Contributing
+
+This project follows the RISE (Relational, Inquiry-based, Structural, Emergent) framework for architectural decisions. See [rispecs/](rispecs/) for detailed specifications.
 
 ## Prerequisites
 
