@@ -38,6 +38,9 @@ try:
     from .generative_agent_lattice import (
         generative_lattice, ArchetypeRole, PerspectiveType
     )
+    # NEW: Prompts and Resources for structural thinking
+    from .prompts import list_prompts, get_prompt, PROMPTS
+    from .resources import list_resources, get_resource_content, RESOURCES
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -69,6 +72,9 @@ except ImportError:
     from mcp_coaia_sequential_thinking.generative_agent_lattice import (
         generative_lattice, ArchetypeRole, PerspectiveType
     )
+    # NEW: Prompts and Resources for structural thinking
+    from mcp_coaia_sequential_thinking.prompts import list_prompts, get_prompt, PROMPTS
+    from mcp_coaia_sequential_thinking.resources import list_resources, get_resource_content, RESOURCES
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
@@ -2830,6 +2836,42 @@ def _generate_self_awareness_recommendations(orientation_score: float, reactive_
 def main():
     """Entry point for the MCP server."""
     logger.info("Starting CoAiA Sequential Thinking MCP server")
+    
+    # Register prompts
+    logger.info("Registering structural thinking prompts")
+    for prompt_key, prompt_data in PROMPTS.items():
+        try:
+            @mcp.prompt(name=prompt_key)
+            def get_prompt_handler(prompt_key=prompt_key):
+                """Dynamic prompt handler"""
+                prompt = PROMPTS[prompt_key]
+                return {
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": {
+                                "type": "text",
+                                "text": prompt["template"]
+                            }
+                        }
+                    ],
+                    "description": prompt["description"]
+                }
+            logger.info(f"Registered prompt: {prompt_key}")
+        except Exception as e:
+            logger.error(f"Failed to register prompt {prompt_key}: {e}")
+    
+    # Register resources
+    logger.info("Registering structural thinking resources")
+    for resource_key, resource_data in RESOURCES.items():
+        try:
+            @mcp.resource(resource_data["uri"])
+            def get_resource_handler(resource_data=resource_data):
+                """Dynamic resource handler"""
+                return resource_data["content"]
+            logger.info(f"Registered resource: {resource_data['uri']}")
+        except Exception as e:
+            logger.error(f"Failed to register resource {resource_data['uri']}: {e}")
 
     # Ensure UTF-8 encoding for stdin/stdout
     if hasattr(sys.stdout, 'buffer') and sys.stdout.encoding != 'utf-8':
