@@ -78,11 +78,21 @@ except ImportError:
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
+# Initialize data persistence layer
+data_store = None
+try:
+    from mcp_coaia_sequential_thinking.data_persistence import PolycentricDataStore
+    data_store = PolycentricDataStore()
+    logger.info("Data persistence layer initialized successfully")
+except Exception as e:
+    logger.error(f"Error initializing data persistence: {e}")
+    logger.error("Data persistence functionality will not be available")
+
 # Initialize enhanced polycentric lattice
 enhanced_lattice = None
 try:
     from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import EnhancedPolycentricLattice
-    enhanced_lattice = EnhancedPolycentricLattice(constitutional_core)
+    enhanced_lattice = EnhancedPolycentricLattice(constitutional_core, data_store)
     logger.info("Enhanced polycentric lattice initialized successfully")
 except ImportError as e:
     logger.error(f"ImportError while importing enhanced systems: {e}")

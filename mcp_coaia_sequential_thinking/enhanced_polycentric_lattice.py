@@ -107,10 +107,11 @@ class EnhancedPolycentricLattice:
     - Sequential structural thinking methodology
     """
     
-    def __init__(self, constitutional_core: ConstitutionalCore):
+    def __init__(self, constitutional_core: ConstitutionalCore, data_store=None):
         self.constitutional_core = constitutional_core
+        self.data_store = data_store
         # Create a simplified lattice instead of depending on the complex one
-        self.consensus_engine = ConsensusDecisionEngine(constitutional_core)
+        self.consensus_engine = ConsensusDecisionEngine(constitutional_core, data_store)
         
         # Multi-persona system
         self.active_thinking_chains: Dict[str, SequentialThinkingChain] = {}
