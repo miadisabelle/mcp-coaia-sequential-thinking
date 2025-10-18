@@ -5,7 +5,7 @@
 
 set -e  # Exit on any error
 
-echo "🚀 CoaiaPy Release Script Starting..."
+echo "🚀 CoaiaSequentialThinking Release Script Starting..."
 
 # Ensure all dependencies are installed
 echo "🛠️ Installing/updating dependencies..."
