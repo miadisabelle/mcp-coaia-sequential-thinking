@@ -56,9 +56,12 @@ class DelayedResolutionPrinciple:
     "Tolerate discrepancy, tension, and delayed resolution"
     """
     
-    def __init__(self, constitutional_core: ConstitutionalCore):
+    def __init__(self, constitutional_core: ConstitutionalCore, data_store=None):
         self.constitutional_core = constitutional_core
-        self.active_tensions: Dict[str, DecisionTension] = {}
+        # REMOVED: In-memory state storage (critical bug)
+        # self.active_tensions: Dict[str, DecisionTension] = {}
+        # Now all tensions persist to database via data_store
+        self.data_store = data_store
         self.resolution_threshold = 0.8  # Minimum consensus before resolution
         
     def create_decision_tension(
@@ -82,7 +85,14 @@ class DelayedResolutionPrinciple:
             created_at=datetime.utcnow()
         )
         
-        self.active_tensions[decision_id] = tension
+        # FIXED: Persist to database instead of in-memory dict
+        if self.data_store:
+            self.data_store.save_agent_message(
+                agent_name="DelayedResolutionPrinciple",
+                message_type="decision_tension",
+                content=json.dumps(asdict(tension)),
+                metadata={"decision_id": decision_id}
+            )
         logger.info(f"Created decision tension for {decision_id}: {tension.tension_level}")
         
         return tension
@@ -99,11 +109,11 @@ class DelayedResolutionPrinciple:
     
     def should_delay_resolution(self, decision_id: str, consensus_level: float) -> bool:
         """Determine if resolution should be delayed per Fritz's principle"""
-        if decision_id not in self.active_tensions:
+        # FIXED: Load from database instead of in-memory dict
+        tension = self._load_tension(decision_id)
+        if not tension:
             return False
             
-        tension = self.active_tensions[decision_id]
-        
         # Delay resolution if:
         # 1. Consensus level below threshold
         # 2. Tension level indicates premature closure
@@ -120,8 +130,37 @@ class DelayedResolutionPrinciple:
     
     def update_resolution_pressure(self, decision_id: str, pressure_increase: float):
         """Update natural pressure to resolve tension"""
-        if decision_id in self.active_tensions:
-            self.active_tensions[decision_id].resolution_pressure += pressure_increase
+        # FIXED: Load from database, update, save back
+        tension = self._load_tension(decision_id)
+        if tension:
+            tension.resolution_pressure += pressure_increase
+            if self.data_store:
+                self.data_store.save_agent_message(
+                    agent_name="DelayedResolutionPrinciple",
+                    message_type="decision_tension",
+                    content=json.dumps(asdict(tension)),
+                    metadata={"decision_id": decision_id}
+                )
+    
+    def _load_tension(self, decision_id: str) -> Optional[DecisionTension]:
+        """Load decision tension from database"""
+        if not self.data_store:
+            return None
+        try:
+            messages = self.data_store.get_agent_messages(
+                agent_name="DelayedResolutionPrinciple",
+                message_type="decision_tension"
+            )
+            for msg in reversed(messages):
+                metadata = json.loads(msg.get("metadata", "{}"))
+                if metadata.get("decision_id") == decision_id:
+                    data = json.loads(msg["content"])
+                    data["created_at"] = datetime.fromisoformat(data["created_at"])
+                    return DecisionTension(**data)
+            return None
+        except Exception as e:
+            logger.error(f"Error loading tension {decision_id}: {e}")
+            return None
 
 @dataclass
 class MMORElement:
@@ -194,10 +233,13 @@ class ConsensusDecisionEngine:
     - Delayed resolution principle
     """
     
-    def __init__(self, constitutional_core: ConstitutionalCore):
+    def __init__(self, constitutional_core: ConstitutionalCore, data_store=None):
         self.constitutional_core = constitutional_core
-        self.delayed_resolution = DelayedResolutionPrinciple(constitutional_core)
-        self.active_decisions: Dict[str, ConsensusDecision] = {}
+        self.data_store = data_store
+        self.delayed_resolution = DelayedResolutionPrinciple(constitutional_core, data_store)
+        # REMOVED: In-memory state storage (critical bug source!)
+        # self.active_decisions: Dict[str, ConsensusDecision] = {}
+        # Now all decisions persist to database
         self.decision_history: List[ConsensusDecision] = []
         
     def initiate_consensus_decision(
@@ -236,7 +278,13 @@ class ConsensusDecisionEngine:
             delay_reason="Awaiting agent consensus and potential human consultation"
         )
         
-        self.active_decisions[decision_id] = decision
+        # FIXED: Persist to database instead of in-memory dict
+        if self.data_store:
+            self.data_store.save_consensus_decision(
+                decision_id=decision_id,
+                decision_data=asdict(decision),
+                status=decision.consensus_status.value
+            )
         logger.info(f"Initiated consensus decision: {decision_id}")
         
         return decision
@@ -252,10 +300,10 @@ class ConsensusDecisionEngine:
     ) -> bool:
         """Add an agent's vote to the consensus decision"""
         
-        if decision_id not in self.active_decisions:
+        # FIXED: Load from database instead of in-memory dict
+        decision = self._load_decision(decision_id)
+        if not decision:
             return False
-            
-        decision = self.active_decisions[decision_id]
         
         vote_obj = ConsensusVote(
             agent_id=agent_id,
@@ -283,11 +331,15 @@ class ConsensusDecisionEngine:
         
         logger.info(f"Added vote from {agent_id} for decision {decision_id}: {vote} (confidence: {confidence})")
         
+        self._save_decision(decision)
         return True
     
     def _update_consensus_level(self, decision_id: str):
         """Update consensus level based on current votes"""
-        decision = self.active_decisions[decision_id]
+        decision = self._load_decision(decision_id)
+        if not decision:
+            return False
+        
         
         if not decision.votes:
             decision.consensus_level = 0.0
@@ -321,10 +373,9 @@ class ConsensusDecisionEngine:
     def check_resolution_readiness(self, decision_id: str) -> Tuple[bool, str]:
         """Check if decision is ready for resolution per delayed resolution principle"""
         
-        if decision_id not in self.active_decisions:
-            return False, "Decision not found"
-            
-        decision = self.active_decisions[decision_id]
+        decision = self._load_decision(decision_id)
+        if not decision:
+            return False
         
         # Check if delayed resolution should continue
         should_delay = self.delayed_resolution.should_delay_resolution(
@@ -355,10 +406,9 @@ class ConsensusDecisionEngine:
     ) -> Dict[str, Any]:
         """Request human companion consultation for decision clarification"""
         
-        if decision_id not in self.active_decisions:
-            return {"error": "Decision not found"}
-            
-        decision = self.active_decisions[decision_id]
+        decision = self._load_decision(decision_id)
+        if not decision:
+            return False
         decision.human_consultation_needed = True
         
         if clarification_request not in decision.human_clarification_requests:
@@ -390,10 +440,9 @@ class ConsensusDecisionEngine:
     ) -> bool:
         """Provide human response to consultation request"""
         
-        if decision_id not in self.active_decisions:
+        decision = self._load_decision(decision_id)
+        if not decision:
             return False
-            
-        decision = self.active_decisions[decision_id]
         decision.human_response = human_response
         decision.human_consultation_needed = False
         decision.consensus_status = ConsensusStatus.CONSENSUS_EMERGING
@@ -401,6 +450,8 @@ class ConsensusDecisionEngine:
         
         logger.info(f"Human response provided for decision {decision_id}")
         
+        self._save_decision(decision)
+        self._save_decision(decision)
         return True
     
     def iterate_decision(
@@ -411,10 +462,9 @@ class ConsensusDecisionEngine:
     ) -> bool:
         """Iterate on decision based on agent reservations or human feedback"""
         
-        if decision_id not in self.active_decisions:
+        decision = self._load_decision(decision_id)
+        if not decision:
             return False
-            
-        decision = self.active_decisions[decision_id]
         decision.iteration_count += 1
         
         if updated_proposal:
@@ -432,6 +482,7 @@ class ConsensusDecisionEngine:
         
         logger.info(f"Decision {decision_id} iterated (iteration {decision.iteration_count})")
         
+        self._save_decision(decision)
         return True
     
     def resolve_decision(self, decision_id: str) -> Optional[Dict[str, Any]]:
@@ -443,14 +494,17 @@ class ConsensusDecisionEngine:
             logger.warning(f"Decision {decision_id} not ready for resolution: {reason}")
             return None
             
-        decision = self.active_decisions[decision_id]
+        decision = self._load_decision(decision_id)
+        if not decision:
+            return False
+        
         decision.resolved_at = datetime.utcnow()
         decision.consensus_status = ConsensusStatus.CONSENSUS_ACHIEVED
         decision.resolution_delayed = False
         
         # Move to history
         self.decision_history.append(decision)
-        del self.active_decisions[decision_id]
+        # Decision persisted to database
         
         # Remove from active tensions
         if decision_id in self.delayed_resolution.active_tensions:
@@ -474,7 +528,10 @@ class ConsensusDecisionEngine:
         """Get current status of a decision"""
         
         if decision_id in self.active_decisions:
-            decision = self.active_decisions[decision_id]
+            decision = self._load_decision(decision_id)
+            if not decision:
+                return False
+            
         else:
             # Check history
             history_decision = next(
@@ -503,7 +560,67 @@ class ConsensusDecisionEngine:
     def get_active_decisions(self) -> List[Dict[str, Any]]:
         """Get all active decisions requiring attention"""
         
-        return [
-            self.get_decision_status(decision_id)
-            for decision_id in self.active_decisions.keys()
-        ]
+        # FIXED: Load all active decisions from database
+        if not self.data_store:
+            return []
+        
+        try:
+            decisions = self.data_store.get_consensus_decisions(status="TENSION_HOLDING")
+            decisions.extend(self.data_store.get_consensus_decisions(status="CONSENSUS_BUILDING"))
+            return [
+                {
+                    "decision_id": d["decision_id"],
+                    "primary_purpose": d.get("decision_data", {}).get("primary_purpose", ""),
+                    "consensus_level": d.get("decision_data", {}).get("consensus_level", 0.0),
+                    "status": d["status"]
+                }
+                for d in decisions
+            ]
+        except Exception as e:
+            logger.error(f"Error loading active decisions: {e}")
+            return []
+    
+    def _load_decision(self, decision_id: str) -> Optional[ConsensusDecision]:
+        """Load decision from database"""
+        if not self.data_store:
+            return None
+        try:
+            result = self.data_store.get_consensus_decision(decision_id)
+            if not result:
+                return None
+            data = result.get("decision_data", {})
+            # Reconstruct dataclass from dict
+            data["decision_type"] = DecisionType(data.get("decision_type", "strategic"))
+            data["consensus_status"] = ConsensusStatus(data.get("consensus_status", "TENSION_HOLDING"))
+            data["created_at"] = datetime.fromisoformat(data.get("created_at", datetime.utcnow().isoformat()))
+            data["updated_at"] = datetime.fromisoformat(data.get("updated_at", datetime.utcnow().isoformat()))
+            if data.get("resolved_at"):
+                data["resolved_at"] = datetime.fromisoformat(data["resolved_at"])
+            # Reconstruct votes
+            votes_data = data.get("votes", [])
+            data["votes"] = [ConsensusVote(**v) for v in votes_data]
+            # Reconstruct MMOR elements
+            mmor_data = data.get("mmor_elements", [])
+            data["mmor_elements"] = [MMORElement(**m) for m in mmor_data]
+            # Reconstruct tension
+            if data.get("tension"):
+                tension_data = data["tension"]
+                tension_data["created_at"] = datetime.fromisoformat(tension_data["created_at"])
+                data["tension"] = DecisionTension(**tension_data)
+            return ConsensusDecision(**data)
+        except Exception as e:
+            logger.error(f"Error loading decision {decision_id}: {e}")
+            return None
+    
+    def _save_decision(self, decision: ConsensusDecision):
+        """Save decision to database"""
+        if not self.data_store:
+            return
+        try:
+            self.data_store.save_consensus_decision(
+                decision_id=decision.decision_id,
+                decision_data=asdict(decision),
+                status=decision.consensus_status.value
+            )
+        except Exception as e:
+            logger.error(f"Error saving decision {decision.decision_id}: {e}")
