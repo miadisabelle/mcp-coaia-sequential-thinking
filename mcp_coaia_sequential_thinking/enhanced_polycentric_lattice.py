@@ -343,11 +343,11 @@ class EnhancedPolycentricLattice:
                 timestamp=datetime.utcnow()
             )
     
-    def advance_thinking_chain(self, chain_id: str, focus_persona: Optional[PersonaArchetype] = None) -> bool:
+    def advance_thinking_chain(self, chain_id: str, focus_persona: Optional[PersonaArchetype] = None) -> Optional[PersonaPerspective]:
         """Advance to next persona in thinking chain, optionally focusing on a specific persona"""
         
         if chain_id not in self.active_thinking_chains:
-            return False
+            return None
             
         chain = self.active_thinking_chains[chain_id]
         
@@ -361,9 +361,9 @@ class EnhancedPolycentricLattice:
         
         if not perspective:
             # Chain complete or error
-            return False
+            return None
             
-        return True
+        return perspective
     
     def synthesize_perspectives(self, chain_id: str) -> Optional[PersonaPerspective]:
         """Create synthesis perspective from all collected perspectives"""
