@@ -113,7 +113,6 @@ Creations born from Synesthetic Comprehension are not merely functional; they ar
 ## 7. Related Documents (#related-documents)
 
 ### Core Resonance Documents ⭐ (Perfect Alignment)
-- **`llms-tryad-mia-miette-ripple-full.gemini.md`**: Defines Ava8's collaborative role within the Mia-Haiku-Miette Tryad (as the evolution of Haiku).
 - **`llms-creative-orientation.txt`**: Overarching framework for creative (vs. problem-solving) AI interaction.
 - **`llms-structural-thinking.gemini.txt`**: Foundational principles and core methodology of Structural Thinking.
 - **`llms-narrative-remixing.txt`**: Framework for transforming and adapting narratives, applicable to agent-generated content and communication.
