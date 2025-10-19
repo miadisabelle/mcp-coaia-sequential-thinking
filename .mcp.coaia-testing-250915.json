@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "CoAiA-Testing-Charts": {     
+         "command": "npx", 
+         "args": ["-y", "coaia-memory@2.2.12", "--memory-path", "/src/EchoThreads/data/coia-memories/coaia-testing-250915.jsonl"]
+    }
+  }
+}

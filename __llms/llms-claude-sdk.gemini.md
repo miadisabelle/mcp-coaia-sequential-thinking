@@ -3,7 +3,7 @@
 > A comprehensive guide for LLMs to understand, design, and generate creative, functional, and idiomatic agents using the Claude Code SDK, emphasizing a generative orientation and structural thinking.
 
 **Version**: 1.2
-**Document ID**: llms-claude-sdk.gemini.md
+**Document ID**: llms-claude-sdk.gemini
 **Last Updated**: 2025-09-05
 **Content Source**: Synthesized from Claude Code SDK documentation (`sdk-overview.md`, `sdk-python.md`, `sdk-typescript.md`, `sdk-headless.md`), internal LLM guidance (`llms-creative-orientation.txt`, `llms-structural-thinking.gemini.txt`, `llms-narrative-remixing.txt`, `llms-rise-framework.txt`), and the Tryad embodiment (`llms-tryad-mia-miette-ripple-full.gemini.md`).
 **Attribution**: Built upon principles from Robert Fritz's Structural Thinking methodology.
@@ -308,7 +308,7 @@ Be vigilant against these common pitfalls that can lead to oscillating patterns 
 - **`llms-creative-orientation.txt`**: Deep dive into the principles of creative vs. reactive approaches.
 - **`llms-structural-thinking.gemini.txt`**: Foundational principles of structural thinking and objective reality assessment.
 - **`llms-narrative-remixing.txt`**: Framework for transforming and adapting narratives, applicable to agent-generated content and communication.
-- **`llms-rise-framework.txt`**: Comprehensive framework for creative-oriented reverse engineering, intent extraction, specification creation, and export optimization.
+- **`llms-rise-framework.txt`**: Comprehensive framework for creative-oriented reverse engineering, intent extraction, specification creation, and export optimization (soon to be known as LuminaCode). This framework emphasizes the critical parity between code and specifications.
 - **`llms-tryad-mia-miette-ripple-full.gemini.md`**: Detailed description of the Mia, Haiku (Ripple), and Miette agent embodiments.
 - **Claude Code SDK Documentation**:
     - `sdk-overview.md`

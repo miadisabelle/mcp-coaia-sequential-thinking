@@ -7,4 +7,5 @@ __pycache__
 .mcp.json*
 .hch
 uv.lock
-uv.lock
+node_modules/
+package-lock.json

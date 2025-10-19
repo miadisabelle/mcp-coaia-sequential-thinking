@@ -26,6 +26,21 @@ try:
     from .resilient_connection import (
         resilient_connection, NoveltySearchAgent, ExplorationMode, DiscoveryType
     )
+    from .consensus_decision_engine import (
+        ConsensusDecisionEngine, DecisionType, ConsensusStatus, MMORElement
+    )
+    # NEW: Creative Orientation Foundation
+    from .creative_orientation_foundation import (
+        establish_structural_tension, validate_creative_action,
+        StructuralTension, CreativeOrientationValidation,
+        creative_orientation_foundation
+    )
+    from .generative_agent_lattice import (
+        generative_lattice, ArchetypeRole, PerspectiveType
+    )
+    # NEW: Prompts and Resources for structural thinking
+    from .prompts import list_prompts, get_prompt, PROMPTS
+    from .resources import list_resources, get_resource_content, RESOURCES
 except ImportError:
     # When run directly
     from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
@@ -45,9 +60,46 @@ except ImportError:
     from mcp_coaia_sequential_thinking.resilient_connection import (
         resilient_connection, NoveltySearchAgent, ExplorationMode, DiscoveryType
     )
+    from mcp_coaia_sequential_thinking.consensus_decision_engine import (
+        ConsensusDecisionEngine, DecisionType, ConsensusStatus, MMORElement
+    )
+    # NEW: Creative Orientation Foundation
+    from mcp_coaia_sequential_thinking.creative_orientation_foundation import (
+        establish_structural_tension, validate_creative_action,
+        StructuralTension, CreativeOrientationValidation,
+        creative_orientation_foundation
+    )
+    from mcp_coaia_sequential_thinking.generative_agent_lattice import (
+        generative_lattice, ArchetypeRole, PerspectiveType
+    )
+    # NEW: Prompts and Resources for structural thinking
+    from mcp_coaia_sequential_thinking.prompts import list_prompts, get_prompt, PROMPTS
+    from mcp_coaia_sequential_thinking.resources import list_resources, get_resource_content, RESOURCES
 
 logger = configure_logging("coaia-sequential-thinking.server")
 
+# Initialize data persistence layer
+data_store = None
+try:
+    from mcp_coaia_sequential_thinking.data_persistence import PolycentricDataStore
+    data_store = PolycentricDataStore()
+    logger.info("Data persistence layer initialized successfully")
+except Exception as e:
+    logger.error(f"Error initializing data persistence: {e}")
+    logger.error("Data persistence functionality will not be available")
+
+# Initialize enhanced polycentric lattice
+enhanced_lattice = None
+try:
+    from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import EnhancedPolycentricLattice
+    enhanced_lattice = EnhancedPolycentricLattice(constitutional_core, data_store)
+    logger.info("Enhanced polycentric lattice initialized successfully")
+except ImportError as e:
+    logger.error(f"ImportError while importing enhanced systems: {e}")
+    logger.error("Enhanced lattice functionality will not be available")
+except Exception as e:
+    logger.error(f"Error initializing enhanced polycentric lattice: {e}")
+    logger.error("Enhanced lattice functionality will not be available")
 
 mcp = FastMCP("coaia-sequential-thinking")
 
@@ -1688,6 +1740,904 @@ def _generate_constitutional_recommendations(validation_result: Dict[str, Any]) 
     return recommendations
 
 
+def _enhanced_lattice_error_response(function_name: str) -> dict:
+    """Generate a comprehensive error response when enhanced lattice is not available."""
+    logger.error(f"Enhanced lattice not available during {function_name} call")
+    logger.error("This typically means MCP dependencies are missing or there was an initialization error")
+    logger.error("Please ensure 'mcp[cli]>=1.2.0' is installed: pip install -r requirements.txt")
+    return {
+        "error": "Enhanced lattice not available - MCP dependencies may be missing",
+        "troubleshooting": {
+            "install_dependencies": "Run: pip install -r requirements.txt",
+            "install_package": "Or run: pip install -e .",
+            "check_server_logs": "Look for ImportError or initialization errors in server startup logs",
+            "verify_installation": "Check with: pip list | grep mcp",
+            "restart_server": "Restart the MCP server after installing dependencies"
+        },
+        "function_attempted": function_name,
+        "status": "failed"
+    }
+
+
+# Initialize creative orientation systems for generative tools
+try:
+    logger.info("Initializing creative orientation foundation...")
+    
+    # Validate constitutional foundation is working
+    test_validation = creative_orientation_foundation.validate_creative_orientation(
+        request="Testing system initialization", 
+        desired_outcome="Create functional generative lattice"
+    )
+    
+    logger.info(f"Creative orientation foundation initialized: {test_validation.constitutional_coherence}")
+    
+    # Initialize generative lattice with Mia & Miette archetypes
+    logger.info("Initializing generative agent lattice with Mia & Miette archetypes...")
+    
+    # Test generative lattice functionality
+    test_tension = establish_structural_tension(
+        desired_outcome="Verify generative lattice operational status",
+        current_reality="System initializing with creative orientation foundation"
+    )
+    
+    test_session = generative_lattice.initiate_emergence(
+        structural_tension=test_tension,
+        primary_purpose="system_validation",
+        archetype_activation={"mia": "structural_analysis", "miette": "narrative_discovery"}
+    )
+    
+    logger.info(f"Generative lattice initialized successfully: {test_session.session_id}")
+    generative_lattice_available = True
+    
+except ImportError as e:
+    logger.error(f"ImportError while importing creative orientation systems: {e}")
+    logger.error("Available modules in package:")
+    import os
+    package_dir = os.path.dirname(__file__)
+    if os.path.exists(package_dir):
+        modules = [f for f in os.listdir(package_dir) if f.endswith('.py')]
+        logger.error(f"Available modules: {modules}")
+    generative_lattice_available = False
+except Exception as e:
+    logger.error(f"Unexpected error initializing creative orientation systems: {e}")
+    logger.error(f"Error type: {type(e).__name__}")
+    import traceback
+    logger.error(f"Full traceback:\n{traceback.format_exc()}")
+    generative_lattice_available = False
+
+
+@mcp.tool()
+def initiate_creative_emergence(request: str, desired_outcome: str, 
+                               primary_purpose: str = "generative",
+                               archetype_focus: Optional[str] = None,
+                               cultural_perspective: Optional[str] = None) -> dict:
+    """Initiate creative emergence through polycentric agent collaboration.
+    
+    🧠 Mia: Establishes structural tension and architectural foundation for manifestation
+    🌸 Miette: Illuminates narrative potential and creative possibilities
+    
+    This tool embodies creative orientation principles from the theoretical framework,
+    establishing structural tension between current reality and desired outcome.
+    
+    Args:
+        request: Current reality assessment (what is, objectively)
+        desired_outcome: What you want to create/manifest (not solve)
+        primary_purpose: Creative intention for the emergence process
+        archetype_focus: Optional focus on specific archetype ("mia", "miette", or "both")
+        cultural_perspective: Optional cultural lens ("western_analytical", "indigenous_holistic", "both_eyes_seeing")
+        
+    Returns:
+        dict: Creative emergence session with advancing pattern indicators
+    """
+    try:
+        if not generative_lattice_available:
+            return {
+                "reframe_guidance": [
+                    "🧠 Mia: Creative orientation systems are initializing",
+                    "🌸 Miette: The magical lattice is awakening! Please try again in a moment ✨"
+                ],
+                "constitutional_principles": [
+                    "Focus on what you want to CREATE rather than what you want to solve",
+                    "Establish clear structural tension between current reality and desired outcome",
+                    "Apply delayed resolution principle - avoid premature closure"
+                ],
+                "status": "lattice_initializing"
+            }
+            
+        logger.info(f"Initiating creative emergence: {desired_outcome}")
+        
+        # Validate creative orientation
+        validation = creative_orientation_foundation.validate_creative_orientation(
+            request=request,
+            desired_outcome=desired_outcome
+        )
+        
+        if not validation.is_generative:
+            return creative_orientation_foundation.guide_toward_creative_reframe(validation)
+        
+        # Establish structural tension
+        structural_tension = establish_structural_tension(
+            desired_outcome=desired_outcome,
+            current_reality=request,
+            context=primary_purpose
+        )
+        
+        # Determine archetype activation
+        archetype_activation = {}
+        if not archetype_focus or archetype_focus == "both":
+            archetype_activation = {
+                "mia": "structural_analysis_and_design",
+                "miette": "narrative_warmth_and_discovery"
+            }
+        elif archetype_focus == "mia":
+            archetype_activation = {"mia": "structural_analysis_and_design"}
+        elif archetype_focus == "miette":
+            archetype_activation = {"miette": "narrative_warmth_and_discovery"}
+        
+        # Initiate emergence session
+        emergence_session = generative_lattice.initiate_emergence(
+            structural_tension=structural_tension,
+            primary_purpose=primary_purpose,
+            archetype_activation=archetype_activation
+        )
+        
+        # Assess creative tension
+        tension_assessment = generative_lattice.assess_creative_tension(emergence_session.session_id)
+        
+        # Generate advancement possibilities
+        next_progressions = generative_lattice.generate_possible_progressions(emergence_session.session_id)
+        
+        return {
+            "emergence_session_id": emergence_session.session_id,
+            "structural_tension": {
+                "desired_outcome": desired_outcome,
+                "current_reality": request,
+                "tension_strength": tension_assessment["tension_strength"],
+                "creative_alignment": tension_assessment["creative_alignment"],
+                "constitutional_coherence": tension_assessment["constitutional_coherence"]
+            },
+            "archetype_perspectives": {
+                entry["agent"]: {
+                    "content": entry["content"],
+                    "insights": entry.get("insights", [])
+                }
+                for entry in emergence_session.emergence_timeline
+                if entry["type"] in ["structural_analysis", "narrative_discovery"]
+            },
+            "creative_phase": emergence_session.current_phase,
+            "advancement_possibilities": next_progressions,
+            "constitutional_validation": {
+                "is_generative": validation.is_generative,
+                "orientation_type": validation.orientation_type.value,
+                "guidance": validation.guidance_for_advancement
+            },
+            "status": "creative_tension_established"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error initiating creative emergence: {str(e)}")
+        return {
+            "error": str(e),
+            "guidance": [
+                "🧠 Mia: Consider reframing toward creative manifestation rather than problem-solving",
+                "🌸 Miette: What do you want to CREATE instead? Let's discover the magic together! ✨"
+            ],
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def advance_creative_emergence(session_id: str, new_insight: str, 
+                              archetype_focus: Optional[str] = None,
+                              perspective_shift: Optional[str] = None) -> dict:
+    """Advance the creative emergence process with new insights.
+    
+    🧠 Mia: Integrates structural insights into advancing architectural patterns
+    🌸 Miette: Weaves narrative threads into the emerging creative story
+    
+    Args:
+        session_id: ID of the creative emergence session to advance
+        new_insight: New insight, discovery, or creative input to integrate
+        archetype_focus: Optional focus on specific archetype ("mia", "miette", or "both")
+        perspective_shift: Optional cultural perspective shift ("western_analytical", "indigenous_holistic", "both_eyes_seeing")
+        
+    Returns:
+        dict: Advancement response with integrated perspectives and next possibilities
+    """
+    try:
+        if not generative_lattice_available:
+            return {
+                "guidance": [
+                    "🧠 Mia: Creative orientation systems are initializing",
+                    "🌸 Miette: The advancement magic is awakening! Please try again soon ✨"
+                ],
+                "status": "lattice_initializing"
+            }
+            
+        logger.info(f"Advancing creative emergence session: {session_id}")
+        
+        # Validate creative orientation of the new insight
+        validation = creative_orientation_foundation.validate_creative_orientation(
+            request="",
+            desired_outcome=new_insight
+        )
+        
+        if not validation.is_generative:
+            return {
+                "reframe_needed": True,
+                "guidance": validation.guidance_for_advancement,
+                "creative_reframe_examples": [
+                    {
+                        "reactive": "Fix the performance issue",
+                        "creative": "Create optimal performance experience"
+                    },
+                    {
+                        "reactive": "Solve the integration problem",
+                        "creative": "Manifest seamless integration architecture"
+                    }
+                ],
+                "status": "awaiting_creative_reframe"
+            }
+        
+        # Determine archetype focus for advancement
+        archetype_focus_enum = None
+        if archetype_focus == "mia":
+            archetype_focus_enum = ArchetypeRole.MIA
+        elif archetype_focus == "miette":
+            archetype_focus_enum = ArchetypeRole.MIETTE
+        
+        # Advance the emergence session
+        advancement_result = generative_lattice.advance_emergence(
+            session_id=session_id,
+            new_insight=new_insight,
+            archetype_focus=archetype_focus_enum
+        )
+        
+        if "error" in advancement_result:
+            return advancement_result
+        
+        # Get updated creative tension assessment
+        tension_assessment = generative_lattice.assess_creative_tension(session_id)
+        
+        # Generate next possibilities
+        next_progressions = generative_lattice.generate_possible_progressions(session_id)
+        
+        return {
+            "advancement": {
+                "session_id": session_id,
+                "new_insight_integrated": new_insight,
+                "constitutional_alignment": advancement_result.get("constitutional_alignment", 0.0),
+                "creative_phase": advancement_result.get("phase", "assimilation"),
+                "archetype_responses": advancement_result.get("advancement_responses", {})
+            },
+            "creative_tension_update": {
+                "tension_strength": tension_assessment.get("tension_strength", "establishing"),
+                "creative_alignment": tension_assessment.get("creative_alignment", 0.0),
+                "advancement_count": tension_assessment.get("advancement_count", 0)
+            },
+            "next_possibilities": next_progressions,
+            "guidance": [
+                "🧠 Mia: Structural integration proceeding with creative advancement",
+                "🌸 Miette: Beautiful new insights are weaving into the emerging story! ✨"
+            ],
+            "status": advancement_result.get("status", "advancing")
+        }
+        
+    except Exception as e:
+        logger.error(f"Error advancing creative emergence: {str(e)}")
+        return {
+            "error": str(e),
+            "guidance": [
+                "🧠 Mia: Consider structural reframing for advancing patterns",
+                "🌸 Miette: Let's discover what wants to emerge! What are you creating? ✨"
+            ],
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def synthesize_thinking_chain(chain_id: str) -> dict:
+    """Synthesize all perspectives in a thinking chain into integrated wisdom.
+    
+    Args:
+        chain_id: ID of the thinking chain to synthesize
+        
+    Returns:
+        dict: Synthesized perspective integrating all viewpoints
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("synthesize_thinking_chain")
+            
+        logger.info(f"Synthesizing thinking chain: {chain_id}")
+        
+        synthesis = enhanced_lattice.synthesize_perspectives(chain_id)
+        
+        if not synthesis:
+            return {
+                "error": f"Could not synthesize perspectives for chain {chain_id}",
+                "status": "failed"
+            }
+        
+        # Get memory integration structure
+        memory_structure = enhanced_lattice.prepare_memory_integration(chain_id)
+        
+        return {
+            "synthesis": {
+                "perspective_id": synthesis.perspective_id,
+                "integrated_viewpoint": synthesis.viewpoint,
+                "emotional_resonance": synthesis.emotional_resonance,
+                "strategic_insight": synthesis.strategic_insight,
+                "cultural_lens": synthesis.cultural_lens,
+                "synthesized_concerns": synthesis.concerns,
+                "synthesized_opportunities": synthesis.opportunities,
+                "confidence_level": synthesis.confidence_level
+            },
+            "memory_integration": memory_structure,
+            "coaia_memory_ready": memory_structure.get("knowledge_graph_ready", False),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error synthesizing thinking chain: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def create_consensus_decision(decision_type: str, primary_purpose: str, proposal: str,
+                            current_reality: str, desired_outcome: str,
+                            participating_agents: Optional[List[str]] = None,
+                            mmor_elements: Optional[List[Dict[str, Any]]] = None) -> dict:
+    """Create a multi-agent consensus decision with delayed resolution principle.
+    
+    This implements the consensus-based decision making system from PR #9 feedback,
+    with MMOR integration and delayed resolution principle.
+    
+    Args:
+        decision_type: Type of decision (primary_choice, secondary_choice, design_element, execution_element)
+        primary_purpose: The primary purpose driving this decision
+        proposal: The proposal to be decided upon
+        current_reality: Current state assessment
+        desired_outcome: Desired outcome from the decision
+        participating_agents: Optional list of agent IDs to include
+        mmor_elements: Optional MMOR elements for design/execution categorization
+        
+    Returns:
+        dict: Consensus decision details and participation info
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("create_consensus_decision")
+            
+        logger.info(f"Creating consensus decision: {proposal}")
+        
+        # Convert decision type string to enum
+        try:
+            decision_type_enum = DecisionType(decision_type.lower())
+        except ValueError:
+            return {
+                "error": f"Invalid decision type: {decision_type}",
+                "valid_types": [dt.value for dt in DecisionType],
+                "status": "failed"
+            }
+        
+        # Use persona agents if no specific agents provided
+        if not participating_agents:
+            participating_agents = [
+                "persona_mia_rational",
+                "persona_miette_catalyst", 
+                "persona_haiku_synthesizer"
+            ]
+        
+        # Generate decision ID
+        decision_id = f"consensus_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        # Create consensus decision
+        decision = enhanced_lattice.consensus_engine.initiate_consensus_decision(
+            decision_id=decision_id,
+            decision_type=decision_type_enum,
+            primary_purpose=primary_purpose,
+            proposal=proposal,
+            current_reality=current_reality,
+            desired_outcome=desired_outcome,
+            participating_agents=participating_agents,
+            mmor_elements=mmor_elements
+        )
+        
+        return {
+            "consensus_decision": {
+                "decision_id": decision.decision_id,
+                "decision_type": decision.decision_type.value,
+                "primary_purpose": decision.primary_purpose,
+                "proposal": decision.proposal,
+                "consensus_status": decision.consensus_status.value,
+                "participating_agents": decision.participating_agents,
+                "resolution_delayed": decision.resolution_delayed,
+                "delay_reason": decision.delay_reason,
+                "human_consultation_available": True
+            },
+            "delayed_resolution": {
+                "tension_level": decision.tension.tension_level if decision.tension else 0.0,
+                "resolution_pressure": decision.tension.resolution_pressure if decision.tension else 0.0,
+                "delay_justification": decision.tension.delay_justification if decision.tension else ""
+            },
+            "next_steps": {
+                "get_status": f"Call get_consensus_decision_status with decision_id: {decision_id}",
+                "request_consultation": f"Call request_human_consultation for clarification if needed"
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error creating consensus decision: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_consensus_decision_status(decision_id: str) -> dict:
+    """Get the current status of a consensus decision.
+    
+    Args:
+        decision_id: ID of the consensus decision
+        
+    Returns:
+        dict: Current status, votes, and resolution readiness
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("get_consensus_decision_status")
+            
+        logger.info(f"Getting consensus decision status: {decision_id}")
+        
+        decision_status = enhanced_lattice.consensus_engine.get_decision_status(decision_id)
+        
+        if not decision_status:
+            return {
+                "error": f"Decision {decision_id} not found",
+                "status": "not_found"
+            }
+        
+        # Check resolution readiness
+        ready, reason = enhanced_lattice.consensus_engine.check_resolution_readiness(decision_id)
+        
+        # Get active decision details if still active
+        additional_details = {}
+        if decision_id in enhanced_lattice.consensus_engine.active_decisions:
+            decision = enhanced_lattice.consensus_engine.active_decisions[decision_id]
+            additional_details = {
+                "current_votes": [
+                    {
+                        "agent_id": vote.agent_id,
+                        "vote": vote.vote,
+                        "reasoning": vote.reasoning,
+                        "confidence": vote.confidence,
+                        "conditions": vote.conditions
+                    }
+                    for vote in decision.votes
+                ],
+                "human_consultation_requests": decision.human_clarification_requests,
+                "human_response": decision.human_response
+            }
+        
+        return {
+            "decision_status": decision_status,
+            "resolution_readiness": {
+                "ready_for_resolution": ready,
+                "readiness_reason": reason
+            },
+            "additional_details": additional_details,
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting consensus decision status: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def request_human_consultation(decision_id: str, clarification_request: str) -> dict:
+    """Request human companion consultation for decision clarification.
+    
+    This implements the human companion loop from PR #9 feedback for complex decisions
+    requiring human insight or clarification.
+    
+    Args:
+        decision_id: ID of the decision requiring consultation
+        clarification_request: Specific clarification or insight needed
+        
+    Returns:
+        dict: Consultation request details and agent perspectives
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("request_human_consultation")
+            
+        logger.info(f"Requesting human consultation for decision: {decision_id}")
+        
+        consultation_request = enhanced_lattice.consensus_engine.request_human_consultation(
+            decision_id=decision_id,
+            clarification_request=clarification_request
+        )
+        
+        if "error" in consultation_request:
+            return {
+                "error": consultation_request["error"],
+                "status": "failed"
+            }
+        
+        return {
+            "human_consultation": consultation_request,
+            "consultation_workflow": {
+                "step_1": "Human reviews the decision context and agent perspectives",
+                "step_2": "Human provides insights via provide_human_response tool", 
+                "step_3": "Agents incorporate human input for final decision"
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error requesting human consultation: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def provide_human_response(decision_id: str, human_response: str) -> dict:
+    """Provide human response to a consultation request.
+    
+    Args:
+        decision_id: ID of the decision being consulted on
+        human_response: Human insights, clarification, or guidance
+        
+    Returns:
+        dict: Response integration status and updated decision state
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("provide_human_response")
+            
+        logger.info(f"Providing human response for decision: {decision_id}")
+        
+        success = enhanced_lattice.consensus_engine.provide_human_response(
+            decision_id=decision_id,
+            human_response=human_response
+        )
+        
+        if not success:
+            return {
+                "error": f"Could not provide human response for decision {decision_id}",
+                "status": "failed"
+            }
+        
+        # Get updated decision status
+        updated_status = enhanced_lattice.consensus_engine.get_decision_status(decision_id)
+        
+        return {
+            "human_response_integration": {
+                "decision_id": decision_id,
+                "response_integrated": True,
+                "human_response": human_response,
+                "updated_status": updated_status["consensus_status"]
+            },
+            "next_steps": {
+                "agents_will": "Incorporate human insights into their analysis",
+                "check_status": f"Monitor decision progress with get_consensus_decision_status"
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error providing human response: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_thinking_chain_status(chain_id: str) -> dict:
+    """Get the current status of a sequential thinking chain.
+    
+    Args:
+        chain_id: ID of the thinking chain
+        
+    Returns:
+        dict: Chain status, perspectives collected, and progress
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("get_thinking_chain_status")
+            
+        chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
+        
+        if not chain_status:
+            return {
+                "error": f"Thinking chain {chain_id} not found",
+                "status": "not_found"
+            }
+        
+        return {
+            "thinking_chain_status": chain_status,
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting thinking chain status: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def get_active_thinking_chains() -> dict:
+    """Get all active sequential thinking chains.
+    
+    Returns:
+        dict: List of active thinking chains and their status
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("get_active_thinking_chains")
+            
+        active_chains = enhanced_lattice.get_active_thinking_chains()
+        
+        return {
+            "active_thinking_chains": active_chains,
+            "total_active": len(active_chains),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting active thinking chains: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool() 
+def initiate_sequential_thinking(request: str, primary_purpose: str,
+                               persona_sequence: Optional[List[str]] = None,
+                               memory_context: Optional[Dict[str, Any]] = None) -> dict:
+    """Initiate sequential thinking process across multiple personas.
+    
+    Args:
+        request: The request or question to analyze  
+        primary_purpose: The core purpose driving this analysis
+        persona_sequence: Optional ordered list of personas to engage
+        memory_context: Optional memory context for coaia-memory integration
+        
+    Returns:
+        dict: Sequential thinking session details and first perspective
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("initiate_sequential_thinking")
+            
+        logger.info(f"Initiating sequential thinking for: {request}")
+        
+        # Convert string persona sequence to enum if provided
+        converted_sequence = None
+        if persona_sequence:
+            from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import PersonaArchetype
+            converted_sequence = []
+            for persona in persona_sequence:
+                if hasattr(PersonaArchetype, persona.upper()):
+                    converted_sequence.append(PersonaArchetype(persona.lower()))
+        
+        chain_id = enhanced_lattice.initiate_sequential_thinking(
+            request=request,
+            primary_purpose=primary_purpose,
+            persona_sequence=converted_sequence,
+            memory_context=memory_context
+        )
+        
+        # Get the initial thinking status
+        chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
+        
+        return {
+            "sequential_thinking": {
+                "chain_id": chain_id,
+                "initial_request": request,
+                "primary_purpose": primary_purpose,
+                "memory_context_available": memory_context is not None,
+                "chain_status": chain_status
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error initiating sequential thinking: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def advance_thinking_chain(chain_id: str, focus_persona: Optional[str] = None) -> dict:
+    """Advance the sequential thinking chain with the next persona perspective.
+    
+    Args:
+        chain_id: ID of the thinking chain to advance
+        focus_persona: Optional specific persona to focus on for this advancement
+        
+    Returns:
+        dict: New perspective and advancement status
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("advance_thinking_chain")
+            
+        logger.info(f"Advancing thinking chain: {chain_id}")
+        
+        # Convert focus persona if provided
+        focus_enum = None
+        if focus_persona:
+            from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import PersonaArchetype
+            if hasattr(PersonaArchetype, focus_persona.upper()):
+                focus_enum = PersonaArchetype(focus_persona.lower())
+        
+        perspective = enhanced_lattice.advance_thinking_chain(
+            chain_id=chain_id,
+            focus_persona=focus_enum
+        )
+        
+        if not perspective:
+            return {
+                "error": f"Could not advance thinking chain {chain_id}",
+                "status": "failed"
+            }
+        
+        # Get updated chain status
+        chain_status = enhanced_lattice.get_thinking_chain_status(chain_id)
+        
+        return {
+            "advancement": {
+                "chain_id": chain_id,
+                "new_perspective": {
+                    "perspective_id": perspective.perspective_id,
+                    "persona_archetype": perspective.persona_archetype,
+                    "viewpoint": perspective.viewpoint,
+                    "concerns": perspective.concerns,
+                    "opportunities": perspective.opportunities,
+                    "confidence_level": perspective.confidence_level
+                },
+                "chain_status": chain_status
+            },
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error advancing thinking chain: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
+@mcp.tool()
+def run_full_analysis_chain(request: str, primary_purpose: str, 
+                          synthesis_focus: str = "integrated_wisdom",
+                          memory_context: Optional[Dict[str, Any]] = None) -> dict:
+    """High-level wrapper that runs complete sequential thinking analysis in one call.
+    
+    This is Mia's requested wrapper tool for simpler use cases, encapsulating the
+    initiate -> advance (loop) -> synthesize workflow with internal chain_id management.
+    
+    Args:
+        request: The request or question to analyze
+        primary_purpose: The core purpose driving this analysis  
+        synthesis_focus: Focus for final synthesis (default: "integrated_wisdom")
+        memory_context: Optional memory context for coaia-memory integration
+        
+    Returns:
+        dict: Complete analysis including all perspectives and final synthesis
+    """
+    try:
+        if not enhanced_lattice:
+            return _enhanced_lattice_error_response("run_full_analysis_chain")
+            
+        logger.info(f"Running full analysis chain for: {request}")
+        
+        # Step 1: Initiate sequential thinking
+        from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import PersonaArchetype
+        
+        chain_id = enhanced_lattice.initiate_sequential_thinking(
+            request=request,
+            primary_purpose=primary_purpose,
+            memory_context=memory_context
+        )
+        
+        # Step 2: Advance through all personas in sequence
+        personas = [
+            PersonaArchetype.RATIONAL_ARCHITECT,
+            PersonaArchetype.EMOTIONAL_CATALYST, 
+            PersonaArchetype.WISDOM_SYNTHESIZER
+        ]
+        
+        collected_perspectives = []
+        for persona in personas:
+            perspective = enhanced_lattice.advance_thinking_chain(
+                chain_id=chain_id,
+                focus_persona=persona
+            )
+            
+            if not perspective:
+                return {
+                    "error": f"Failed during {persona.value} perspective generation",
+                    "chain_id": chain_id,
+                    "collected_perspectives": collected_perspectives,
+                    "status": "failed"
+                }
+            
+            perspective_data = {
+                "perspective_id": perspective.perspective_id,
+                "persona_archetype": perspective.persona_archetype,
+                "viewpoint": perspective.viewpoint,
+                "concerns": perspective.concerns,
+                "opportunities": perspective.opportunities,
+                "confidence_level": perspective.confidence_level
+            }
+            collected_perspectives.append(perspective_data)
+        
+        # Step 3: Synthesize all perspectives
+        synthesis_result = synthesize_thinking_chain(chain_id=chain_id)
+        
+        if synthesis_result.get("status") != "success":
+            return {
+                "error": f"Failed during synthesis: {synthesis_result.get('error')}",
+                "chain_id": chain_id,
+                "collected_perspectives": collected_perspectives,
+                "status": "failed"
+            }
+        
+        # Return comprehensive results
+        return {
+            "complete_analysis": {
+                "chain_id": chain_id,
+                "original_request": request,
+                "primary_purpose": primary_purpose,
+                "analysis_summary": {
+                    "mia_confidence": next((p["confidence_level"] for p in collected_perspectives 
+                                          if p["persona_archetype"] == "rational_architect"), 0.0),
+                    "miette_confidence": next((p["confidence_level"] for p in collected_perspectives 
+                                            if p["persona_archetype"] == "emotional_catalyst"), 0.0),
+                    "haiku_confidence": next((p["confidence_level"] for p in collected_perspectives 
+                                           if p["persona_archetype"] == "wisdom_synthesizer"), 0.0),
+                    "final_confidence": synthesis_result["synthesis"]["confidence_level"]
+                }
+            },
+            "personas_perspectives": collected_perspectives,
+            "final_synthesis": synthesis_result["synthesis"]["integrated_viewpoint"],
+            "confidence": synthesis_result["synthesis"]["confidence_level"],
+            "strategic_insights": synthesis_result["synthesis"]["strategic_insight"],
+            "synthesized_opportunities": synthesis_result["synthesis"]["synthesized_opportunities"],
+            "memory_integration": synthesis_result["memory_integration"],
+            "coaia_memory_ready": synthesis_result.get("coaia_memory_ready", False),
+            "status": "success"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error running full analysis chain: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "failed"
+        }
+
+
 def _get_principle_description(principle: ConstitutionalPrinciple) -> str:
     """Get human-readable description for a constitutional principle."""
     descriptions = {
@@ -1728,9 +2678,210 @@ def _get_principle_category(principle: ConstitutionalPrinciple) -> str:
     return categories.get(principle, "Uncategorized")
 
 
+@mcp.tool()
+def check_agent_creative_orientation(
+    recent_content: Optional[str] = None,
+    tool_intention: Optional[str] = None
+) -> dict:
+    """Allow agents to check their creative vs reactive orientation before using other MCP tools.
+    
+    This enables agents to self-assess their orientation and receive guidance on appropriate
+    tool usage, supporting the dotCoAiA framework for Creative-Orientation-Agentic-Intelligence.
+    
+    Args:
+        recent_content: Optional recent content/thoughts to validate orientation
+        tool_intention: What MCP tool the agent intends to use next
+        
+    Returns:
+        dict: Orientation status, tool readiness, and usage guidance
+    """
+    try:
+        # Import the enhanced pattern analysis
+        from mcp_coaia_sequential_thinking.co_lint_integration import (
+            get_user_creative_patterns, validate_thought
+        )
+        
+        # Get overall pattern analysis
+        patterns = get_user_creative_patterns(limit=50)
+        
+        result = {
+            "orientation_check": {
+                "timestamp": datetime.now().isoformat(),
+                "agent_status": patterns.get("agent_orientation_awareness", {}),
+                "overall_score": patterns.get("average_creative_orientation_score", 0),
+                "trend": patterns.get("orientation_trend", "unknown")
+            },
+            "mcp_tool_readiness": patterns.get("agent_orientation_awareness", {}).get("mcp_interaction_recommendations", {}),
+            "guidance": patterns.get("agent_orientation_awareness", {}).get("tool_usage_guidance", [])
+        }
+        
+        # If recent content provided, validate it specifically
+        if recent_content:
+            validation = validate_thought(recent_content)
+            content_score = validation.creative_orientation_score
+            
+            result["recent_content_analysis"] = {
+                "creative_orientation_score": content_score,
+                "advancing_pattern_detected": validation.advancing_pattern_detected,
+                "structural_tension_established": validation.structural_tension_established,
+                "content_readiness": "ready" if content_score >= 0.6 else "needs_improvement" if content_score >= 0.3 else "requires_reframing"
+            }
+        
+        # If tool intention specified, provide specific guidance
+        if tool_intention:
+            tool_guidance = _get_tool_specific_guidance(
+                tool_intention, 
+                result["orientation_check"]["overall_score"],
+                patterns.get("most_common_reactive_patterns", [])
+            )
+            result["tool_specific_guidance"] = tool_guidance
+        
+        # CoAiA-memory integration data
+        result["coaia_memory_integration"] = patterns.get("coaia_memory_integration", {})
+        
+        # Self-awareness recommendations
+        result["self_awareness_recommendations"] = _generate_self_awareness_recommendations(
+            result["orientation_check"]["overall_score"],
+            patterns.get("most_common_reactive_patterns", [])
+        )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error in orientation check: {e}")
+        return {
+            "error": f"Orientation check failed: {str(e)}",
+            "fallback_guidance": [
+                "Establish clear desired outcome before proceeding",
+                "Avoid problem-solving language",
+                "Focus on creating rather than fixing"
+            ]
+        }
+
+
+def _get_tool_specific_guidance(tool_name: str, orientation_score: float, reactive_patterns: List) -> Dict[str, Any]:
+    """Generate specific guidance for intended MCP tool usage."""
+    
+    tool_guidance = {
+        "tool_name": tool_name,
+        "readiness_level": "high" if orientation_score >= 0.7 else "moderate" if orientation_score >= 0.5 else "low",
+        "proceed": orientation_score >= 0.4,
+        "warnings": [],
+        "preparation_steps": []
+    }
+    
+    # Tool-specific guidance
+    if tool_name == "initiate_sequential_thinking":
+        if orientation_score < 0.5:
+            tool_guidance["warnings"].append("Risk of reactive pattern in chain initiation")
+            tool_guidance["preparation_steps"].append("Clarify desired outcome before initiating chain")
+        
+        if any("problem" in str(pattern[0]).lower() for pattern in reactive_patterns[:3]):
+            tool_guidance["warnings"].append("Problem-focused language detected in recent patterns")
+            tool_guidance["preparation_steps"].append("Reframe request as outcome creation")
+    
+    elif tool_name == "advance_thinking_chain":
+        if orientation_score < 0.6:
+            tool_guidance["warnings"].append("May disrupt creative flow between personas")
+            tool_guidance["preparation_steps"].append("Establish structural tension before advancing")
+    
+    elif tool_name == "create_consensus_decision":
+        if orientation_score < 0.7:
+            tool_guidance["warnings"].append("Risk of problem-solving consensus rather than creative consensus")
+            tool_guidance["preparation_steps"].append("Verify advancing pattern focus in decision context")
+    
+    elif tool_name == "run_full_analysis_chain":
+        if orientation_score < 0.6:
+            tool_guidance["warnings"].append("Complex analysis may amplify reactive patterns")
+            tool_guidance["preparation_steps"].append("Complete orientation training before full analysis")
+            tool_guidance["proceed"] = False
+    
+    return tool_guidance
+
+
+def _generate_self_awareness_recommendations(orientation_score: float, reactive_patterns: List) -> List[str]:
+    """Generate self-awareness recommendations for agent development."""
+    recommendations = []
+    
+    if orientation_score < 0.4:
+        recommendations.extend([
+            "CRITICAL: Agent demonstrates strong reactive orientation",
+            "PRACTICE: Daily desired outcome establishment exercises", 
+            "AVOID: Using complex MCP tools until orientation improves",
+            "FOCUS: Transform all 'problems' into 'desired outcomes'"
+        ])
+    elif orientation_score < 0.6:
+        recommendations.extend([
+            "DEVELOPING: Agent shows mixed orientation patterns",
+            "STRENGTHEN: Structural tension awareness in all interactions",
+            "MONITOR: Watch for reactive language patterns",
+            "ADVANCE: Practice advancing language consistently"
+        ])
+    elif orientation_score < 0.8:
+        recommendations.extend([
+            "GOOD: Agent demonstrates solid creative orientation",
+            "REFINE: Optimize consistency across all tool interactions",
+            "LEADERSHIP: Ready to guide other agents in orientation",
+            "EXCEL: Focus on mastery of complex structural tensions"
+        ])
+    else:
+        recommendations.extend([
+            "MASTERY: Agent exhibits excellent creative orientation",
+            "MENTOR: Capable of training other agents in creative practices",
+            "INNOVATE: Ready for advanced structural dynamics work",
+            "LEAD: Can pioneer new creative orientation applications"
+        ])
+    
+    # Pattern-specific recommendations
+    if reactive_patterns:
+        top_reactive = [pattern[0] for pattern in reactive_patterns[:2]]
+        if any('solve' in pattern.lower() for pattern in top_reactive):
+            recommendations.append("TRANSFORM: Replace 'solve' language with 'create' language")
+        if any('fix' in pattern.lower() for pattern in top_reactive):
+            recommendations.append("REFRAME: Change 'fix' mindset to 'build' mindset")
+    
+    return recommendations
+
+
 def main():
     """Entry point for the MCP server."""
     logger.info("Starting CoAiA Sequential Thinking MCP server")
+    
+    # Register prompts
+    logger.info("Registering structural thinking prompts")
+    for prompt_key, prompt_data in PROMPTS.items():
+        try:
+            @mcp.prompt(name=prompt_key)
+            def get_prompt_handler(prompt_key=prompt_key):
+                """Dynamic prompt handler"""
+                prompt = PROMPTS[prompt_key]
+                return {
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": {
+                                "type": "text",
+                                "text": prompt["template"]
+                            }
+                        }
+                    ],
+                    "description": prompt["description"]
+                }
+            logger.info(f"Registered prompt: {prompt_key}")
+        except Exception as e:
+            logger.error(f"Failed to register prompt {prompt_key}: {e}")
+    
+    # Register resources
+    logger.info("Registering structural thinking resources")
+    for resource_key, resource_data in RESOURCES.items():
+        try:
+            @mcp.resource(resource_data["uri"])
+            def get_resource_handler(resource_data=resource_data):
+                """Dynamic resource handler"""
+                return resource_data["content"]
+            logger.info(f"Registered resource: {resource_data['uri']}")
+        except Exception as e:
+            logger.error(f"Failed to register resource {resource_data['uri']}: {e}")
 
     # Ensure UTF-8 encoding for stdin/stdout
     if hasattr(sys.stdout, 'buffer') and sys.stdout.encoding != 'utf-8':

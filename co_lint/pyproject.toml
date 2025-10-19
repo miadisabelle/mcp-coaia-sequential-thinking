@@ -1,0 +1,13 @@
+[project]
+name = "co-lint"
+version = "0.1.0"
+description = "A linter to enforce Creative Orientation governance in repository documentation."
+authors = [{ name = "J.Guillaume D.-Isabelle", email = "jgi@jgwill.com" }]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "click>=8.0",
+]
+
+[project.scripts]
+co-lint = "co_lint.main:cli"

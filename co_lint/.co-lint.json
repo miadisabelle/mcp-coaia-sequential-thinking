@@ -1,0 +1,14 @@
+{
+  "ignore": ["Logs/**", "**/.claude/**", "**/node_modules/**"],
+  "allow_technical": [
+    "**/LOCAL_MODELS_GUIDE.md",
+    "**/TEST_README.md"
+  ],
+  "severity_overrides": {
+    "COL005": "error",
+    "COL006": "off",
+    "COL007": "warn"
+  },
+  "rule_filters": ["COL001","COL002","COL003","COL004","COL005"],
+  "max_structural_tension_search_lines": 120
+}
