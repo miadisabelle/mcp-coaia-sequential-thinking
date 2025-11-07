@@ -1,4 +1,4 @@
-# ROADMAP: COAIA Sequential Thinking - Addressing the Fundamental Bias Paradox
+# ROADMAP: COAIA Two-Eyed Seen Holistic Thinking - Addressing the Fundamental Bias Paradox
 
 ## The Core Realization
 

@@ -1,5 +1,5 @@
 """
-COAIA Integration Bridge - Simplified Implementation for mcp-coaia-sequential-thinking
+COAIA Integration Bridge - Simplified Implementation for mcp-coaia-twoeyesseen-holistic-thinking
 ====================================================================================
 
 This module provides the integration bridge that connects sequential thinking sessions
@@ -67,7 +67,7 @@ class IntegrationRecord:
 
 class CoaiaMemoryBridge:
     """
-    Simplified integration bridge for connecting sequential thinking to coaia-memory.
+    Simplified integration bridge for connecting two-eyed seen holistic thinking to coaia-memory.
     
     This class handles the transformation of SCCP-based thinking sessions into
     structural tension charts while maintaining methodology integrity.

@@ -1,4 +1,4 @@
-# CoAiA Sequential Thinking: Stateful Reasoning Engine
+# CoAiA Two-Eyed Seen Holistic Thinking: Stateful Reasoning Engine
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -29,8 +29,8 @@ An advanced MCP (Model Context Protocol) server implementing a **Stateful Inquir
 ### Installation
 ```bash
 # Clone repository
-git clone https://github.com/miadisabelle/mcp-coaia-sequential-thinking.git
-cd mcp-coaia-sequential-thinking
+git clone https://github.com/miadisabelle/mcp-coaia-twoeyesseen-holistic-thinking.git
+cd mcp-coaia-twoeyesseen-holistic-thinking
 
 # Install dependencies
 pip install -r requirements.txt
@@ -165,8 +165,8 @@ This project follows the RISE (Relational, Inquiry-based, Structural, Emergent) 
 ## Project Structure
 
 ```
-mcp-sequential-thinking/
-├── mcp_coaia_sequential_thinking/
+mcp-coaia-twoeyesseen-holistic-thinking/
+├── mcp_coaia_twoeyesseen_holistic_thinking/
 │   ├── server.py       # Main server implementation and MCP tools
 │   ├── models.py       # Data models with Pydantic validation
 │   ├── storage.py      # Thread-safe persistence layer
@@ -212,11 +212,10 @@ mcp-sequential-thinking/
 2. **Run the Server**
    ```bash
    # Run directly
-   uv run -m mcp_sequential_thinking.server
+   uv run -m mcp_coaia_twoeyesseen_holistic_thinking.server
 
    # Or use the installed script
-   mcp-sequential-thinking
-   ```
+   mcp-coaia-twoeyesseen-holistic-thinking   ```
 
 3. **Run Tests**
    ```bash
@@ -224,7 +223,7 @@ mcp-sequential-thinking/
    pytest
 
    # Run with coverage report
-   pytest --cov=mcp_sequential_thinking
+   pytest --cov=mcp_coaia_twoeyesseen_holistic_thinking
    ```
 
 ## Claude Desktop Integration
@@ -234,11 +233,10 @@ Add to your Claude Desktop configuration (`%APPDATA%\Claude\claude_desktop_confi
 ```json
 {
   "mcpServers": {
-    "coaia-sequential-thinking": {
-      "command": "uv",
+"coaia-twoeyesseen-holistic-thinking": {
       "args": [
         "--directory",
-        "C:\\path\\to\\your\\mcp-sequential-thinking\\run_server.py",
+        "C:\\path\\to\\your\\mcp-coaia-twoeyesseen-holistic-thinking\\run_server.py",
         "run",
         "server.py"
         ]
@@ -253,7 +251,7 @@ Alternatively, if you've installed the package with `pip install -e .`, you can 
 {
   "mcpServers": {
     "coaia-sequential-thinking": {
-      "command": "mcp-coaia-sequential-thinking"
+      "command": "mcp-coaia-twoeyesseen-holistic-thinking"
     }
   }
 }
@@ -268,10 +266,10 @@ You can also run it directly using uvx and skipping the installation step:
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/miadisabelle/mcp-coaia-sequential-thinking",
+        "git+https://github.com/miadisabelle/mcp-coaia-twoeyesseen-holistic-thinking",
         "--with",
         "portalocker",
-        "mcp-coaia-sequential-thinking"
+        "mcp-coaia-twoeyesseen-holistic-thinking"
       ]
     }
   }
@@ -311,7 +309,7 @@ Previously reported issue where `query_agent_capabilities` returned empty result
 
 ## Usage Guide
 
-The Sequential Thinking server exposes three main tools:
+The Two-Eyed Seen Holistic Thinking server exposes three main tools:
 
 ### 1. `process_thought`
 
@@ -493,7 +491,7 @@ This very analysis demonstrates the challenge: I can articulate creative orienta
 
 **The Real Test**: Can this research framework itself be structured as a desired outcome rather than a problem to solve? The answer to that question may determine whether genuine creative orientation AI is possible.
 
-# Customizing the Sequential Thinking Server
+# Customizing the Two-Eyed Seen Holistic Thinking Server
 
 For detailed examples of how to customize and extend the Sequential Thinking server, see [example.md](example.md). It includes code samples for:
 

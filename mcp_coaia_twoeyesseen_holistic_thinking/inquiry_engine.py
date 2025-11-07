@@ -2,7 +2,7 @@
 Stateful Inquiry Engine - Core Component for State Persistence
 
 This module implements Mia's architectural specification from rispecs/ to resolve
-critical state persistence failures in the MCP Sequential Thinking toolset.
+critical state persistence failures in the MCP Two-Eyed Seen Holistic Thinking toolset.
 
 The StatefulInquiryEngine acts as the system's memory, ensuring that every step
 of a complex inquiry is preserved, honored, and built upon.

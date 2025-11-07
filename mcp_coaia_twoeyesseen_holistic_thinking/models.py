@@ -37,7 +37,7 @@ class ThoughtStage(Enum):
 
 
 class ThoughtData(BaseModel):
-    """Data structure for a single thought in the sequential thinking process with SCCP elements."""
+    """Data structure for a single thought in the two-eyed seen holistic thinking process with SCCP elements."""
     thought: str
     thought_number: int
     total_thoughts: int

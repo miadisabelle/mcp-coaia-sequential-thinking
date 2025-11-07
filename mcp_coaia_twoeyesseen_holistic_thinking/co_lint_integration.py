@@ -511,8 +511,8 @@ def _generate_tool_usage_guidance(avg_score: float, reactive_patterns: Dict) -> 
     guidance = []
     
     if avg_score < 0.4:
-        guidance.append("CAUTION: Before using initiate_sequential_thinking, establish clear desired outcome first")
-        guidance.append("AVOID: Using advance_thinking_chain when focused on problem-solving - reframe as outcome creation")
+        guidance.append("CAUTION: Before using initiate_two_eyed_seen_holistic_thinking, establish clear desired outcome first")
+        guidance.append("AVOID: Using advance_two_eyed_seen_holistic_thinking_chain when focused on problem-solving - reframe as outcome creation")
         guidance.append("PRACTICE: Use create_consensus_decision only after establishing structural tension")
     
     elif avg_score < 0.6:
@@ -540,24 +540,24 @@ def _generate_mcp_interaction_recommendations(avg_score: float) -> Dict[str, Any
     """Generate specific recommendations for MCP tool interactions."""
     if avg_score >= 0.7:
         return {
-            "initiate_sequential_thinking": "Ready - agent can establish clear structural tensions",
-            "advance_thinking_chain": "Optimal - agent maintains creative flow between personas",
+            "initiate_two_eyed_seen_holistic_thinking": "Ready - agent can establish clear structural tensions",
+            "advance_two_eyed_seen_holistic_thinking_chain": "Optimal - agent maintains creative flow between personas",
             "create_consensus_decision": "Excellent - agent facilitates advancing pattern decisions",
             "run_full_analysis_chain": "Advanced - agent handles complex multi-perspective integration",
             "overall_recommendation": "Agent demonstrates creative mastery - all tools available"
         }
     elif avg_score >= 0.5:
         return {
-            "initiate_sequential_thinking": "Good - verify desired outcome clarity before proceeding",
-            "advance_thinking_chain": "Ready - monitor for reactive pattern emergence",
+            "initiate_two_eyed_seen_holistic_thinking": "Good - verify desired outcome clarity before proceeding",
+            "advance_two_eyed_seen_holistic_thinking_chain": "Ready - monitor for reactive pattern emergence",
             "create_consensus_decision": "Suitable - ensure advancing pattern focus",
             "run_full_analysis_chain": "Recommended - with orientation awareness",
             "overall_recommendation": "Agent shows creative capacity - proceed with awareness"
         }
     else:
         return {
-            "initiate_sequential_thinking": "CAUTION - establish orientation training first",
-            "advance_thinking_chain": "NOT RECOMMENDED - reactive patterns may disrupt flow",
+            "initiate_two_eyed_seen_holistic_thinking": "CAUTION - establish orientation training first",
+            "advance_two_eyed_seen_holistic_thinking_chain": "NOT RECOMMENDED - reactive patterns may disrupt flow",
             "create_consensus_decision": "REQUIRES GUIDANCE - risk of problem-solving orientation",
             "run_full_analysis_chain": "DELAY - complete creative orientation training first",
             "overall_recommendation": "Agent needs creative orientation development before using MCP tools"

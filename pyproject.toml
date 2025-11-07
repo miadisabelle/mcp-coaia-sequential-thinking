@@ -1,11 +1,11 @@
 [project]
-name = "mcp-coaia-sequential-thinking"
+name = "mcp-coaia-twoeyesseen-holistic-thinking"
 version = "0.3.13"
 description = "CoAiA's Structural Core: Guiding Intelligent Agents with Foundational Creative Thinking"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-keywords = ["mcp", "ai", "coaia", "sequential-thinking","creative-orientation", "structural-thinking", "polycentric-lattice"]
+keywords = ["mcp", "ai", "coaia", "twoeyesseen-holistic-thinking","creative-orientation", "structural-thinking", "polycentric-lattice"]
 authors = [
    { name = "Arben Ademi", email = "arben.ademi@tuta.io" }
 ]
@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mcp-coaia-sequential-thinking = "mcp_coaia_sequential_thinking.wrapper:main"
+mcp-coaia-twoeyesseen-holistic-thinking = "mcp_coaia_twoeyesseen_holistic_thinking.wrapper:main"
 
 [project.optional-dependencies]
 dev = [
@@ -40,15 +40,13 @@ web = [
     "pydantic>=2.0.0",
 ]
 
-all = [
-    "sequential-thinking[dev,vis,web]",
-]
+all = ["twoeyesseen-holistic-thinking[dev,vis,web]"]
 
 [project.urls]
-Source = "https://github.com/miadisabelle/mcp-coaia-sequential-thinking"
+Source = "https://github.com/miadisabelle/mcp-coaia-twoeyesseen-holistic-thinking"
 
 [tool.hatch.build.targets.wheel]
-packages = ["mcp_coaia_sequential_thinking"]
+packages = ["mcp_coaia_twoeyesseen_holistic_thinking"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
