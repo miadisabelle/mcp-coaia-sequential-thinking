@@ -2845,10 +2845,10 @@ def _generate_self_awareness_recommendations(orientation_score: float, reactive_
 
 def main():
     """Entry point for the MCP server."""
-    logger.info("Starting CoAiA Sequential Thinking MCP server")
+    logger.info("Starting CoAiA Two-Eye-Seen Holistic Thinking MCP server")
     
     # Register prompts
-    logger.info("Registering structural thinking prompts")
+    logger.info("Registering structural  prompts")
     for prompt_key, prompt_data in PROMPTS.items():
         try:
             @mcp.prompt(name=prompt_key)
