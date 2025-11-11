@@ -6,7 +6,7 @@
 **Last Updated**: 2025-10-18
 **Author**: Mia, Gemini Agent
 
-> This document revises the `ARCHITECTURAL_IMPROVEMENT_PROPOSAL.md` using the RISE framework. It specifies a **Stateful Inquiry Engine** designed to resolve the critical state-persistence failures identified in the `mcp-coaia-sequential-thinking` toolset.
+> This document revises the `ARCHITECTURAL_IMPROVEMENT_PROPOSAL.md` using the RISE framework. It specifies a **Stateful Inquiry Engine** designed to resolve the critical state-persistence failures identified in the `mcp-coaia-twoeyesseen-holistic-thinking` toolset.
 
 ---
 

@@ -198,7 +198,7 @@ The system is now ready for real-world deployment, research applications, and co
 
 ---
 
-**Repository**: [mcp-coaia-sequential-thinking](https://github.com/miadisabelle/mcp-coaia-sequential-thinking)  
+**Repository**: [mcp-coaia-twoeyesseen-holistic-thinking](https://github.com/miadisabelle/mcp-coaia-twoeyesseen-holistic-thinking)  
 **Implementation Status**: Complete - All 3 Phases Operational  
 **Test Coverage**: 100% - All architectural paradigms validated  
 **Cultural Impact**: Ready for research and deployment

@@ -250,8 +250,7 @@ Alternatively, if you've installed the package with `pip install -e .`, you can 
 ```json
 {
   "mcpServers": {
-    "coaia-sequential-thinking": {
-      "command": "mcp-coaia-twoeyesseen-holistic-thinking"
+    "mcp-coaia-twoeyesseen-holistic-thinking": {
     }
   }
 }
@@ -262,7 +261,7 @@ You can also run it directly using uvx and skipping the installation step:
 ```json
 {
   "mcpServers": {
-    "coaia-sequential-thinking": {
+    "mcp-coaia-twoeyesseen-holistic-thinking": {
       "command": "uvx",
       "args": [
         "--from",

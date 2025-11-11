@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# mcp-coaia-sequential-thinking Release Script
+# mcp-coaia-twoeyesseen-holistic-thinking Release Script
 # Prepares distribution and publishes to PyPI
 
 set -e  # Exit on any error
@@ -49,5 +49,5 @@ echo "📋 Version: v${VERSION}"
 echo "📋 Next steps:"
 echo "   - Push changes: git push origin main"
 echo "   - Push tag: git push origin v${VERSION}"
-echo "   - Verify package on PyPI: https://pypi.org/project/mcp-coaia-sequential-thinking/"
-echo "   - Test installation: pip install mcp-coaia-sequential-thinking"
+echo "   - Verify package on PyPI: https://pypi.org/project/mcp-coaia-twoeyesseen-holistic-thinking/"
+echo "   - Test installation: pip install mcp-coaia-twoeyesseen-holistic-thinking"

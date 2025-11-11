@@ -6,7 +6,7 @@
 
 ## 1. Executive Summary
 
-This document proposes a series of architectural enhancements to the `mcp-coaia-sequential-thinking` toolset. Analysis of four test scenarios and a review of the related `IAIP/rispecs` specifications have revealed critical architectural weaknesses, primarily the lack of state persistence between tool calls. This leads to significant failures in multi-step reasoning processes.
+This document proposes a series of architectural enhancements to the `mcp-coaia-twoeyesseen-holistic-thinking` toolset. Analysis of four test scenarios and a review of the related `IAIP/rispecs` specifications have revealed critical architectural weaknesses, primarily the lack of state persistence between tool calls. This leads to significant failures in multi-step reasoning processes.
 
 The proposed solution is to implement a **Stateful Inquiry Engine** that encapsulates the logic for sequential thinking and consensus decisions, using the existing `data_persistence.py` module to ensure continuity. This refactoring will fix the identified bugs and align the MCP more closely with the robust, relational principles outlined in the IAIP architecture.
 

@@ -75,8 +75,8 @@
 - **Requires** honest assessment of both current reality and desired outcome
 
 ### Related Issues
-- #140 - bi-directional-agentic-framework.coaia-sequential-thinking-charting.follow-up
-- #139 - GEMINI.bi-directional-agentic-framework.coaia-sequential-thinking-charting.md
+- #140 - bi-directional-agentic-framework.mcp-coaia-twoeyesseen-holistic-thinking-charting.follow-up
+- #139 - GEMINI.bi-directional-agentic-framework.mcp-coaia-twoeyesseen-holistic-thinking-charting.md
 - #136 - CO-Lint (main integration target)
 - #133 - AI consistency checker for structural tension methodology compliance
 - #130 - Creative Observer System development
