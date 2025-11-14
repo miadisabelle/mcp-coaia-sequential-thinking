@@ -12,7 +12,7 @@ The `initiate_sequential_thinking` tool was failing with ImportError when tested
 
 ### 1. Dependency Installation
 ```bash
-cd /home/runner/work/mcp-coaia-sequential-thinking/mcp-coaia-sequential-thinking
+cd /home/runner/work/mcp-coaia-twoeyesseen-holistic-thinking/mcp-coaia-twoeyesseen-holistic-thinking
 pip install -e .
 ```
 

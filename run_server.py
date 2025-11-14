@@ -18,7 +18,7 @@ from mcp_coaia_sequential_thinking.server import main
 from mcp_coaia_sequential_thinking.logging_conf import configure_logging
 
 # Configure logging for this script
-logger = configure_logging("coaia-sequential-thinking.runner")
+logger = configure_logging("mcp-coaia-twoeyesseen-holistic-thinking.runner")
 
 if __name__ == "__main__":
     try:

@@ -43,7 +43,7 @@ try:
     from .resources import list_resources, get_resource_content, RESOURCES
 except ImportError:
     # When run directly
-    from mcp_coaia_sequential_thinking.models import ThoughtData, ThoughtStage
+    from mcp_coaia_twoeyesseen_holistic_thinking.models import ThoughtData, ThoughtStage
     from mcp_coaia_sequential_thinking.storage import ThoughtStorage
     from mcp_coaia_sequential_thinking.analysis import ThoughtAnalyzer
     from mcp_coaia_sequential_thinking.logging_conf import configure_logging
@@ -64,24 +64,24 @@ except ImportError:
         ConsensusDecisionEngine, DecisionType, ConsensusStatus, MMORElement
     )
     # NEW: Creative Orientation Foundation
-    from mcp_coaia_sequential_thinking.creative_orientation_foundation import (
+    from mcp_coaia_twoeyesseen_holistic_thinking.creative_orientation_foundation import (
         establish_structural_tension, validate_creative_action,
         StructuralTension, CreativeOrientationValidation,
         creative_orientation_foundation
     )
-    from mcp_coaia_sequential_thinking.generative_agent_lattice import (
+    from mcp_coaia_twoeyesseen_holistic_thinking.generative_agent_lattice import (
         generative_lattice, ArchetypeRole, PerspectiveType
     )
     # NEW: Prompts and Resources for structural thinking
-    from mcp_coaia_sequential_thinking.prompts import list_prompts, get_prompt, PROMPTS
-    from mcp_coaia_sequential_thinking.resources import list_resources, get_resource_content, RESOURCES
+    from mcp_coaia_twoeyesseen_holistic_thinking.prompts import list_prompts, get_prompt, PROMPTS
+    from mcp_coaia_twoeyesseen_holistic_thinking.resources import list_resources, get_resource_content, RESOURCES
 
-logger = configure_logging("coaia-sequential-thinking.server")
+logger = configure_logging("coaia-twoeyesseen-holistic-thinking.server")
 
 # Initialize data persistence layer
 data_store = None
 try:
-    from mcp_coaia_sequential_thinking.data_persistence import PolycentricDataStore
+    from mcp_coaia_twoeyesseen_holistic_thinking.data_persistence import PolycentricDataStore
     data_store = PolycentricDataStore()
     logger.info("Data persistence layer initialized successfully")
 except Exception as e:
@@ -91,7 +91,7 @@ except Exception as e:
 # Initialize enhanced polycentric lattice
 enhanced_lattice = None
 try:
-    from mcp_coaia_sequential_thinking.enhanced_polycentric_lattice import EnhancedPolycentricLattice
+    from mcp_coaia_twoeyesseen_holistic_thinking.enhanced_polycentric_lattice import EnhancedPolycentricLattice
     enhanced_lattice = EnhancedPolycentricLattice(constitutional_core, data_store)
     logger.info("Enhanced polycentric lattice initialized successfully")
 except ImportError as e:
@@ -101,7 +101,7 @@ except Exception as e:
     logger.error(f"Error initializing enhanced polycentric lattice: {e}")
     logger.error("Enhanced lattice functionality will not be available")
 
-mcp = FastMCP("coaia-sequential-thinking")
+mcp = FastMCP("coaia-twoeyesseen-holistic-thinking")
 
 storage_dir = os.environ.get("MCP_STORAGE_DIR", None)
 storage = ThoughtStorage(storage_dir)
@@ -2845,10 +2845,10 @@ def _generate_self_awareness_recommendations(orientation_score: float, reactive_
 
 def main():
     """Entry point for the MCP server."""
-    logger.info("Starting CoAiA Sequential Thinking MCP server")
+    logger.info("Starting CoAiA Two-Eye-Seen Holistic Thinking MCP server")
     
     # Register prompts
-    logger.info("Registering structural thinking prompts")
+    logger.info("Registering structural  prompts")
     for prompt_key, prompt_data in PROMPTS.items():
         try:
             @mcp.prompt(name=prompt_key)

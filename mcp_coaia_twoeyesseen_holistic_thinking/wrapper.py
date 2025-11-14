@@ -5,8 +5,8 @@ import os
 
 def main():
     parser = argparse.ArgumentParser(
-        description="CoAiA Sequential Thinking MCP Server. This command starts the MCP server. "
-                    "It offers a suite of tools for sequential thought processing and analysis."
+        description="CoAiA  Two-Eye-Seen Holistic Thinking MCP Server. This command starts the MCP server. "
+                    "It offers a suite of tools for holistic thought processing and analysis."
     )
     # No explicit add_argument for --help here, argparse handles it automatically
 

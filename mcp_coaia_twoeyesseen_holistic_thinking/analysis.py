@@ -5,7 +5,7 @@ import importlib.util
 from .models import ThoughtData, ThoughtStage
 from .logging_conf import configure_logging
 
-logger = configure_logging("sequential-thinking.analysis")
+logger = configure_logging("twoeyesseen-holistic-thinking.analysis")
 
 
 class ThoughtAnalyzer:

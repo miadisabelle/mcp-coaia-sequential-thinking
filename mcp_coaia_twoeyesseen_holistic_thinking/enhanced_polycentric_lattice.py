@@ -4,7 +4,7 @@ Enhanced Polycentric Lattice with Multi-Persona Consensus
 Integrates the consensus decision engine with the polycentric lattice,
 implementing multi-persona perspectives from the feedback:
 - Tryad system (Mia, Miette, Ripple/Haiku)
-- Sequential structural thinking across multiple persona perspectives
+- Two-eyed seen holistic thinking across multiple persona perspectives
 - Memory integration with structural tension charts
 - Cultural archetype integration (Western vs Indigenous perspectives)
 """
@@ -74,7 +74,7 @@ class PersonaPerspective:
     timestamp: datetime = field(default_factory=datetime.utcnow)
 
 @dataclass
-class SequentialThinkingChain:
+class TwoEyedSeenHolisticThinkingChain:
     """Sequential thinking process across multiple personas"""
     chain_id: str
     initiating_request: str
@@ -101,7 +101,7 @@ class EnhancedPolycentricLattice:
     Enhanced polycentric lattice with multi-persona consensus and cultural diversity
     
     Key enhancements based on PR #9 feedback:
-    - Multi-persona sequential thinking (Tryad: Mia, Miette, Haiku)
+    - Multi-persona two-eyed seen holistic thinking (Tryad: Mia, Miette, Haiku)
     - Cultural archetype integration for diverse perspectives
     - Memory integration readiness for coaia-memory
     - Sequential structural thinking methodology
@@ -114,7 +114,7 @@ class EnhancedPolycentricLattice:
         self.consensus_engine = ConsensusDecisionEngine(constitutional_core, data_store)
         
         # Multi-persona system
-        self.active_thinking_chains: Dict[str, SequentialThinkingChain] = {}
+        self.active_thinking_chains: Dict[str, TwoEyedSeenHolisticThinkingChain] = {}
         self.persona_agents: Dict[PersonaArchetype, SimpleAgent] = {}
         
         # Memory and knowledge integration
@@ -175,14 +175,14 @@ class EnhancedPolycentricLattice:
         
         logger.info("Initialized persona-based agents for enhanced lattice")
     
-    def initiate_sequential_thinking(
+    def initiate_two_eyed_seen_holistic_thinking(
         self,
         request: str,
         primary_purpose: str,
         persona_sequence: Optional[List[PersonaArchetype]] = None,
         memory_context: Optional[Dict[str, Any]] = None
     ) -> str:
-        """Initiate sequential thinking process across multiple personas"""
+        """Initiate two-eyed seen holistic thinking process across multiple personas"""
         
         chain_id = f"thinking_chain_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
         
@@ -194,7 +194,7 @@ class EnhancedPolycentricLattice:
                 PersonaArchetype.WISDOM_SYNTHESIZER
             ]
         
-        thinking_chain = SequentialThinkingChain(
+        thinking_chain = TwoEyedSeenHolisticThinkingChain(
             chain_id=chain_id,
             initiating_request=request,
             primary_purpose=primary_purpose,
@@ -344,7 +344,7 @@ class EnhancedPolycentricLattice:
                 timestamp=datetime.utcnow()
             )
     
-    def advance_thinking_chain(self, chain_id: str, focus_persona: Optional[PersonaArchetype] = None) -> Optional[PersonaPerspective]:
+    def advance_two_eyed_seen_holistic_thinking_chain(self, chain_id: str, focus_persona: Optional[PersonaArchetype] = None) -> Optional[PersonaPerspective]:
         """Advance to next persona in thinking chain, optionally focusing on a specific persona"""
         
         if chain_id not in self.active_thinking_chains:
@@ -503,7 +503,7 @@ class EnhancedPolycentricLattice:
         
         return decision_id
     
-    def get_thinking_chain_status(self, chain_id: str) -> Optional[Dict[str, Any]]:
+    def get_two_eyed_seen_holistic_thinking_chain_status(self, chain_id: str) -> Optional[Dict[str, Any]]:
         """Get status of sequential thinking chain"""
         
         if chain_id not in self.active_thinking_chains:
@@ -535,7 +535,7 @@ class EnhancedPolycentricLattice:
         }
     
     def get_active_thinking_chains(self) -> List[Dict[str, Any]]:
-        """Get all active thinking chains"""
+        """Get all active two-eyed seen holistic thinking chains"""
         
         return [
             self.get_thinking_chain_status(chain_id)
@@ -553,7 +553,7 @@ class EnhancedPolycentricLattice:
         # Prepare memory structure for potential coaia-memory integration
         memory_structure = {
             "primary_choice": chain.primary_purpose,
-            "current_reality": f"Sequential thinking engaged across {len(chain.perspectives)} perspectives",
+            "current_reality": f"Two-eyed seen holistic thinking engaged across {len(chain.perspectives)} perspectives",
             "action_steps": [
                 {
                     "title": f"Integrate {p.persona_archetype.value} perspective",

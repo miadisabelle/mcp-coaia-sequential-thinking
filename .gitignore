@@ -9,3 +9,4 @@ __pycache__
 uv.lock
 node_modules/
 package-lock.json
+.gemini*

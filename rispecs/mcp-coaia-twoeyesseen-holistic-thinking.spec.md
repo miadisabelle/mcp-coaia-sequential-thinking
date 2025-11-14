@@ -1,4 +1,4 @@
-# RISE Specification: MCP Sequential Thinking Toolset
+# RISE Specification: MCP CoAiA Two-Eyed Seen Holistic Thinking Toolset
 
 **Version**: 1.0
 **Document ID**: mcp-st-spec-v1.0
@@ -6,7 +6,7 @@
 **Last Updated**: 2025-10-18
 **Author**: Mia, Gemini Agent
 
-> This document specifies the Master Control Program (MCP) for Sequential & Holistic Reasoning. It is designed to facilitate a stateful, multi-perspective reasoning process, enabling a human companion to transform complex inquiries into integrated wisdom and principled action.
+> This document specifies the Master Control Program (MCP) for CoAiA Two-Eyed Seen Holistic Thinking. It is designed to facilitate a stateful, multi-perspective reasoning process, enabling a human companion to transform complex inquiries into integrated wisdom and principled action.
 
 ---
 

@@ -8,7 +8,7 @@ Based on the structural tension charts and decision patterns in the CoAiA-memory
 
 #### 1. **Multi-Level Structural Tension Hierarchies**
 ```
-chart_1757913836964 (Level 0) → Integrate EchoThreads with mcp-coaia-sequential-thinking
+chart_1757913836964 (Level 0) → Integrate EchoThreads with mcp-coaia-twoeyesseen-holistic-thinking
 ├── chart_1757913841767 (Level 1) → Integrate initiate_sequential_thinking tool  
 ├── chart_1757914429239 (Level 1) → Achieve operational Enhanced Lattice
 └── chart_1757914669068 (Level 2) → Ensure successful module imports
